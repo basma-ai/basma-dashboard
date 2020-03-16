@@ -72,8 +72,8 @@ import axios from '../../axios.js'
 export default{
   data() {
     return {
-      username: "ali.ashoor",
-      password: "123456",
+      username: "",
+      password: "",
       checkbox_remember_me: false,
       vendor: {}
     }
