@@ -1,0 +1,229 @@
+<template>
+  <div>
+
+
+    <div class="call_box">
+      <div id="local-media" v-if="!isItIos">
+        <CamPreview v-if="localCamIsEnabled"></CamPreview>
+      </div>
+      <div id="remote-media-div"></div>
+
+      <div id="controls">
+        <v-btn @click="toggle_mute_camera">
+          <vs-button v-if="localCamIsEnabled">Mute Camera</vs-button>
+          <vs-button v-if="!localCamIsEnabled">Unmute Camera</vs-button>
+        </v-btn>
+
+        <v-btn @click="toggle_mute_mic">
+          <vs-button v-if="localMicIsEnabled">Mute Mic</vs-button>
+          <vs-button v-if="!localMicIsEnabled">Unmute Mic</vs-button>
+        </v-btn>
+      </div>
+    </div>
+
+
+
+  </div>
+</template>
+
+
+<script>
+  import Vue from 'vue'
+  import CamPreview from '@/components/CamPreview.vue';
+  import {isIOS} from 'mobile-device-detect';
+
+
+  const {connect, createLocalTracks, createLocalVideoTrack, LocalVideoTrack} = require('twilio-video');
+
+
+  export default {
+    props: ['connection_token', 'room_name'],
+    data: () => ({
+      found_remote_track: false,
+      isItIos: isIOS,
+      localTrack: false,
+      remoteTrack: '',
+      activeRoom: '',
+      previewTracks: '',
+      room: null,
+      localCamIsEnabled: true,
+      localMicIsEnabled: true
+    }),
+    components: {CamPreview},
+    methods: {
+      toggle_mute_camera: function () {
+
+        let thisApp = this;
+
+        this.localTracks.forEach((track) => {
+          console.log('In mute function code');
+          console.log(JSON.stringify(track));
+          try{
+            if(track.kind == 'video') {
+              if (track.isEnabled) {
+                track.disable();
+                thisApp.localCamIsEnabled = false;
+              } else {
+                track.enable();
+                thisApp.localCamIsEnabled = true;
+              }
+            }
+          } catch(ex) {
+            console.log(ex.toString());
+          }
+        })
+
+      },
+      toggle_mute_mic: function () {
+
+        let thisApp = this;
+
+        this.localTracks.forEach((track) => {
+          console.log('In mute function code');
+          console.log(JSON.stringify(track));
+          try{
+            if(track.kind == 'audio') {
+              if (track.isEnabled) {
+                track.disable();
+                thisApp.localMicIsEnabled = false;
+              } else {
+                track.enable();
+                thisApp.localMicIsEnabled = true;
+              }
+            }
+          } catch(ex) {
+            console.log(ex.toString());
+          }
+        })
+
+      },
+      end_call: function () {
+
+        let thisApp = this;
+
+        this.localTracks.forEach((track) => {
+          console.log('In mute function code');
+          console.log(JSON.stringify(track));
+          try{
+              if (track.isEnabled) {
+                track.disable();
+                thisApp.localMicIsEnabled = false;
+              } else {
+                track.enable();
+                thisApp.localMicIsEnabled = true;
+              }
+          } catch(ex) {
+            console.log(ex.toString());
+          }
+        })
+
+      },
+      check_remote: function (room) {
+
+        let this_app = this;
+        room.participants.forEach(participant => {
+
+          console.log("PARTICIPANT");
+          console.log(JSON.stringify(participant));
+
+
+          if (!this_app.found_remote_track) {
+          }
+          console.log(`Participant "${participant.identity}" is connected to the Room`);
+
+          setTimeout(function () {
+            participant.tracks.forEach(publication => {
+
+              console.log("PUBLICATION");
+              console.log(JSON.stringify(publication));
+
+              if (publication.isSubscribed) {
+
+                console.log("I am inside IF(publication.isSubscribed)");
+                const track = publication.track;
+
+                if (track == null) {
+                  console.log("track is null");
+                  this_app.check_remote(room);
+                } else {
+                  console.log("track is not null");
+                  this_app.found_remote_track = true;
+                  //document.getElementById('remote-media-div').innerHTML = "";
+                  document.getElementById('remote-media-div').appendChild(track.attach());
+                }
+
+
+              } else {
+                console.log("I am inside ELSE(publication.isSubscribed)");
+                this_app.check_remote(room);
+              }
+            });
+          }, 5000);
+
+        });
+      }
+    }
+    ,
+    created() {
+
+      // check if isIos
+      if (process.client) {
+        this.isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
+
+
+      // createLocalVideoTrack().then(track => {
+      //   const localMediaContainer = document.getElementById('local-media');
+      //   document.getElementById('local-media').innerHTML = "";
+      //   localMediaContainer.appendChild(track.attach());
+      // });
+
+      let token = this.connection_token;
+
+      var thisApp = this;
+
+      createLocalTracks({
+        audio: true,
+        video: {width: 640}
+      }).then(localTracks => {
+
+        thisApp.localTracks = localTracks;
+        return connect(token, {
+          name: this.room_name,
+          tracks: localTracks
+        });
+
+
+      }).then(room => {
+        console.log(`Connected to Room: ${room.name}`);
+        // console.log(JSON.stringify(room));
+
+        console.log("PARTICIPANTS");
+        thisApp.room = room;
+        thisApp.check_remote(room);
+
+
+        // Attach the Participant's Media to a <div> element.
+        room.on('participantConnected', participant => {
+          console.log("A participant has been connected");
+          console.log(`Participant "${participant.identity}" connected`);
+
+          participant.tracks.forEach(publication => {
+            if (publication.isSubscribed) {
+              const track = publication.track;
+              // document.getElementById('remote-media-div').innerHTML = "";
+              document.getElementById('remote-media-div').appendChild(track.attach());
+            }
+          });
+
+          participant.on('trackSubscribed', track => {
+            document.getElementById('remote-media-div').appendChild(track.attach());
+          });
+        });
+
+      });
+
+
+    }
+  }
+</script>
