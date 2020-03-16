@@ -22,7 +22,7 @@ module.exports = {
     },
     devServer: {
       host: 'dashboard.basma.ai',
-      port: '80'
+      port: '3015'
     }
   }
 }
