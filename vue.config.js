@@ -19,7 +19,10 @@ module.exports = {
       splitChunks: {
         chunks: 'all'
       }
+    },
+    devServer: {
+      host: 'dashboard.basma.ai',
+      port: '80'
     }
   }
 }
-
