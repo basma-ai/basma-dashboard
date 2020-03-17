@@ -31,6 +31,12 @@ body {
 }
 
 .vx-logo {
+  img{
+    width: auto;
+    max-height: 25px;
+    height: auto;
+    max-width: 100%;
+  }
   .vx-logo-text{
     font-size: 22px;
     font-weight: 600;
