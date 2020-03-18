@@ -1,69 +1,94 @@
 <template>
   <div>
 
-      <div style="text-align:center">
-        <vs-card :loading="loading">
-          <div class="text-center" style="padding: 20px">
+    <div style="text-align:center">
+      <vs-card :loading="loading">
+        <div class="text-center" style="padding: 20px">
 
-            <!-- <img id="vendor-logo" :src="vendor.logo_url"/> -->
-            <!-- <br/><br/> -->
+          <!-- <img id="vendor-logo" :src="vendor.logo_url"/> -->
+          <!-- <br/><br/> -->
 
-            <!-- Video Connecting Screen -->
-            <div v-if="screen_status == 'dashboard'">
+          <!-- Video Connecting Screen -->
+          <div v-if="screen_status == 'dashboard'">
 
-              list of calls goes here:
-              <br/>
-              <div v-for="call in pending_calls_list" class="agent_call_box">
 
-                <div id="text">
-                  <div id="title">
-                    <img src="@/assets/images/dancing_phone.gif" height="40px"/>
-                    Call {{call.id}}
-                  </div>
-                  <div id="service">
-                    <span>{{call.vendor_service.service_name}}</span>
-                  </div>
-                </div>
-                <vs-button id="answer" color="green" @click="answer_call(call)">Answer</vs-button>
-
-              </div>
-
-              <div v-if="pending_calls_list.length < 1">
-                No pending calls, this page will refresh automatically
-              </div>
-
+            <div style="float:right">
+              <label for="ringtone_switch">Ringtone</label>
+              <vs-switch name="ringtone_switch" v-model="ringtone_switch" vs-icon="ring_volume"/>
             </div>
 
+            <div v-if="pending_calls_list.length > 0" style="font-size:20px">
+              <strong>{{pending_calls_list.length}}</strong> people waiting 😃
+            </div>
+            <br/>
+            <vs-row  class="agent_call_boxes_container">
+              <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="3" v-for="call in pending_calls_list">
+                <div class="agent_call_box">
 
-            <!-- In Call -->
-            <div v-if="screen_status == 'in_call'">
+                  <div id="icon">
+                    <vs-icon size="40">videocam</vs-icon>
+                  </div>
+                  <div id="text">
+                    <div id="title">#{{call.id}}</div>
+                    <div id="service">{{call.vendor_service.service_name}}</div>
+                    <div id="time">
+                      <vs-icon>access_time</vs-icon>
+                      {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
+                    </div>
+                  </div>
+                  <div id="action">
+                    <vs-button @click="answer_call(call)" icon="videocam" color="green" size="large"></vs-button>
+                  </div>
 
-              <div styte="height:10px"></div>
 
-              <div v-if="call.status == 'started' && call.connection_agent_token != null">
-                <v-row>
+                </div>
+              </vs-col>
+            </vs-row>
 
-                  <v-col cols="12" sm="7">
-                    <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
-                  </v-col>
-                  <v-col>
+            <div v-if="pending_calls_list.length < 1">
 
-                    <vs-button @click="end_call">End Call</vs-button>
 
-                  </v-col>
-
-                </v-row>
-
+              <div style="text-align:center;font-size:30px">
+                😞
+                <br />
+                no pending calls
               </div>
-
-              <br/><br/>
 
             </div>
 
           </div>
 
-        </vs-card>
-      </div>
+
+          <!-- In Call -->
+          <div v-if="screen_status == 'in_call'">
+
+            <div styte="height:10px"></div>
+
+            <div v-if="call.status == 'started' && call.connection_agent_token != null">
+              <v-row>
+
+                <v-col cols="12" sm="12" md="3">
+                  <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id"
+                           style="width:100%;"></CallBox>
+                </v-col>
+                <v-col>
+
+                  <vs-button @click="end_call">End Call</vs-button>
+
+                </v-col>
+
+              </v-row>
+
+            </div>
+
+            <br/><br/>
+
+          </div>
+
+        </div>
+
+      </vs-card>
+    </div>
 
 
   </div>
@@ -73,7 +98,9 @@
 <script>
   import axios from '../axios.js';
   import CallBox from '@/components/CallBox.vue';
+  import Vue from "vue";
 
+  Vue.use(require('vue-moment'));
 
   export default {
     data: () => ({
@@ -91,10 +118,26 @@
       vu_user: null,
       agent_token_loading: false,
       vu_token: null,
-      pending_calls_list: []
+      pending_calls_list: [],
+      ringtone_switch: true,
+      ringtone_audio: null
     }),
     components: {
       CallBox
+    },
+    watch: {
+      ringtone_switch: function(val) {
+        console.log("ringtone switch clicked!!");
+        if(val) {
+
+          this.ringtone_audio.volume = 1;
+
+          // var audio = new Audio('https://basma-cdn.s3.me-south-1.amazonaws.com/assets/audio/button_click.wav');
+          // audio.play();
+        } else {
+          this.ringtone_audio.volume = 0;
+        }
+      }
     },
     methods: {
       list_pending_calls: function () {
@@ -109,7 +152,11 @@
             if (response.data.success) {
 
               thisApp.pending_calls_list = response.data.data.pending_calls_list;
-
+              if(thisApp.pending_calls_list.length > 0) {
+                thisApp.ringtone_audio.play();
+              } else {
+                thisApp.ringtone_audio.pause();
+              }
 
             } else {
               // console.log("it's a failure!");
@@ -130,6 +177,7 @@
 
       end_call: function () {
 
+        this.ringtone_audio.play();
         this.screen_status = 'loading';
         this.loading = true;
 
@@ -166,7 +214,7 @@
 
 
         let thisApp = this;
-        
+
         thisApp.screen_status = 'dashboard';
         thisApp.list_pending_calls();
 
@@ -180,6 +228,7 @@
         this.screen_status = 'loading';
 
         this.call_id = selected_call.id;
+        this.ringtone_audio.pause();
 
 
         let thisApp = this;
@@ -211,84 +260,104 @@
     },
     created() {
 
-      this.vendor_id = this.$store.state.AppActiveUser.info.vendor.id
+      this.ringtone_audio = new Audio('https://basma-cdn.s3.me-south-1.amazonaws.com/assets/audio/agent_default_ringtone.mp3');
+      this.vendor_id = this.$store.state.AppActiveUser.info.vendor.id;
+
+
+      if(this.ringtone_audio != null) {
+        this.ringtone_audio.pause();
+      }
+
+      this.ringtone_audio.loop = true;
+      this.ringtone_audio.volume = 1;
+
 
       this.request_agent_token();
 
+    },
+    beforeDestroy() {
+      this.ringtone_audio.pause();
+      this.ringtone_audio = null;
+      console.log("we are at onDestroy");
     }
   }
 </script>
 
 
 <style>
-.agent_call_box {
-  border:1px solid silver;
-  //padding:5px;
-  margin-bottom:5px;
-  border-radius:10px;
-  height:80px;
-  line-height:80px;
-}
-.agent_call_box:hover {
-  background: #f3f5db;
-}
 
-.agent_call_box #text {
-  float:left;
-  margin-left:10px;
-}
-.agent_call_box #text #title {
-  font-weight:bold;
-}
-.agent_call_box #service {
-  margin-left:10px;
-}
-.agent_call_box #text div{
-  display:inline-block;
-}
-.agent_call_box #answer {
-  float:right;
-  margin-top:20px;
-  margin-right:10px;
-}
-.call_box {
-  width:inherit;
-  background:#DDD;
-  border:1px solid #DDD;
-  position:relative;
-  height:inherit;
-  background:#000;
-  display:inline-block;
-  min-height: 300px;
-}
-.call_box #controls {
-  bottom:0;
-  position:absolute;
-  right:0;
-  margin:10px;
-}
-#local-media {
-  position:absolute;
-  width:100%;
-}
-#local-media video {
-  max-width:25%;
-  max-height:25%;
-  float:left;
-  left:0;
-  border-bottom:1px solid #DDD;
-  border-right:1px solid #DDD;
-}
-#remote-media-div video {
-  width:100%;
-  max-height: 600px;
-  margin:0;
-  padding:0;
-  height:100%;
-  margin-bottom:-6px;
-}
-#vendor-logo {
-  max-width: 160px;
-  height: auto
-}
+
+  .agent_call_box {
+    border:2px solid green;
+    border-radius:5px;
+    width:100%;
+    padding:10px;
+    height:140px;
+    position:relative;
+    text-align:left;
+    background-color:#edffed;
+    cursor:default;
+    transition:all 0.2s;
+    margin:5px;
+    animation: shake 1s;
+    animation-iteration-count: infinite;
+  }
+  /* .agent_call_boxes_container #the_col:first-child .agent_call_box {
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+  } */
+
+  .agent_call_box:hover {
+    box-shadow: 0px 0px 13px 0px rgba(0,102,20,1);
+  }
+
+  .agent_call_box #icon * {
+    float:left;
+    margin-top:30px;
+    font-size:50px!important;
+    color:green;
+  }
+
+  .agent_call_box #text {
+    margin-top:10px;
+    margin-left:65px;
+  }
+  .agent_call_box #text #title {
+    font-size:30px;
+    font-weght:bold;
+  }
+  .agent_call_box #text #time {
+    margin-top:5px;
+    font-size:15px;
+    fint-weight:bold;
+  }
+  .agent_call_box #text #service {
+    border:1px solid #a27913;
+    display:inline-block;
+    padding:4px 5px;
+    border-radius:5px;
+    background-color:#ffb600;
+    color:#000;
+  }
+  .agent_call_box #action {
+    top:50px;
+    right:10px;
+    position:absolute;
+  }
+
+
+  @keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }
+
 </style>

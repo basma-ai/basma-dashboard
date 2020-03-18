@@ -227,3 +227,47 @@
     }
   }
 </script>
+<style>
+  .call_box {
+    width: inherit;
+    background: #DDD;
+    border: 1px solid #DDD;
+    position: relative;
+    height: inherit;
+    background: #000;
+    display: inline-block;
+    min-height: 300px;
+  }
+
+  .call_box #controls {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    margin: 10px;
+  }
+
+  #local-media {
+    position: absolute;
+    width: 100%;
+  }
+
+  #local-media video {
+    max-width: 25%;
+    max-height: 25%;
+    float: left;
+    left: 0;
+    border-bottom: 1px solid #DDD;
+    border-right: 1px solid #DDD;
+  }
+
+  #remote-media-div video {
+    width: 100%;
+    max-height: 600px;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    margin-bottom: -6px;
+  }
+
+
+</style>

@@ -1,5 +1,10 @@
 <template>
   <div id="dashboard-analytics">
+
+    <div v-if="loading">
+      Loading, please wait
+    </div>
+
     <div class="vx-row">
 		<!-- CARD 1: CONGRATS -->
       <div class="vx-col w-full lg:w-1/2 mb-base">
@@ -42,7 +47,8 @@ import StatisticsCardLine from '@/components/statistics-cards/StatisticsCardLine
 export default {
 	data() {
 		return {
-			analytics: {}
+			analytics: {},
+      loading: false
 		}
 	},
 	components: {
@@ -56,10 +62,12 @@ export default {
 	},
 	methods: {
 		loadData() {
+		  this.loading = true;
 			const this_app = this;
 			axios.post("/vendor/dashboard_numbers", {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
 				console.log(res);
 				this_app.analytics = res.data.data;
+				this.loading = false;
 			}).catch((err) => {
 				console.log(err);
 			});
