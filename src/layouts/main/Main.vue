@@ -235,9 +235,9 @@ export default {
     });
 
     this.navMenuItems.push({
-      url: "/agent-call",
-      name: "Agent Call",
-      slug: "agent-call",
+      url: "/agent-phone",
+      name: "Agent Phone",
+      slug: "agent-phone",
       icon: "PhoneCallIcon"
     });
 

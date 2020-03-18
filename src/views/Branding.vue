@@ -36,7 +36,7 @@
 
 <script>
 
-import axios from '../axios.js'
+import axios from '@/axios.js'
 import StatisticsCardLine from '@/components/statistics-cards/StatisticsCardLine.vue'
 
 export default {

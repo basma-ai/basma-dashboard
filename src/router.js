@@ -37,24 +37,63 @@ const router = new Router({
                 component: () => import('./views/Home.vue')
               },
               {
-                path: '/agent-call',
-                name: 'agent-call',
-                component: () => import('./views/AgentCall.vue')
+                path: '/agent-phone',
+                name: 'agent-phone',
+                component: () => import('./views/AgentPhone.vue')
               },
               {
                 path: '/users',
                 name: 'users',
-                component: () => import('./views/Users.vue')
+                component: () => import('./views/users/Users.vue'),
+                meta: {
+                  pageTitle: 'Users',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Users' },
+                    { title: 'List', active: true }
+                  ],
+                },
+                children: [
+                  {
+                    path: '/edit-user',
+                    name: 'edit-user',
+                    component: () => import('./views/users/EditUser.vue'),
+                    meta: {
+                      pageTitle: 'Edit User',
+                      breadcrumb: [
+                        { title: 'Home', url: '/' },
+                        { title: 'User' },
+                        { title: 'Edit', active: true }
+                      ],
+                    },
+                  }
+                ]
               },
               {
                 path: '/services',
                 name: 'services',
-                component: () => import('./views/Services.vue')
+                component: () => import('./views/Services.vue'),
+                meta: {
+                  pageTitle: 'Services',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Services' },
+                    { title: 'List', active: true }
+                  ],
+                },
               },
               {
                 path: '/calls-history',
                 name: 'calls-history',
-                component: () => import('./views/CallsHistory.vue')
+                component: () => import('./views/CallsHistory.vue'),
+                meta: {
+                  pageTitle: 'Calls History',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Calls History' },
+                    { title: 'List', active: true }
+                  ],
+                },
               },
               {
                 path: '/branding',

@@ -96,7 +96,7 @@
 
 
 <script>
-  import axios from '../axios.js';
+  import axios from '@/axios.js';
   import CallBox from '@/components/CallBox.vue';
   import Vue from "vue";
 

@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import axios from '../axios.js'
+import axios from '@/axios.js'
 import { AgGridVue } from 'ag-grid-vue'
 import '@/assets/scss/vuexy/extraComponents/agGridStyleOverride.scss'
 import vSelect from 'vue-select'

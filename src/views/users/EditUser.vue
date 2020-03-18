@@ -54,6 +54,53 @@
           </vs-dropdown>
         </div>
 
+          <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
+          <vs-input class="sm:mr-4 mr-0 sm:w-auto w-full sm:order-normal order-3 sm:mt-0 mt-4" v-model="searchQuery" @input="updateSearchQuery" placeholder="Search..." />
+          <!-- <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button> -->
+
+          <!-- ACTION - DROPDOWN -->
+          <!-- <vs-dropdown vs-trigger-click class="sm:mr-4 cursor-pointer">
+
+            <div class="p-3 shadow-drop rounded-lg d-theme-dark-light-bg cursor-pointer flex items-end justify-center text-lg font-medium w-32">
+              <span class="mr-2 leading-none">Actions</span>
+              <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
+            </div>
+
+            <vs-dropdown-menu>
+
+              <vs-dropdown-item>
+                <span class="flex items-center">
+                  <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" class="mr-2" />
+                  <span>Delete</span>
+                </span>
+              </vs-dropdown-item>
+
+              <vs-dropdown-item>
+                <span class="flex items-center">
+                  <feather-icon icon="ArchiveIcon" svgClasses="h-4 w-4" class="mr-2" />
+                  <span>Archive</span>
+                </span>
+              </vs-dropdown-item>
+
+              <vs-dropdown-item>
+                <span class="flex items-center">
+                  <feather-icon icon="FileIcon" svgClasses="h-4 w-4" class="mr-2" />
+                  <span>Print</span>
+                </span>
+              </vs-dropdown-item>
+
+              <vs-dropdown-item>
+                <span class="flex items-center">
+                  <feather-icon icon="SaveIcon" svgClasses="h-4 w-4" class="mr-2" />
+                  <span>CSV</span>
+                </span>
+              </vs-dropdown-item>
+
+            </vs-dropdown-menu>
+          </vs-dropdown> -->
+
+          <vs-button class="sm:mr-4 md:mb-0">Add New User</vs-button>
+
       </div>
 
 
@@ -87,7 +134,7 @@
 </template>
 
 <script>
-import axios from '../axios.js'
+import axios from '@/axios.js'
 import { AgGridVue } from 'ag-grid-vue'
 import '@/assets/scss/vuexy/extraComponents/agGridStyleOverride.scss'
 import vSelect from 'vue-select'
@@ -96,10 +143,10 @@ import vSelect from 'vue-select'
 // import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
 
 // Cell Renderer
-import CellRendererLink from './cell-renderer/CellRendererLink.vue'
-import CellRendererStatus from './cell-renderer/CellRendererStatus.vue'
-import CellRendererVerified from './cell-renderer/CellRendererVerified.vue'
-import CellRendererActions from './cell-renderer/CellRendererActions.vue'
+import CellRendererLink from '@/views/cell-renderer/CellRendererLink.vue'
+import CellRendererStatus from '@/views/cell-renderer/CellRendererStatus.vue'
+import CellRendererVerified from '@/views/cell-renderer/CellRendererVerified.vue'
+import CellRendererActions from '@/views/cell-renderer/CellRendererActions.vue'
 
 
 export default {

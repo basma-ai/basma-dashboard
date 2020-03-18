@@ -17,7 +17,7 @@
             }">
                 <feather-icon :icon="icon" class="p-3 inline-flex rounded-full" :class="[`text-${color}`, {'mb-4': !iconRight}]" :style="{background: `rgba(var(--vs-${color}),.15)`}"></feather-icon>
                 <div class="truncate">
-                    <h2 class="mb-1 font-bold">{{ statistic }}</h2>
+                    <h1 class="mb-1 font-bold">{{ statistic }}</h1>
                     <span>{{ statisticTitle }}</span>
                 </div>
             </div>
