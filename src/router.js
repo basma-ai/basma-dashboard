@@ -42,9 +42,22 @@ const router = new Router({
                 component: () => import('./views/AgentPhone.vue')
               },
               {
+                path: '/calls-history',
+                name: 'calls-history',
+                component: () => import('./views/calls-history/CallsHistory.vue'),
+                meta: {
+                  pageTitle: 'Calls History',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Calls History' },
+                    { title: 'List', active: true }
+                  ],
+                },
+              },
+              {
                 path: '/users',
                 name: 'users',
-                component: () => import('./views/users/Users.vue'),
+                component: () => import('./views/users/ListUsers.vue'),
                 meta: {
                   pageTitle: 'Users',
                   breadcrumb: [
@@ -72,7 +85,7 @@ const router = new Router({
               {
                 path: '/services',
                 name: 'services',
-                component: () => import('./views/Services.vue'),
+                component: () => import('./views/services/ListServices.vue'),
                 meta: {
                   pageTitle: 'Services',
                   breadcrumb: [
@@ -83,22 +96,17 @@ const router = new Router({
                 },
               },
               {
-                path: '/calls-history',
-                name: 'calls-history',
-                component: () => import('./views/CallsHistory.vue'),
+                path: '/groups',
+                name: 'groups',
+                component: () => import('./views/groups/ListGroups.vue'),
                 meta: {
-                  pageTitle: 'Calls History',
+                  pageTitle: 'Groups',
                   breadcrumb: [
                     { title: 'Home', url: '/' },
-                    { title: 'Calls History' },
+                    { title: 'Groups' },
                     { title: 'List', active: true }
                   ],
                 },
-              },
-              {
-                path: '/branding',
-                name: 'branding',
-                component: () => import('./views/Branding.vue')
               },
             ],
         },

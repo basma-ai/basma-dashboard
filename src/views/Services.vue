@@ -118,7 +118,7 @@
           title="Adding New Service"
           accept-text="Create"
           @cancel="clearFields"
-          @accept="createModel"
+          @accept="createService"
           @close="clearFields"
           :is-valid="validateForm"
           :active.sync="activePrompt">
@@ -172,10 +172,10 @@
   // import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
 
   // Cell Renderer
-  import CellRendererLink from './cell-renderer/CellRendererLink.vue'
-  import CellRendererStatus from './cell-renderer/CellRendererStatus.vue'
-  import CellRendererVerified from './cell-renderer/CellRendererVerified.vue'
-  import CellRendererActions from './cell-renderer/CellRendererActions.vue'
+  import CellRendererLink from './traditional-table/CellRendererLink.vue'
+  import CellRendererStatus from './traditional-table/CellRendererStatus.vue'
+  import CellRendererVerified from './traditional-table/CellRendererVerified.vue'
+  import CellRendererActions from './traditional-table/CellRendererActions.vue'
 
 
   export default {
@@ -299,7 +299,7 @@
           this.name = ''
         })
       },
-      createUser() {
+      createService() {
         const this_app = this;
         this_app.$vs.loading();
 

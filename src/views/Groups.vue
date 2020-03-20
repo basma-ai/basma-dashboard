@@ -36,7 +36,7 @@
           <vs-dropdown vs-trigger-click class="cursor-pointer">
             <div
               class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">
-              <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ usersData.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : usersData.length }} of {{ usersData.length }}</span>
+              <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ groupsData.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : groupsData.length }} of {{ groupsData.length }}</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4"/>
             </div>
             <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
@@ -56,6 +56,7 @@
               </vs-dropdown-item>
             </vs-dropdown-menu>
           </vs-dropdown>
+
         </div>
 
         <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
@@ -106,28 +107,23 @@
         </vs-dropdown>
 
         <div class="clearfix">
-          <vs-button class="bg-primary-gradient w-full" icon-pack="feather" icon="icon-edit" @click="activePrompt = true">Add New User</vs-button>
+          <vs-button class="bg-primary-gradient w-full" icon-pack="feather" icon="icon-edit" @click="activePrompt = true">Add New Group</vs-button>
         </div>
 
         <!-- add new user -->
         <vs-prompt
-          class="new-user"
-          title="Adding New User"
+          class="new-group"
+          title="Adding New Group"
           accept-text="Create"
           @cancel="clearFields"
-          @accept="createUser"
+          @accept="createGroup"
           @close="clearFields"
           :is-valid="validateForm"
           :active.sync="activePrompt">
           <component :is="scrollbarTag" class="scroll-area p-4" :settings="settings" :key="$vs.rtl">
             <form @submit.prevent>
-              <vs-input v-validate="'required'" name="username" label-placeholder="Username" v-model="username" class="w-full mb-6" />
-              <vs-input v-validate="'required|email'" name="email" label-placeholder="Email" v-model="email" class="w-full mb-6"/>
-              <vs-input v-validate="'required'" type="password" name="password" label-placeholder="Password" v-model="password" class="w-full mb-6"/>
-              <vs-input v-validate="'required'" name="name" label-placeholder="Name" v-model="name" class="w-full mb-6"/>
-              <vs-select v-validate="'required'" name="role" label="Role" v-model="role" class="w-full mb-6">
-                <vs-select-item :value="r" :text="r.charAt(0).toUpperCase() + r.slice(1)" v-for="r in roles" />
-              </vs-select>
+              <vs-input v-validate="'required'" name="name" label-placeholder="Name" v-model="name"
+                        class="w-full mb-6"/>
             </form>
           </component>
         </vs-prompt>
@@ -143,7 +139,7 @@
         class="ag-theme-material w-100 my-4 ag-grid-table"
         :columnDefs="columnDefs"
         :defaultColDef="defaultColDef"
-        :rowData="usersData"
+        :rowData="groupsData"
         rowSelection="multiple"
         colResizeDefault="shift"
         :animateRows="true"
@@ -174,10 +170,10 @@
   // import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
 
   // Cell Renderer
-  import CellRendererLink from '@/views/cell-renderer/CellRendererLink.vue'
-  import CellRendererStatus from '@/views/cell-renderer/CellRendererStatus.vue'
-  import CellRendererVerified from '@/views/cell-renderer/CellRendererVerified.vue'
-  import CellRendererActions from '@/views/cell-renderer/CellRendererActions.vue'
+  import CellRendererLink from './traditional-table/CellRendererLink.vue'
+  import CellRendererStatus from './traditional-table/CellRendererStatus.vue'
+  import CellRendererVerified from './traditional-table/CellRendererVerified.vue'
+  import CellRendererActions from './traditional-table/CellRendererActions.vue'
 
 
   export default {
@@ -193,18 +189,14 @@
     },
     data() {
       return {
-        roles: ['agent','admin'],
         activePrompt: false,
-        username: '',
-        password: '',
         name: '',
-        email: '',
-        role: 'agent',
+        service_ids: [],
         settings: {
           maxScrollbarLength: 60,
           wheelSpeed: 0.30
         },
-        usersData: [],
+        groupsData: [],
         // Filter Options
         roleFilter: {label: 'All', value: 'all'},
         roleOptions: [
@@ -216,7 +208,9 @@
         departmentOptions: [
           {label: 'All', value: 'all'}
         ],
+
         searchQuery: '',
+
         // AgGrid
         gridApi: null,
         gridOptions: {},
@@ -229,47 +223,22 @@
           // {
           //   headerName: 'ID',
           //   field: 'id',
-          //   width: 200,
+          //   width: 125,
           //   filter: true,
           //   checkboxSelection: true,
           //   headerCheckboxSelectionFilteredOnly: true,
           //   headerCheckboxSelection: true
           // },
           {
-            headerName: 'Username',
-            field: 'username',
-            filter: true,
-            width: 410,
-            cellRendererFramework: 'CellRendererLink'
-          },
-          {
-            headerName: 'Email',
-            field: 'email',
-            filter: true,
-            width: 350
-          },
-          {
             headerName: 'Name',
             field: 'name',
             filter: true,
-            width: 200
-          },
-          {
-            headerName: 'Role',
-            field: 'role',
-            filter: true,
-            width: 150
-          },
-          {
-            headerName: 'Groups',
-            field: 'group',
-            filter: true,
-            width: 150
+            width: 500
           },
           {
             headerName: 'Actions',
             field: 'transactions',
-            width: 150,
+            width: 250,
             cellRendererFramework: 'CellRendererActions'
           }
         ],
@@ -299,13 +268,12 @@
       }
     },
     computed: {
-      roleCapital() {
-        return this.role.charAt(0).toUpperCase() + this.role.slice(1);
+      validateForm() {
+        return this.name !== ''
       },
-      validateForm () {
-        return this.username !== '' && this.password !== '' && this.name !== '' && this.email !== '' && this.role !== ''
+      scrollbarTag() {
+        return this.$store.getters.scrollbarTag
       },
-      scrollbarTag () { return this.$store.getters.scrollbarTag },
       paginationPageSize() {
         if (this.gridApi) return this.gridApi.paginationGetPageSize()
         else return 10
@@ -327,33 +295,27 @@
     methods: {
       clearFields() {
         this.$nextTick(() => {
-          this.username = ''
-          this.password = ''
           this.name = ''
-          this.role = ''
         })
       },
-      createUser() {
+      createGroup() {
         const this_app = this;
         this_app.$vs.loading();
 
         const params = {
           "vu_token": this.$store.state.AppActiveUser.token,
-          "username": this.username,
-          "password": this.password,
           "name": this.name,
-          "email": this.email,
-          "role": this.role
+          "service_ids": this.service_ids
         };
 
-        axios.post("/vendor/create_user", params).then((res) => {
+        axios.post("/vendor/groups/create", params).then((res) => {
           console.log(res);
 
           this_app.$vs.loading.close();
 
           console.log(res);
 
-          if (!res.data.success){
+          if (!res.data.success) {
             const error = res.data.data.errors[0];
 
             this_app.$vs.notify({
@@ -365,10 +327,11 @@
             });
 
             return
+
           } else {
             this_app.$vs.notify({
               title: 'Success',
-              text: this_app.roleCapital + " is created!",
+              text: "Group is created!",
               iconPack: 'feather',
               icon: 'icon-check-circle',
               color: 'success'
@@ -413,9 +376,9 @@
       },
       loadData() {
         const this_app = this;
-        axios.post("/vendor/list_users", {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
+        axios.post("/vendor/groups/list", {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
           console.log(res);
-          this_app.usersData = res.data.data.users;
+          this_app.groupsData = res.data.data.groups;
         }).catch((err) => {
           console.log(err);
         });

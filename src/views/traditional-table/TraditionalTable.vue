@@ -32,22 +32,22 @@
         <div class="flex-grow">
           <vs-dropdown vs-trigger-click class="cursor-pointer">
             <div class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">
-              <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ callsData.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : callsData.length }} of {{ callsData.length }}</span>
+              <span class="mr-2">{{ from }} - {{ to <= total ? to : total }} of {{ total }}</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
             </div>
             <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
             <vs-dropdown-menu>
 
-              <vs-dropdown-item @click="gridApi.paginationSetPageSize(10)">
+              <vs-dropdown-item @click="changePerPage(10)">
                 <span>10</span>
               </vs-dropdown-item>
-              <vs-dropdown-item @click="gridApi.paginationSetPageSize(20)">
+              <vs-dropdown-item @click="changePerPage(20)">
                 <span>20</span>
               </vs-dropdown-item>
-              <vs-dropdown-item @click="gridApi.paginationSetPageSize(25)">
+              <vs-dropdown-item @click="changePerPage(25)">
                 <span>25</span>
               </vs-dropdown-item>
-              <vs-dropdown-item @click="gridApi.paginationSetPageSize(30)">
+              <vs-dropdown-item @click="changePerPage(30)">
                 <span>30</span>
               </vs-dropdown-item>
             </vs-dropdown-menu>
@@ -66,12 +66,12 @@
         :columnDefs="columnDefs"
         :defaultColDef="defaultColDef"
         :rowData="callsData"
-        rowSelection="multiple"
+        rowSelection="single"
         colResizeDefault="shift"
         :animateRows="true"
         :floatingFilter="true"
         :pagination="true"
-        :paginationPageSize="paginationPageSize"
+        :paginationPageSize="perPage"
         :suppressPaginationPanel="true"
         :enableRtl="$vs.rtl">
       </ag-grid-vue>
@@ -96,11 +96,11 @@ import vSelect from 'vue-select'
 // import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
 
 // Cell Renderer
-import CellRendererLink from './cell-renderer/CellRendererLink.vue'
-import CellRendererStatus from './cell-renderer/CellRendererStatus.vue'
-import CellRendererVerified from './cell-renderer/CellRendererVerified.vue'
-import CellRendererActions from './cell-renderer/CellRendererActions.vue'
-import CellRendererTime from './cell-renderer/CellRendererTime.vue'
+import CellRendererLink from './CellRendererLink.vue'
+import CellRendererStatus from './CellRendererStatus.vue'
+import CellRendererVerified from './CellRendererVerified.vue'
+import CellRendererActions from './CellRendererActions.vue'
+import CellRendererTime from './CellRendererTime.vue'
 
 
 export default {
@@ -118,13 +118,18 @@ export default {
   data () {
     return {
 	    callsData: [],
+      total: 0,
+      perPage: 10,
+      currentPage: 1,
+      from: 0,
+      to: 0,
       // Filter Options
       roleFilter: { label: 'All', value: 'all' },
       roleOptions: [
         { label: 'All', value: 'all' },
         { label: 'Admin', value: 'admin' },
         { label: 'Agent', value: 'agent' }
-	  ],
+	    ],
       departmentFilter: { label: 'All', value: 'all' },
       departmentOptions: [
         { label: 'All', value: 'all' }
@@ -134,7 +139,9 @@ export default {
 
       // AgGrid
       gridApi: null,
-      gridOptions: {},
+      gridOptions: {
+        rowSelection: 'single'
+      },
       defaultColDef: {
         sortable: true,
         resizable: true,
@@ -170,17 +177,23 @@ export default {
           width: 200
         },
         {
+          headerName: 'Role',
+          field: 'vu.role',
+          filter: true,
+          width: 200
+        },
+        {
           headerName: 'Service',
           field: 'vendor_service.service_name',
           filter: true,
           width: 250
         },
-        {
-          headerName: 'Department',
-          field: 'department',
-          filter: true,
-          width: 150
-        },
+        // {
+        //   headerName: 'Department',
+        //   field: 'department',
+        //   filter: true,
+        //   width: 150
+        // },
       ],
 
       // Cell Renderer Components
@@ -194,7 +207,11 @@ export default {
     }
   },
   watch: {
-    roleFilter (obj) {
+    currentPage(obj) {
+      console.log("currentPage: ",obj);
+      this.loadData();
+    },
+    roleFilter ( v) {
       this.setColumnFilter('role', obj.value)
     },
     statusFilter (obj) {
@@ -209,25 +226,17 @@ export default {
     }
   },
   computed: {
-    paginationPageSize () {
-      if (this.gridApi) return this.gridApi.paginationGetPageSize()
-      else return 10
-    },
-    totalPages () {
-      if (this.gridApi) return this.gridApi.paginationGetTotalPages()
-      else return 0
-    },
-    currentPage: {
-      get () {
-        if (this.gridApi) return this.gridApi.paginationGetCurrentPage() + 1
-        else return 1
-      },
-      set (val) {
-        this.gridApi.paginationGoToPage(val - 1)
-      }
+    totalPages() {
+      return this.total === 0 ? 1 : Math.ceil(this.total / this.perPage)
     }
   },
   methods: {
+    changePerPage: function(pages) {
+      console.log(pages);
+      this.perPage = pages;
+      this.currentPage = 1;
+      this.loadData()
+    },
     setColumnFilter (column, val) {
       const filter = this.gridApi.getFilterInstance(column)
       let modelObj = null
@@ -254,9 +263,21 @@ export default {
 	},
 	loadData() {
 		const this_app = this;
-		axios.post("/vendor/calls_history", {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
+
+    const params = {
+      "vu_token": this.$store.state.AppActiveUser.token,
+      "page": this.currentPage,
+      "per_page": this.perPage
+    };
+
+		axios.post("/vendor/calls_history", params).then((res) => {
 			console.log(res);
 			this_app.callsData = res.data.data.calls;
+      if (!!res.data.data.pagination.total) {
+        this_app.total = res.data.data.pagination.total;
+      }
+      this_app.from = res.data.data.pagination.from;
+      this_app.to = res.data.data.pagination.to;
 		}).catch((err) => {
 			console.log(err);
 		});
