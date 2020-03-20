@@ -95,8 +95,8 @@
         <tbody>
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
 
-          <vs-td :data="tr.service_name">
-              {{ tr.service_name }}
+          <vs-td :data="tr.name">
+              {{ tr.name }}
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">

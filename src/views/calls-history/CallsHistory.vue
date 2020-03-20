@@ -110,7 +110,7 @@
           </vs-td>
 
           <vs-td>
-            <p>{{ tr.vendor_service.service_name }}</p>
+            <p>{{ tr.vendor_service.name }}</p>
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
@@ -230,7 +230,7 @@
 
         axios.post(API.CALLS_HISTORY, params).then((res) => {
           console.log(res);
-          this_app.data = res.data.data.calls;
+          this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {
             this_app.total = res.data.data.pagination.total;
           }

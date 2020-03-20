@@ -47,6 +47,7 @@
 <script>
 
   import axios from '@/axios.js'
+  import API from '@/api.js'
   import StatisticsCardLine from '@/components/statistics-cards/StatisticsCardLine.vue'
 
   export default {
@@ -74,7 +75,7 @@
       loadData() {
         this.loading = true;
         const this_app = this;
-        axios.post("/vendor/dashboard_numbers", {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
+        axios.post(API.DASHBOARD_NUMBERS, {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
           console.log(res);
           this_app.analytics = res.data.data;
           this.loading = false;

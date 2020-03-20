@@ -219,7 +219,7 @@
 
         axios.post(API.GROUPS_LIST, params).then((res) => {
           console.log(res);
-          this_app.data = res.data.data.groups;
+          this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {
             this_app.total = res.data.data.pagination.total;
           }

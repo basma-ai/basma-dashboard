@@ -184,7 +184,7 @@ export default {
         },
         {
           headerName: 'Service',
-          field: 'vendor_service.service_name',
+          field: 'vendor_service.name',
           filter: true,
           width: 250
         },
@@ -270,9 +270,9 @@ export default {
       "per_page": this.perPage
     };
 
-		axios.post("/vendor/calls_history", params).then((res) => {
+		axios.post("/vendor/calls/list", params).then((res) => {
 			console.log(res);
-			this_app.callsData = res.data.data.calls;
+			this_app.callsData = res.data.data.list;
       if (!!res.data.data.pagination.total) {
         this_app.total = res.data.data.pagination.total;
       }

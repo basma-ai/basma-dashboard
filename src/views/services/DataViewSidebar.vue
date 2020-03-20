@@ -11,7 +11,7 @@
   <vs-sidebar click-not-close position-right parent="body" default-index="1" color="primary"
               class="add-new-data-sidebar items-no-padding" spacer v-model="isSidebarActiveLocal">
     <div class="mt-6 flex items-center justify-between px-6">
-      <h4>{{ Object.entries(this.data).length === 0 ? "ADD NEW" : "UPDATE" }} ITEM</h4>
+      <h4>{{ Object.entries(this.data).length === 0 ? "ADD NEW" : "UPDATE" }}</h4>
       <feather-icon icon="XIcon" @click.stop="isSidebarActiveLocal = false" class="cursor-pointer"></feather-icon>
     </div>
     <vs-divider class="mb-0"></vs-divider>
@@ -23,7 +23,9 @@
         <!-- NAME -->
         <vs-input label="Name" v-model="name" class="mt-5 w-full" name="item-name" v-validate="'required'"/>
         <!--        <span class="text-danger text-sm" v-show="errors.has('item-name')">{{ errors.first('item-name') }}</span>-->
-
+        <vs-tooltip text="If the service is set on restricted only agent assigned to groups with access to this service will be able to answer calls for this specific service" position="top" >
+          <vs-checkbox label="Is Restricted?" v-model="is_restricted" class="mt-5 w-full" name="item-name" v-validate="'required'">Is Restricted?</vs-checkbox>
+        </vs-tooltip>
       </div>
     </component>
 
@@ -59,20 +61,8 @@
         // errors: [''],
         id: null,
         name: '',
+        is_restricted: false,
 
-        category_choices: [
-          {text: 'Audio', value: 'audio'},
-          {text: 'Computers', value: 'computers'},
-          {text: 'Fitness', value: 'fitness'},
-          {text: 'Appliance', value: 'appliance'}
-        ],
-
-        order_status_choices: [
-          {text: 'Pending', value: 'pending'},
-          {text: 'Canceled', value: 'canceled'},
-          {text: 'Delivered', value: 'delivered'},
-          {text: 'On Hold', value: 'on_hold'}
-        ],
         settings: { // perfectscrollbar settings
           maxScrollbarLength: 60,
           wheelSpeed: .60
@@ -86,15 +76,19 @@
           this.initValues()
           // this.$validator.reset()
         } else {
-          const {id, name} = JSON.parse(JSON.stringify(this.data))
+          const {id, name, is_restricted} = JSON.parse(JSON.stringify(this.data))
           this.id = id
           this.name = name
+          this.is_restricted = is_restricted
           this.initValues()
         }
         // Object.entries(this.data).length === 0 ? this.initValues() : { this.id, this.name, this.dataCategory, this.dataOrder_status, this.dataPrice } = JSON.parse(JSON.stringify(this.data))
       }
     },
     computed: {
+      isNew() {
+        return Object.entries(this.data).length === 0
+      },
       isSidebarActiveLocal: {
         get() {
           return this.isSidebarActive
@@ -119,6 +113,7 @@
         if (this.data.id) return
         this.id = null
         this.name = ''
+        this.is_restricted = false
       },
       submitData() {
         if (!this.isFormValid) {
@@ -131,15 +126,33 @@
         const params = {
           "vu_token": this.$store.state.AppActiveUser.token,
           "name": this.name,
-          "service_ids": this.service_ids
+          "is_restricted": this.is_restricted
         };
 
-        axios.post(API.SERVICES_CREATE, params).then((res) => {
+        if (!this_app.isNew){
+          params.service_id = this_app.data.id;
+        }
+
+        const endpoint = this_app.isNew ? API.SERVICES_CREATE : API.SERVICES_EDIT;
+
+        axios.post(endpoint, params).then((res) => {
           console.log(res);
 
           this_app.$vs.loading.close();
 
-          if (!res.data.success) {
+          if (res.data.success) {
+            this_app.$vs.notify({
+              title: 'Success',
+              text: this_app.isNew ? "Service is created!" : "Service is updated!",
+              iconPack: 'feather',
+              icon: 'icon-check-circle',
+              color: 'success'
+            });
+
+            this_app.$emit('closeSidebar')
+            this_app.$emit('reloadData')
+            this_app.initValues()
+          } else {
             const error = res.data.data.errors[0];
 
             this_app.$vs.notify({
@@ -151,18 +164,6 @@
             });
 
             return
-          } else {
-            this_app.$vs.notify({
-              title: 'Success',
-              text: "Group is created!",
-              iconPack: 'feather',
-              icon: 'icon-check-circle',
-              color: 'success'
-            });
-
-            this_app.$emit('closeSidebar')
-            this_app.$emit('reloadData')
-            this_app.initValues()
           }
 
         }).catch((err) => {

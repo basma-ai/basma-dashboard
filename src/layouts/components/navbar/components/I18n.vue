@@ -6,7 +6,7 @@
     </span>
     <vs-dropdown-menu class="w-48 i18n-dropdown vx-navbar-dropdown">
       <vs-dropdown-item @click="updateLocale('en')">English</vs-dropdown-item>
-      <vs-dropdown-item @click="updateLocale('ar')">French</vs-dropdown-item>
+      <vs-dropdown-item @click="updateLocale('ar')">Arabic</vs-dropdown-item>
 <!--      <vs-dropdown-item @click="updateLocale('de')"><img class="h-4 w-5 mr-1" src="@/assets/images/flags/de.png" alt="de" /> &nbsp;German</vs-dropdown-item>-->
 <!--      <vs-dropdown-item @click="updateLocale('pt')"><img class="h-4 w-5 mr-1" src="@/assets/images/flags/pt.png" alt="pt" /> &nbsp;Portuguese</vs-dropdown-item>-->
     </vs-dropdown-menu>
@@ -21,7 +21,7 @@ export default {
     // },
     getCurrentLocaleData () {
       const locale = this.$i18n.locale
-      if (locale === 'en')      return { flag: 'us', lang: 'English'    }
+      if (locale === 'en')      return { flag: 'en', lang: 'English'    }
       else if (locale === 'ar') return { flag: 'ar', lang: 'Arabic' }
       // else if (locale === 'fr') return { flag: 'fr', lang: 'French'     }
       // else if (locale === 'de') return { flag: 'de', lang: 'German'     }

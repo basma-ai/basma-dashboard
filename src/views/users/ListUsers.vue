@@ -103,7 +103,7 @@
           </vs-td>
 
           <vs-td :data="tr.name">
-            <vs-avatar style="float: left" size="30px" :src="`https://ui-avatars.com/api/?name=${tr.name}.jpg`"/>
+            <vs-avatar style="float: left" size="30px" :src="tr.photo_url"/>
             <span style="position: relative;top: 10px;margin-left: 5px;">
               {{ tr.name }}
             </span>
@@ -237,7 +237,7 @@
 
         axios.post(API.USERS_LIST, params).then((res) => {
           console.log(res);
-          this_app.data = res.data.data.users;
+          this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {
             this_app.total = res.data.data.pagination.total;
           }

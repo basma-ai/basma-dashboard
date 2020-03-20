@@ -66,21 +66,21 @@ const router = new Router({
                     { title: 'List', active: true }
                   ],
                 },
-                children: [
-                  {
-                    path: '/edit-user',
-                    name: 'edit-user',
-                    component: () => import('./views/users/EditUser.vue'),
-                    meta: {
-                      pageTitle: 'Edit User',
-                      breadcrumb: [
-                        { title: 'Home', url: '/' },
-                        { title: 'User' },
-                        { title: 'Edit', active: true }
-                      ],
-                    },
-                  }
-                ]
+                // children: [
+                //   {
+                //     path: '/edit-user',
+                //     name: 'edit-user',
+                //     component: () => import('./views/users/EditUser.vue'),
+                //     meta: {
+                //       pageTitle: 'Edit User',
+                //       breadcrumb: [
+                //         { title: 'Home', url: '/' },
+                //         { title: 'User' },
+                //         { title: 'Edit', active: true }
+                //       ],
+                //     },
+                //   }
+                // ]
               },
               {
                 path: '/services',

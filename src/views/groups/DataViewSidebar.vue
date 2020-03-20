@@ -1,7 +1,7 @@
 <template>
   <vs-sidebar click-not-close position-right parent="body" default-index="1" color="primary" class="add-new-data-sidebar items-no-padding" spacer v-model="isSidebarActiveLocal">
     <div class="mt-6 flex items-center justify-between px-6">
-        <h4>{{ Object.entries(this.data).length === 0 ? "ADD NEW" : "UPDATE" }} ITEM</h4>
+        <h4>{{ Object.entries(this.data).length === 0 ? "ADD NEW" : "UPDATE" }}</h4>
         <feather-icon icon="XIcon" @click.stop="isSidebarActiveLocal = false" class="cursor-pointer"></feather-icon>
     </div>
     <vs-divider class="mb-0"></vs-divider>
@@ -12,7 +12,11 @@
 
         <!-- NAME -->
         <vs-input label="Name" v-model="name" class="mt-5 w-full" name="item-name" v-validate="'required'" />
-<!--        <span class="text-danger text-sm" v-show="errors.has('item-name')">{{ errors.first('item-name') }}</span>-->
+
+        <!-- SERVICE -->
+        <vs-select multiple v-validate="'required'" name="service_ids" label="Services" v-model="service_ids" class="w-full mb-6">
+          <vs-select-item :value="r.id" :text="r.name" v-for="r in services" />
+        </vs-select>
 
       </div>
     </component>
@@ -49,6 +53,7 @@ export default {
       id: null,
       name: '',
       service_ids: [],
+      services: [],
 
       settings: { // perfectscrollbar settings
         maxScrollbarLength: 60,
@@ -63,15 +68,20 @@ export default {
         this.initValues()
         // this.$validator.reset()
       } else {
-        const { id, name } = JSON.parse(JSON.stringify(this.data))
+        const { id, name, services } = JSON.parse(JSON.stringify(this.data))
         this.id = id
         this.name = name
+        this.service_ids = services.map(x => x.id)
+        console.log("services: ",services.map(x => x.id))
         this.initValues()
       }
       // Object.entries(this.data).length === 0 ? this.initValues() : { this.dataId, this.dataName, this.dataCategory, this.dataOrder_status, this.dataPrice } = JSON.parse(JSON.stringify(this.data))
     }
   },
   computed: {
+    isNew() {
+      return Object.entries(this.data).length === 0
+    },
     isSidebarActiveLocal: {
       get () {
         return this.isSidebarActive
@@ -90,6 +100,22 @@ export default {
     scrollbarTag () { return this.$store.getters.scrollbarTag }
   },
   methods: {
+    loadServices() {
+      const this_app = this;
+
+      const params = {
+        "vu_token": this.$store.state.AppActiveUser.token,
+        "page": 1,
+        "per_page": 100
+      };
+
+      axios.post(API.SERVICES_LIST, params).then((res) => {
+        console.log(res);
+        this_app.services = res.data.data.list;
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
     initValues () {
       if (this.data.id) return
       this.id = null
@@ -109,12 +135,30 @@ export default {
         "service_ids": this.service_ids
       };
 
-      axios.post(API.GROUPS_CREATE, params).then((res) => {
+      if (!this_app.isNew){
+        params.group_id = this_app.data.id;
+      }
+
+      const endpoint = this_app.isNew ? API.GROUPS_CREATE : API.GROUPS_EDIT;
+
+      axios.post(endpoint, params).then((res) => {
         console.log(res);
 
         this_app.$vs.loading.close();
 
-        if (!res.data.success){
+        if (res.data.success){
+          this_app.$vs.notify({
+            title: 'Success',
+            text: this_app.isNew ? "Group is created!" : "Group is updated!",
+            iconPack: 'feather',
+            icon: 'icon-check-circle',
+            color: 'success'
+          });
+
+          this_app.$emit('closeSidebar')
+          this_app.$emit('reloadData')
+          this_app.initValues()
+        } else {
           const error = res.data.data.errors[0];
 
           this_app.$vs.notify({
@@ -126,24 +170,15 @@ export default {
           });
 
           return
-        } else {
-          this_app.$vs.notify({
-            title: 'Success',
-            text: "Group is created!",
-            iconPack: 'feather',
-            icon: 'icon-check-circle',
-            color: 'success'
-          });
-
-          this_app.$emit('closeSidebar')
-          this_app.$emit('reloadData')
-          this_app.initValues()
         }
 
       }).catch((err) => {
         console.log(err);
       });
     },
+  },
+  created() {
+    this.loadServices();
   }
 }
 </script>

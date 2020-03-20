@@ -8,6 +8,18 @@
           <!-- <img id="vendor-logo" :src="vendor.logo_url"/> -->
           <!-- <br/><br/> -->
 
+
+          <ul class="centerx">
+            <p>{{selected_services}}</p>
+            <li style="float: left" class="modelx">
+              <vs-checkbox v-model="noFilter">All Services</vs-checkbox>
+            </li>
+            <li @change="checkFilter" style="float: left" class="modelx" v-for="(service, index) in services" :key="index">
+              <vs-checkbox v-model="selected_services" :vs-value="service">{{ service.name }}</vs-checkbox>
+            </li>
+          </ul>
+
+
           <!-- Video Connecting Screen -->
           <div v-if="screen_status == 'dashboard'">
 
@@ -21,8 +33,9 @@
               <strong>{{pending_calls_list.length}}</strong> people waiting 😃
             </div>
             <br/>
-            <vs-row  class="agent_call_boxes_container">
-              <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="3" v-for="call in pending_calls_list">
+            <vs-row class="agent_call_boxes_container">
+              <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="3"
+                      v-for="call in pending_calls_list">
                 <div class="agent_call_box">
 
                   <div id="icon">
@@ -30,7 +43,7 @@
                   </div>
                   <div id="text">
                     <div id="title">#{{call.id}}</div>
-                    <div id="service">{{call.vendor_service.service_name}}</div>
+                    <div id="service">{{call.vendor_service.name}}</div>
                     <div id="time">
                       <vs-icon>access_time</vs-icon>
                       {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
@@ -50,7 +63,7 @@
 
               <div style="text-align:center;font-size:30px">
                 😞
-                <br />
+                <br/>
                 no pending calls
               </div>
 
@@ -97,6 +110,7 @@
 
 <script>
   import axios from '@/axios.js';
+  import API from '@/api.js';
   import CallBox from '@/components/CallBox.vue';
   import Vue from "vue";
 
@@ -120,15 +134,26 @@
       vu_token: null,
       pending_calls_list: [],
       ringtone_switch: true,
-      ringtone_audio: null
+      ringtone_audio: null,
+      noFilter: true,
+      selected_services: [],
+      services: []
     }),
     components: {
       CallBox
     },
     watch: {
-      ringtone_switch: function(val) {
+      noFilter: function(val) {
+        console.log("All Services is: ", val);
+        if (val) {
+          this.selected_services = this.services
+        }else{
+          this.selected_services = []
+        }
+      },
+      ringtone_switch: function (val) {
         console.log("ringtone switch clicked!!");
-        if(val) {
+        if (val) {
 
           this.ringtone_audio.volume = 1;
 
@@ -140,6 +165,17 @@
       }
     },
     methods: {
+      checkFilter() {
+        let isEqual = this.selected_services.length === this.services.length;
+
+        if (isEqual){
+          console.log("equal")
+          this.noFilter = true
+        }else{
+          console.log("not equal")
+          this.noFilter = false
+        }
+      },
       list_pending_calls: function () {
         // this.loading = true;
 
@@ -152,7 +188,7 @@
             if (response.data.success) {
 
               thisApp.pending_calls_list = response.data.data.pending_calls_list;
-              if(thisApp.pending_calls_list.length > 0) {
+              if (thisApp.pending_calls_list.length > 0) {
                 thisApp.ringtone_audio.play();
               } else {
                 thisApp.ringtone_audio.pause();
@@ -255,6 +291,21 @@
           });
 
 
+      },
+      loadServices() {
+        const this_app = this;
+
+        const params = {
+          "vu_token": this.$store.state.AppActiveUser.token
+        };
+
+        axios.post(API.SERVICES_LIST, params).then((res) => {
+          console.log(res);
+          this_app.services = res.data.data.list;
+          this_app.request_agent_token();
+        }).catch((err) => {
+          console.log(err);
+        });
       }
 
     },
@@ -264,100 +315,133 @@
       this.vendor_id = this.$store.state.AppActiveUser.info.vendor.id;
 
 
-      if(this.ringtone_audio != null) {
+      if (this.ringtone_audio != null) {
         this.ringtone_audio.pause();
       }
 
       this.ringtone_audio.loop = true;
       this.ringtone_audio.volume = 1;
 
-
-      this.request_agent_token();
-
+      this.loadServices();
     },
     beforeDestroy() {
       this.ringtone_audio.pause();
       this.ringtone_audio = null;
       console.log("we are at onDestroy");
     }
+
   }
 </script>
 
 
 <style>
 
+  ul.centerx {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+  }
 
   .agent_call_box {
-    border:2px solid green;
-    border-radius:5px;
-    width:100%;
-    padding:10px;
-    height:140px;
-    position:relative;
-    text-align:left;
-    background-color:#edffed;
-    cursor:default;
-    transition:all 0.2s;
-    margin:5px;
+    border: 2px solid green;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+    height: 140px;
+    position: relative;
+    text-align: left;
+    background-color: #edffed;
+    cursor: default;
+    transition: all 0.2s;
+    margin: 5px;
     animation: shake 1s;
     animation-iteration-count: infinite;
   }
+
   /* .agent_call_boxes_container #the_col:first-child .agent_call_box {
     animation: shake 0.5s;
     animation-iteration-count: infinite;
   } */
 
   .agent_call_box:hover {
-    box-shadow: 0px 0px 13px 0px rgba(0,102,20,1);
+    box-shadow: 0px 0px 13px 0px rgba(0, 102, 20, 1);
   }
 
   .agent_call_box #icon * {
-    float:left;
-    margin-top:30px;
-    font-size:50px!important;
-    color:green;
+    float: left;
+    margin-top: 30px;
+    font-size: 50px !important;
+    color: green;
   }
 
   .agent_call_box #text {
-    margin-top:10px;
-    margin-left:65px;
+    margin-top: 10px;
+    margin-left: 65px;
   }
+
   .agent_call_box #text #title {
-    font-size:30px;
-    font-weght:bold;
+    font-size: 30px;
+    font-weght: bold;
   }
+
   .agent_call_box #text #time {
-    margin-top:5px;
-    font-size:15px;
-    fint-weight:bold;
+    margin-top: 5px;
+    font-size: 15px;
+    fint-weight: bold;
   }
+
   .agent_call_box #text #service {
-    border:1px solid #a27913;
-    display:inline-block;
-    padding:4px 5px;
-    border-radius:5px;
-    background-color:#ffb600;
-    color:#000;
+    border: 1px solid #a27913;
+    display: inline-block;
+    padding: 4px 5px;
+    border-radius: 5px;
+    background-color: #ffb600;
+    color: #000;
   }
+
   .agent_call_box #action {
-    top:50px;
-    right:10px;
-    position:absolute;
+    top: 50px;
+    right: 10px;
+    position: absolute;
   }
 
 
   @keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
+    0% {
+      transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+      transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+      transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+      transform: translate(3px, 2px) rotate(0deg);
+    }
+    40% {
+      transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+      transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+      transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+      transform: translate(3px, 1px) rotate(-1deg);
+    }
+    80% {
+      transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+      transform: translate(1px, 2px) rotate(0deg);
+    }
+    100% {
+      transform: translate(1px, -2px) rotate(-1deg);
+    }
   }
 
 </style>
