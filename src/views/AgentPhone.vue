@@ -178,10 +178,11 @@
       },
       list_pending_calls: function () {
         // this.loading = true;
-
         let thisApp = this;
+
         axios.post('/agent/list_pending_calls', {
-          vu_token: this.$store.state.AppActiveUser.token
+          vu_token: this.$store.state.AppActiveUser.token,
+          services_ids: this.selected_services.map(x=>x.id)
         })
           .then(function (response) {
 
@@ -302,6 +303,7 @@
         axios.post(API.SERVICES_LIST, params).then((res) => {
           console.log(res);
           this_app.services = res.data.data.list;
+          this_app.selected_services = this_app.services;
           this_app.request_agent_token();
         }).catch((err) => {
           console.log(err);

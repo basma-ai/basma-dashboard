@@ -26,7 +26,16 @@
 
         <vs-input v-validate="'required|rule'" name="email" label-placeholder="Email" v-model="email" class="w-full mb-6"/>
 
-        <vs-input v-validate="'required'" type="password" name="password" label-placeholder="Password" v-model="password" class="w-full mb-6"/>
+<!--        <vs-input v-validate="'required'" type="password" name="password" label-placeholder="Password" v-model="password" class="w-full mb-6"/>-->
+
+        <!-- Password 1 -->
+        <vs-input type="password" v-validate="'min:6|max:10'" label="Password" name="password" v-model="password" class="mt-5 w-full" />
+<!--        <span class="text-danger text-sm" v-show="errors.has('password')">{{ errors.first('password') }}</span>-->
+
+        <!-- Confirm Password -->
+<!--        <vs-input type="password" v-validate="'min:6|max:10|confirmed:password'" label="Confirm Password" name="confirm_password" v-model="confirm_password" class="mt-5 w-full" data-vv-as="password" />-->
+<!--        <span class="text-danger text-sm" v-show="errors.has('confirm_password')">{{ errors.first('confirm_password') }}</span>-->
+
 
         <vs-select v-validate="'required'" name="role" label="Role" v-model="role" class="w-full mb-6">
           <vs-select-item :value="r" :text="r.charAt(0).toUpperCase() + r.slice(1)" v-for="r in roles"/>
@@ -76,6 +85,7 @@ export default {
       roles: ['agent','admin'],
       username: '',
       password: '',
+      confirm_password: '',
       name: '',
       email: '',
       role: 'agent',
@@ -95,14 +105,28 @@ export default {
         this.initValues()
         // this.$validator.reset()
       } else {
-        const { username, name, email, role, groups} = JSON.parse(JSON.stringify(this.data))
-        this.username = username
-        this.name = name
-        this.email = email
-        this.role = role
-        this.groups_ids = groups.map(x => x.id)
-        console.log("groups: ",groups.map(x => x.id))
-        this.initValues()
+        let this_app = this;
+
+        const params = {
+          "vu_token": this.$store.state.AppActiveUser.token,
+          "vu_id": this.data.id
+        };
+
+        axios.post(API.USERS_GET, params).then((res) => {
+          console.log(res);
+          const { username, name, email, role, groups} = res.data.data.user;
+          this_app.username = username
+          this_app.name = name
+          this_app.email = email
+          this_app.role = role
+          this_app.groups_ids = groups.map(x => x.id)
+          console.log("groups: ",groups.map(x => x.id))
+          this_app.initValues()
+        }).catch((err) => {
+          console.log(err);
+        });
+
+
       }
       // Object.entries(this.data).length === 0 ? this.initValues() : { this.dataId, this.dataName, this.dataCategory, this.dataOrder_status, this.dataPrice } = JSON.parse(JSON.stringify(this.data))
     }
@@ -156,6 +180,7 @@ export default {
       this.password = ''
       this.name = ''
       this.email = ''
+      this.groups_ids = []
     },
     submitData () {
       if (!this.isFormValid){

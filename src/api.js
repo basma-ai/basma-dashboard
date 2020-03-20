@@ -5,6 +5,7 @@ export default {
   USERS_CREATE: '/vendor/users/create',
   USERS_LIST: '/vendor/users/list',
   USERS_EDIT: '/vendor/users/edit',
+  USERS_GET: '/vendor/users/get',
 
   SERVICES_CREATE: '/vendor/services/create',
   SERVICES_LIST: '/vendor/services/list',
