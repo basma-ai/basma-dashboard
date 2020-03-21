@@ -49,18 +49,25 @@ import store from './store/store'
 // i18n
 import i18n from './i18n/i18n'
 
+
 // Vuejs - Vue wrapper for hammerjs
 import { VueHammer } from 'vue2-hammer'
 Vue.use(VueHammer)
+
 
 // VeeValidate
 import VeeValidate from 'vee-validate'
 Vue.use(VeeValidate)
 
+
+// VueDebounce
+import vueDebounce from 'vue-debounce'
+Vue.use(vueDebounce)
+
+
 // PrismJS
 import 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
-
 
 // Feather font icon
 require('./assets/css/iconfont.css')

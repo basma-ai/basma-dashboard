@@ -9,8 +9,8 @@
           <!-- <br/><br/> -->
 
 
-          <ul class="centerx">
-            <p>{{selected_services}}</p>
+          <ul class="services" v-if="screen_status == 'dashboard'">
+<!--            <p>{{selected_services}}</p>-->
             <li style="float: left" class="modelx">
               <vs-checkbox v-model="noFilter">All Services</vs-checkbox>
             </li>
@@ -84,8 +84,9 @@
                   <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id"
                            style="width:100%;"></CallBox>
                 </v-col>
-                <v-col>
 
+                <v-col>
+                  <vs-textarea v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" />
                   <vs-button @click="end_call">End Call</vs-button>
 
                 </v-col>
@@ -137,7 +138,8 @@
       ringtone_audio: null,
       noFilter: true,
       selected_services: [],
-      services: []
+      services: [],
+      agent_notes: ''
     }),
     components: {
       CallBox
@@ -165,6 +167,21 @@
       }
     },
     methods: {
+      updateNotes() {
+        let thisApp = this;
+
+        axios.post('/agent/update_call', {
+          vu_token: this.$store.state.AppActiveUser.token,
+          call_id: this.call_id,
+          agent_notes: this.agent_notes
+        })
+          .then(function (res) {
+            console.log(res);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
       checkFilter() {
         let isEqual = this.selected_services.length === this.services.length;
 
@@ -338,7 +355,7 @@
 
 <style>
 
-  ul.centerx {
+  ul.services {
     display: block;
     position: relative;
     width: 100%;
@@ -354,7 +371,7 @@
     height: 140px;
     position: relative;
     text-align: left;
-    background-color: #edffed;
+    background-color: white;
     cursor: default;
     transition: all 0.2s;
     margin: 5px;

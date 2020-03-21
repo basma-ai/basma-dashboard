@@ -94,11 +94,13 @@
             <p class="font-medium truncate">{{ tr.id }}</p>
           </vs-td>
 
-          <vs-td :data="tr.vu.name">
+          <vs-td v-if="null != tr.vu" :data="tr.vu.name">
             <vs-avatar style="float: left" size="30px" :src="`https://ui-avatars.com/api/?name=${tr.vu.name}.jpg`"/>
             <span style="position: relative;top: 10px;margin-left: 5px;">
               {{ tr.vu.name }}
             </span>
+          </vs-td>
+          <vs-td v-else>
           </vs-td>
 
           <vs-td>
