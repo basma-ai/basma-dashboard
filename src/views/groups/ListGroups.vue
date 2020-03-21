@@ -3,7 +3,7 @@
 
     <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar" :data="sidebarData"/>
 
-    <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" v-model="selected" :data="data">
+    <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
 
       <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
 
@@ -106,20 +106,14 @@
                           @click.stop="deleteData(tr.id)"/>
           </vs-td>
 
-          <template slot="expand">
-            <div>
-
-            </div>
-          </template>
-
         </vs-tr>
         </tbody>
       </template>
     </vs-table>
 
-    <span>
-      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}
-    </span>
+<!--    <span>-->
+<!--      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}-->
+<!--    </span>-->
 
     <vs-pagination :total="totalPages" v-model="currentPage" :max="5" prev-icon="arrow_back"
                    next-icon="arrow_forward"></vs-pagination>

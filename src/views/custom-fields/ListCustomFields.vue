@@ -1,7 +1,8 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
 
-    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar" :data="sidebarData"/>
+    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar"
+                       :data="sidebarData"/>
 
     <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
 
@@ -87,10 +88,11 @@
       </div>
 
       <template slot="thead">
-        <vs-th sort-key="id">Username</vs-th>
-        <vs-th sort-key="name">Name</vs-th>
-        <vs-th sort-key="time">Role</vs-th>
-        <vs-th sort-key="status">Email</vs-th>
+        <vs-th sort-key="name">Label</vs-th>
+        <vs-th sort-key="name">Field Name</vs-th>
+        <vs-th sort-key="name">Type</vs-th>
+        <vs-th sort-key="name">Is Mandatory?</vs-th>
+        <vs-th sort-key="name">Is Visible?</vs-th>
         <vs-th>Action</vs-th>
       </template>
 
@@ -98,23 +100,24 @@
         <tbody>
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
 
-          <vs-td :data="tr.id">
-            <p class="font-medium truncate">{{ tr.username }}</p>
+          <vs-td :data="tr.label">
+            {{ tr.label }}
           </vs-td>
 
           <vs-td :data="tr.name">
-            <vs-avatar style="float: left" size="30px" :src="tr.photo_url"/>
-            <span style="position: relative;top: 10px;margin-left: 5px;">
-              {{ tr.name }}
-            </span>
+            {{ tr.name }}
           </vs-td>
 
-          <vs-td>
-            <p>{{ tr.role }}</p>
+          <vs-td :data="tr.type">
+            {{ tr.type }}
           </vs-td>
 
-          <vs-td>
-            <p>{{ tr.email }}</p>
+          <vs-td :data="tr.is_mandatory">
+            {{ tr.is_mandatory ? 'YES' : 'NO' }}
+          </vs-td>
+
+          <vs-td :data="tr.is_visible_in_menus">
+            {{ tr.is_visible_in_menus ? 'YES' : 'NO'  }}
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
@@ -129,9 +132,9 @@
       </template>
     </vs-table>
 
-<!--    <span>-->
-<!--      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}-->
-<!--    </span>-->
+    <!--    <span>-->
+    <!--      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}-->
+    <!--    </span>-->
 
     <vs-pagination :total="totalPages" v-model="currentPage" :max="5" prev-icon="arrow_back"
                    next-icon="arrow_forward"></vs-pagination>
@@ -195,27 +198,14 @@
         this.toggleDataSidebar(true)
       },
       deleteData(id) {
-        this.$store.dispatch('dataList/removeItem', id).catch(err => {
-          console.error(err)
-        })
+        // this.$store.dispatch('dataList/removeItem', id).catch(err => {
+        //   console.error(err)
+        // })
       },
       editData(data) {
         // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
         this.sidebarData = data
         this.toggleDataSidebar(true)
-      },
-      getOrderStatusColor(status) {
-        if (status === 'ended') return 'warning'
-        if (status === 'started') return 'success'
-        if (status === 'missed') return 'danger'
-        return 'primary'
-      },
-      getPopularityColor(num) {
-        if (num > 90) return 'success'
-        if (num > 70) return 'primary'
-        if (num >= 50) return 'warning'
-        if (num < 50) return 'danger'
-        return 'primary'
       },
       toggleDataSidebar(val = false) {
         this.addNewDataSidebar = val
@@ -229,7 +219,7 @@
           "per_page": this.perPage
         };
 
-        axios.post(API.USERS_LIST, params).then((res) => {
+        axios.post(API.CUSTOM_FIELDS_LIST, params).then((res) => {
           console.log(res);
           this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {

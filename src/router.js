@@ -52,6 +52,19 @@ const router = new Router({
                     { title: 'Calls History' },
                     { title: 'List', active: true }
                   ],
+                }
+              },
+              {
+                path: '/calls-history/view-call/:callId',
+                name: 'view-call',
+                component: () => import('./views/calls-history/ViewCall.vue'),
+                meta: {
+                  pageTitle: 'View Call',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Calls History', url: '/calls-history' },
+                    { title: 'View', active: true }
+                  ],
                 },
               },
               {
@@ -66,21 +79,6 @@ const router = new Router({
                     { title: 'List', active: true }
                   ],
                 },
-                // children: [
-                //   {
-                //     path: '/edit-user',
-                //     name: 'edit-user',
-                //     component: () => import('./views/users/EditUser.vue'),
-                //     meta: {
-                //       pageTitle: 'Edit User',
-                //       breadcrumb: [
-                //         { title: 'Home', url: '/' },
-                //         { title: 'User' },
-                //         { title: 'Edit', active: true }
-                //       ],
-                //     },
-                //   }
-                // ]
               },
               {
                 path: '/services',
@@ -108,6 +106,45 @@ const router = new Router({
                   ],
                 },
               },
+              {
+                path: '/settings',
+                name: 'settings',
+                component: () => import('./views/user-settings/UserSettings.vue'),
+                meta: {
+                  pageTitle: 'Settings',
+                  breadcrumb: [
+                    {title: 'Home', url: '/'},
+                    {title: 'Settings'}
+                  ]
+                },
+              },
+              {
+                path: '/custom-fields',
+                name: 'custom-fields',
+                component: () => import('./views/custom-fields/ListCustomFields.vue'),
+                meta: {
+                  pageTitle: 'Custom Fields',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Custom Fields' },
+                    { title: 'List', active: true }
+                  ]
+                },
+              },
+              {
+                path: '/audit-logs',
+                name: 'audit-logs',
+                component: () => import('./views/AuditLogs.vue'),
+                meta: {
+                  pageTitle: 'Audit Logs',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Audit Logs' },
+                    { title: 'List', active: true }
+                  ]
+                },
+              },
+
             ],
         },
     // =============================================================================

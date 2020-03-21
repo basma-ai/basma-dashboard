@@ -1,6 +1,8 @@
 export default {
   DASHBOARD_NUMBERS: '/vendor/dashboard_numbers',
-  CALLS_HISTORY: '/vendor/calls/list',
+
+  CALLS_LIST: '/vendor/calls/list',
+  CALLS_GET: '/vendor/calls/get',
 
   USERS_CREATE: '/vendor/users/create',
   USERS_LIST: '/vendor/users/list',
@@ -16,4 +18,9 @@ export default {
   GROUPS_LIST: '/vendor/groups/list',
   GROUPS_EDIT: '/vendor/groups/edit',
   GROUPS_GET: '/vendor/groups/get',
+
+  CUSTOM_FIELDS_CREATE: '/vendor/custom_fields/create',
+  CUSTOM_FIELDS_LIST: '/vendor/custom_fields/list',
+  CUSTOM_FIELDS_EDIT: '/vendor/custom_fields/edit',
+  CUSTOM_FIELDS_GET: '/vendor/custom_fields/get',
 };

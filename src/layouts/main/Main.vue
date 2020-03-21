@@ -271,6 +271,24 @@ export default {
         slug: "services",
         icon: "ListIcon"
       });
+      this.navMenuItems.push({
+        url: "/custom-fields",
+        name: "Custom Fields",
+        slug: "custom-fields",
+        icon: "SquareIcon"
+      });
+      this.navMenuItems.push({
+        url: "/audit-logs",
+        name: "Audit Logs",
+        slug: "audit-logs",
+        icon: "ClockIcon"
+      });
+      this.navMenuItems.push({
+        url: "/settings",
+        name: "Settings",
+        slug: "settings",
+        icon: "SettingsIcon"
+      });
     }
 
     // this.navMenuItems.push({

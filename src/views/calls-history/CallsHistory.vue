@@ -1,7 +1,7 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
 
-    <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" v-model="selected" :data="data">
+    <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
 
       <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
 
@@ -116,26 +116,14 @@
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
-            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                          @click.stop="editData(tr)"/>
-            <feather-icon icon="TrashIcon" svgClasses="w-5 h-5 hover:text-danger stroke-current" class="ml-2"
-                          @click.stop="deleteData(tr.id)"/>
+            <feather-icon icon="EyeIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                          @click.stop="viewData(tr)"/>
           </vs-td>
-
-          <template slot="expand">
-            <div>
-
-            </div>
-          </template>
 
         </vs-tr>
         </tbody>
       </template>
     </vs-table>
-
-    <span>
-      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}
-    </span>
 
     <vs-pagination :total="totalPages" v-model="currentPage" :max="5" prev-icon="arrow_back"
                    next-icon="arrow_forward"></vs-pagination>
@@ -191,19 +179,11 @@
         this.currentPage = 1;
         this.loadData()
       },
-      addNewData() {
-        this.sidebarData = {}
-        this.toggleDataSidebar(true)
-      },
-      deleteData(id) {
-        this.$store.dispatch('dataList/removeItem', id).catch(err => {
-          console.error(err)
-        })
-      },
-      editData(data) {
+      viewData(data) {
         // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
-        this.sidebarData = data
-        this.toggleDataSidebar(true)
+        // this.sidebarData = data
+        console.log(data);
+        this.$router.push(`/calls-history/view-call/${data.id}`).catch(() => {})
       },
       getOrderStatusColor(status) {
         if (status === 'ended') return 'success'
@@ -230,7 +210,7 @@
           "per_page": this.perPage
         };
 
-        axios.post(API.CALLS_HISTORY, params).then((res) => {
+        axios.post(API.CALLS_LIST, params).then((res) => {
           console.log(res);
           this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {
