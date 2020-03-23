@@ -88,7 +88,8 @@
                 <v-col>
                   <vs-textarea v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" />
                   <vs-button @click="end_call">End Call</vs-button>
-
+                  <vs-button style="margin-left: 5px" color="success" type="border">Save Notes</vs-button>
+                  <vs-button style="margin-left: 5px" color="success">Request for Signature / Consent</vs-button>
                 </v-col>
 
               </v-row>
