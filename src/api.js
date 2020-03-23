@@ -1,6 +1,9 @@
 export default {
   DASHBOARD_NUMBERS: '/vendor/dashboard_numbers',
 
+  AUDIT_LOG_LIST: '/vendor/logs/list',
+  AUDIT_LOG_GET: '/vendor/logs/get',
+
   CALLS_LIST: '/vendor/calls/list',
   CALLS_GET: '/vendor/calls/get',
 

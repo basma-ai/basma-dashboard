@@ -27,7 +27,7 @@
 
 <!--        <vs-input label="Type" v-model="type" class="mt-5 w-full" name="item-name" v-validate="'required'"/>-->
         <!-- SERVICE -->
-        <vs-select v-validate="'required'" name="type" label="Types" v-model="type" class="w-full mb-6">
+        <vs-select v-validate="'required'" name="type" label="Type" v-model="type" class="w-full mb-6">
           <vs-select-item :value="r.value" :text="r.text" v-for="r in types" />
         </vs-select>
 
@@ -81,7 +81,7 @@
           value: 'number'
         }, {
           text: 'Checkbox',
-          value: 'checkbox'
+          value: 'boolean'
         }, {
           text: 'Date',
           value: 'date'

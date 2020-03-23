@@ -3,18 +3,26 @@
 
     <div style="text-align:center">
       <vs-card :loading="loading">
-        <div class="text-center" style="padding: 20px">
+        <div style="padding: 20px">
 
-          <!-- <img id="vendor-logo" :src="vendor.logo_url"/> -->
-          <!-- <br/><br/> -->
+          <div id="rigntone" v-if="screen_status == 'dashboard'">
+            <div  style="float:right;">
+              <label>Ringtone {{ ringtone_switch ? 'On' : 'Off' }}</label>
+              <vs-switch name="ringtone_switch" v-model="ringtone_switch" vs-icon="ring_volume" color="success"/>
+            </div>
+<!--            <div class="mr-3" style="float:right;">-->
+<!--              <label>Agent {{ online_switch ? 'Online' : 'Offline' }}</label>-->
+<!--              <vs-switch vs-type="success" name="online_switch" v-model="online_switch" color="success" vs-icon="highlight"/>-->
+<!--            </div>-->
+          </div>
 
-
-          <ul class="services" v-if="screen_status == 'dashboard'">
-<!--            <p>{{selected_services}}</p>-->
-            <li style="float: left" class="modelx">
+          <ul class="services mt-5 mb-10" v-if="screen_status == 'dashboard'">
+            <!--            <p>{{selected_services}}</p>-->
+            <li style="float: left" class="mr-2 mb-2">
               <vs-checkbox v-model="noFilter">All Services</vs-checkbox>
             </li>
-            <li @change="checkFilter" style="float: left" class="modelx" v-for="(service, index) in services" :key="index">
+            <li @change="checkFilter" style="float: left" class="mr-2 mb-2" v-for="(service, index) in services"
+                :key="index">
               <vs-checkbox v-model="selected_services" :vs-value="service">{{ service.name }}</vs-checkbox>
             </li>
           </ul>
@@ -23,16 +31,13 @@
           <!-- Video Connecting Screen -->
           <div v-if="screen_status == 'dashboard'">
 
-
-            <div style="float:right">
-              <label for="ringtone_switch">Ringtone</label>
-              <vs-switch name="ringtone_switch" v-model="ringtone_switch" vs-icon="ring_volume"/>
-            </div>
-
             <div v-if="pending_calls_list.length > 0" style="font-size:20px">
-              <strong>{{pending_calls_list.length}}</strong> people waiting 😃
+              <h1 style="display: inline-block">{{pending_calls_list.length}}</h1> people waiting 😃
             </div>
+
             <br/>
+            <br/>
+
             <vs-row class="agent_call_boxes_container">
               <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="3"
                       v-for="call in pending_calls_list">
@@ -41,6 +46,7 @@
                   <div id="icon">
                     <vs-icon size="40">videocam</vs-icon>
                   </div>
+
                   <div id="text">
                     <div id="title">#{{call.id}}</div>
                     <div id="service">{{call.vendor_service.name}}</div>
@@ -49,24 +55,21 @@
                       {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
                     </div>
                   </div>
+
                   <div id="action">
                     <vs-button @click="answer_call(call)" icon="videocam" color="green" size="large"></vs-button>
                   </div>
-
 
                 </div>
               </vs-col>
             </vs-row>
 
             <div v-if="pending_calls_list.length < 1">
-
-
-              <div style="text-align:center;font-size:30px">
+              <div style="text-align:center; font-size:30px">
                 😞
                 <br/>
                 no pending calls
               </div>
-
             </div>
 
           </div>
@@ -86,7 +89,7 @@
                 </v-col>
 
                 <v-col>
-                  <vs-textarea v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" />
+                  <vs-textarea v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea"/>
                   <vs-button @click="end_call">End Call</vs-button>
                   <vs-button style="margin-left: 5px" color="success" type="border">Save Notes</vs-button>
                   <vs-button style="margin-left: 5px" color="success">Request for Signature / Consent</vs-button>
@@ -138,6 +141,7 @@
       ringtone_switch: true,
       ringtone_audio: null,
       noFilter: true,
+      online_switch: true,
       selected_services: [],
       services: [],
       agent_notes: ''
@@ -146,11 +150,11 @@
       CallBox
     },
     watch: {
-      noFilter: function(val) {
+      noFilter: function (val) {
         console.log("All Services is: ", val);
         if (val) {
           this.selected_services = this.services
-        }else{
+        } else {
           this.selected_services = []
         }
       },
@@ -165,6 +169,11 @@
         } else {
           this.ringtone_audio.volume = 0;
         }
+      }
+    },
+    computed: {
+      onlineColor() {
+        return this.online_switch ? '#fff' : '#000'
       }
     },
     methods: {
@@ -186,10 +195,10 @@
       checkFilter() {
         let isEqual = this.selected_services.length === this.services.length;
 
-        if (isEqual){
+        if (isEqual) {
           console.log("equal")
           this.noFilter = true
-        }else{
+        } else {
           console.log("not equal")
           this.noFilter = false
         }
@@ -200,7 +209,7 @@
 
         axios.post('/agent/list_pending_calls', {
           vu_token: this.$store.state.AppActiveUser.token,
-          services_ids: this.selected_services.map(x=>x.id)
+          services_ids: this.selected_services.map(x => x.id)
         })
           .then(function (response) {
 
@@ -357,10 +366,9 @@
 <style>
 
   ul.services {
-    display: block;
+    display: inline-block;
     position: relative;
     width: 100%;
-    height: 40px;
     font-size: 14px;
   }
 
