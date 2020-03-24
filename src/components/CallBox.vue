@@ -1,7 +1,6 @@
 <template>
   <div>
 
-
     <div class="call_box">
       <div id="local-media" v-if="!isItIos">
         <CamPreview v-if="localCamIsEnabled"></CamPreview>
@@ -20,8 +19,6 @@
         </v-btn>
       </div>
     </div>
-
-
 
   </div>
 </template>
@@ -98,8 +95,12 @@
 
       },
       end_call: function () {
-
         let thisApp = this;
+
+        if (this.room != null) {
+          this.room.disconnect();
+          this.room = null;
+        }
 
         this.localTracks.forEach((track) => {
           console.log('In mute function code');
@@ -107,6 +108,9 @@
           try{
               if (track.isEnabled) {
                 track.disable();
+                track.stop();
+                const attachedElements = track.detach();
+                attachedElements.forEach(element => element.remove());
                 thisApp.localMicIsEnabled = false;
               } else {
                 track.enable();
@@ -116,7 +120,6 @@
             console.log(ex.toString());
           }
         })
-
       },
       check_remote: function (room) {
 
