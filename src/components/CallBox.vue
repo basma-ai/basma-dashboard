@@ -1,25 +1,21 @@
 <template>
   <div>
-
     <div class="call_box">
       <div id="local-media" v-if="!isItIos">
         <CamPreview v-if="localCamIsEnabled"></CamPreview>
       </div>
       <div id="remote-media-div"></div>
-
       <div id="controls">
         <v-btn @click="toggle_mute_camera">
           <vs-button v-if="localCamIsEnabled">Mute Camera</vs-button>
           <vs-button v-if="!localCamIsEnabled">Unmute Camera</vs-button>
         </v-btn>
-
         <v-btn @click="toggle_mute_mic">
           <vs-button v-if="localMicIsEnabled">Mute Mic</vs-button>
           <vs-button v-if="!localMicIsEnabled">Unmute Mic</vs-button>
         </v-btn>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -29,9 +25,7 @@
   import CamPreview from '@/components/CamPreview.vue';
   import {isIOS} from 'mobile-device-detect';
 
-
   const {connect, createLocalTracks, createLocalVideoTrack, LocalVideoTrack} = require('twilio-video');
-
 
   export default {
     props: ['connection_token', 'room_name'],

@@ -21,34 +21,12 @@
 
       <div class="p-6">
 
-        <vs-input :disabled="!isNew" v-validate="'required'" name="username" label-placeholder="Username"
-                  v-model="username" class="w-full mb-6"/>
-
         <vs-input v-validate="'required'" name="name" label-placeholder="Name" v-model="name" class="w-full mb-6"/>
 
-        <vs-input v-validate="'required|rule'" name="email" label-placeholder="Email" v-model="email"
-                  class="w-full mb-6"/>
-
-        <!--        <vs-input v-validate="'required'" type="password" name="password" label-placeholder="Password" v-model="password" class="w-full mb-6"/>-->
-
-        <!-- Password 1 -->
-        <vs-input type="password" v-validate="'min:6|max:10'" label="Password" name="password" v-model="password"
-                  class="mt-5 w-full"/>
-        <!--        <span class="text-danger text-sm" v-show="errors.has('password')">{{ errors.first('password') }}</span>-->
-
-        <!-- Confirm Password -->
-        <!--        <vs-input type="password" v-validate="'min:6|max:10|confirmed:password'" label="Confirm Password" name="confirm_password" v-model="confirm_password" class="mt-5 w-full" data-vv-as="password" />-->
-        <!--        <span class="text-danger text-sm" v-show="errors.has('confirm_password')">{{ errors.first('confirm_password') }}</span>-->
-
-        <!-- ROLES -->
-        <vs-select multiple v-validate="'required'" name="roles_ids" label="Roles" v-model="roles_ids" class="w-full mb-6">
-          <vs-select-item :value="r.id" :text="r.name" v-for="r in roles"/>
-        </vs-select>
-
-        <!-- GROUPS -->
-        <vs-select multiple v-validate="'required'" name="groups_ids" label="Groups" v-model="groups_ids"
+        <!-- PERMISSIONS -->
+        <vs-select multiple v-validate="'required'" name="permissions_ids" label="Permissions" v-model="permissions_ids"
                    class="w-full mb-6">
-          <vs-select-item :value="r.id" :text="r.name" v-for="r in groups"/>
+          <vs-select-item :value="r.id" :text="r.label" v-for="r in permissions"/>
         </vs-select>
 
       </div>
@@ -88,16 +66,9 @@
     data() {
       return {
         // errors: [''],
-        username: '',
-        password: '',
-        confirm_password: '',
         name: '',
-        email: '',
-        role: 'agent',
-        groups_ids: [],
-        groups: [],
-        roles: [],
-        roles_ids: [],
+        permissions: [],
+        permissions_ids: false,
 
         settings: { // perfectscrollbar settings
           maxScrollbarLength: 60,
@@ -106,6 +77,13 @@
       }
     },
     watch: {
+      all_recordings_(val) {
+        if (val) {
+          this.my_recordings_ = true
+        } else {
+          this.my_recordings_ = false
+        }
+      },
       isSidebarActive(val) {
         if (!val) return
         if (this.isNew) {
@@ -116,18 +94,14 @@
 
           const params = {
             "vu_token": this.$store.state.AppActiveUser.token,
-            "vu_id": this.data.id
+            "role_id": this.data.id
           };
 
-          axios.post(API.USERS_GET, params).then((res) => {
+          axios.post(API.ROLES_GET, params).then((res) => {
             console.log(res);
-            const {username, name, email, role, groups, roles} = res.data.data.user;
-            this_app.username = username
+            const { name, permissions } = res.data.data.role;
             this_app.name = name
-            this_app.email = email
-            this_app.role = role
-            this_app.groups_ids = groups.map(x => x.id)
-            this_app.roles_ids = roles.map(x => x.id)
+            this_app.permissions_ids = permissions.map(x => x.id)
             this_app.initValues()
           }).catch((err) => {
             console.log(err);
@@ -156,10 +130,10 @@
       },
       isFormValid() {
         if (Object.entries(this.data).length === 0) {
-          return this.username && this.password && this.name && this.email
+          return this.name
 
         } else {
-          return this.username && this.name && this.email
+          return this.name
         }
       },
       scrollbarTag() {
@@ -167,42 +141,24 @@
       }
     },
     methods: {
-      loadGroups() {
+      loadPermissions() {
         const this_app = this;
 
         const params = {
           "vu_token": this.$store.state.AppActiveUser.token
         };
 
-        axios.post(API.GROUPS_LIST, params).then((res) => {
+        axios.post(API.PERMISSIONS_LIST, params).then((res) => {
           console.log(res);
-          this_app.groups = res.data.data.list;
-        }).catch((err) => {
-          console.log(err);
-        });
-      },
-      loadRoles() {
-        const this_app = this;
-
-        const params = {
-          "vu_token": this.$store.state.AppActiveUser.token
-        };
-
-        axios.post(API.ROLES_LIST, params).then((res) => {
-          console.log(res);
-          this_app.roles = res.data.data.list;
+          this_app.permissions = res.data.data.list;
         }).catch((err) => {
           console.log(err);
         });
       },
       initValues() {
         if (this.data.id) return
-        this.username = ''
-        this.password = ''
         this.name = ''
-        this.email = ''
-        this.groups_ids = []
-        this.roles_ids = []
+        this.permissions_ids = []
       },
       submitData() {
         if (!this.isFormValid) {
@@ -214,24 +170,17 @@
 
         let params = {
           "vu_token": this_app.$store.state.AppActiveUser.token,
-          "username": this_app.username,
           "name": this_app.name,
-          "email": this_app.email,
-          "roles_ids": this_app.roles_ids,
-          "groups_ids": this_app.groups_ids
+          "permissions_ids": this_app.permissions_ids
         };
 
         if (!this_app.isNew) {
-          params.vu_id = this_app.data.id;
-        }
-
-        if (this_app.password.length > 0) {
-          params.password = this_app.password;
+          params.role_id = this_app.data.id;
         }
 
         console.log("params: ", params);
 
-        const endpoint = this_app.isNew ? API.USERS_CREATE : API.USERS_EDIT;
+        const endpoint = this_app.isNew ? API.ROLES_CREATE : API.ROLES_EDIT;
 
         axios.post(endpoint, params).then((res) => {
           console.log(res);
@@ -241,7 +190,7 @@
           if (res.data.success) {
             this_app.$vs.notify({
               title: 'Success',
-              text: this_app.isNew ? "User is created!" : "User is updated!",
+              text: this_app.isNew ? "Role is created!" : "Role is updated!",
               iconPack: 'feather',
               icon: 'icon-check-circle',
               color: 'success'
@@ -270,8 +219,7 @@
       }
     },
     created() {
-      this.loadGroups();
-      this.loadRoles();
+      this.loadPermissions();
     }
   }
 </script>

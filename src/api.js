@@ -1,9 +1,6 @@
 export default {
   DASHBOARD_NUMBERS: '/vendor/dashboard_numbers',
 
-  AUDIT_LOG_LIST: '/vendor/logs/list',
-  AUDIT_LOG_GET: '/vendor/logs/get',
-
   CALLS_LIST: '/vendor/calls/list',
   CALLS_GET: '/vendor/calls/get',
 
@@ -26,4 +23,14 @@ export default {
   CUSTOM_FIELDS_LIST: '/vendor/custom_fields/list',
   CUSTOM_FIELDS_EDIT: '/vendor/custom_fields/edit',
   CUSTOM_FIELDS_GET: '/vendor/custom_fields/get',
+
+  ROLES_CREATE: '/vendor/roles/create',
+  ROLES_LIST: '/vendor/roles/list',
+  ROLES_EDIT: '/vendor/roles/edit',
+  ROLES_GET: '/vendor/roles/get',
+
+  PERMISSIONS_LIST: '/vendor/permissions/list',
+
+  AUDIT_LOG_LIST: '/vendor/logs/list',
+  AUDIT_LOG_GET: '/vendor/logs/get',
 };

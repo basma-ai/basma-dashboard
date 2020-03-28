@@ -87,10 +87,7 @@
       </div>
 
       <template slot="thead">
-        <vs-th sort-key="id">Username</vs-th>
         <vs-th sort-key="name">Name</vs-th>
-        <vs-th sort-key="time">Role</vs-th>
-        <vs-th sort-key="status">Email</vs-th>
         <vs-th>Action</vs-th>
       </template>
 
@@ -98,23 +95,8 @@
         <tbody>
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
 
-          <vs-td :data="tr.id">
-            <p class="font-medium truncate">{{ tr.username }}</p>
-          </vs-td>
-
-          <vs-td :data="tr.name">
-            <vs-avatar style="float: left" size="30px" :src="tr.photo_url"/>
-            <span style="position: relative;top: 10px;margin-left: 5px;">
-              {{ tr.name }}
-            </span>
-          </vs-td>
-
           <vs-td>
-            <p v-if="tr.roles.length > 0">{{ tr.roles.map(role => role.name).join(", ") }}</p>
-          </vs-td>
-
-          <vs-td>
-            <p>{{ tr.email }}</p>
+            <p>{{ tr.name }}</p>
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
@@ -128,10 +110,6 @@
         </tbody>
       </template>
     </vs-table>
-
-<!--    <span>-->
-<!--      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}-->
-<!--    </span>-->
 
     <vs-pagination :total="totalPages" v-model="currentPage" :max="5" prev-icon="arrow_back"
                    next-icon="arrow_forward"></vs-pagination>
@@ -204,19 +182,6 @@
         this.sidebarData = data
         this.toggleDataSidebar(true)
       },
-      getOrderStatusColor(status) {
-        if (status === 'ended') return 'warning'
-        if (status === 'started') return 'success'
-        if (status === 'missed') return 'danger'
-        return 'primary'
-      },
-      getPopularityColor(num) {
-        if (num > 90) return 'success'
-        if (num > 70) return 'primary'
-        if (num >= 50) return 'warning'
-        if (num < 50) return 'danger'
-        return 'primary'
-      },
       toggleDataSidebar(val = false) {
         this.addNewDataSidebar = val
       },
@@ -229,7 +194,7 @@
           "per_page": this.perPage
         };
 
-        axios.post(API.USERS_LIST, params).then((res) => {
+        axios.post(API.ROLES_LIST, params).then((res) => {
           console.log(res);
           this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {

@@ -144,6 +144,19 @@ const router = new Router({
                   ]
                 },
               },
+              {
+                path: '/roles',
+                name: 'roles',
+                component: () => import('./views/roles/ListRoles.vue'),
+                meta: {
+                  pageTitle: 'Roles',
+                  breadcrumb: [
+                    { title: 'Home', url: '/' },
+                    { title: 'Roles' },
+                    { title: 'List', active: true }
+                  ]
+                },
+              },
 
             ],
         },
