@@ -236,6 +236,7 @@ export default {
       this.perPage = pages;
       this.currentPage = 1;
       this.loadData()
+      this.gridApi.paginationSetPageSize(pages)
     },
     setColumnFilter (column, val) {
       const filter = this.gridApi.getFilterInstance(column)

@@ -33,4 +33,6 @@ export default {
 
   AUDIT_LOG_LIST: '/vendor/logs/list',
   AUDIT_LOG_GET: '/vendor/logs/get',
+
+  REPORTS_CALLS: '/vendor/reports/calls',
 };

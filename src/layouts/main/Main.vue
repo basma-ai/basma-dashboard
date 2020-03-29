@@ -261,7 +261,6 @@
       this.setNavMenuVisibility(this.$store.state.mainLayoutType)
 
       this.checkLoginStatus();
-
       this.getPermissions();
 
       console.log("permissions:" + this.permissions);
@@ -294,8 +293,25 @@
         });
       }
 
+      if (this.isAllowed("reports")) {
+        this.navMenuItems.push({
+          url: "/reports/calls",
+          name: "Reports",
+          icon: "FileTextIcon",
+          slug: "reports",
+
+          // submenu: [
+            // {
+            //   url: "/reports/top-services",
+            //   name: "Top Services",
+            //   slug: "top-services",
+            // }
+          // ]
+        });
+      }
+
       // TODO: need to find better way
-      if (this.isAllowed("superuser") ) {
+      if (this.isAllowed("superuser")) {
         this.navMenuItems.push({
           name: "User Management",
           icon: "UsersIcon",
