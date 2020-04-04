@@ -14,33 +14,17 @@
 
       <vs-dropdown-menu class="vx-navbar-dropdown">
         <ul style="min-width: 9rem">
-
-          <!-- <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
+          <li @click="open('/profile')" class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
             <feather-icon icon="UserIcon" svgClasses="w-4 h-4" />
             <span class="ml-2">Profile</span>
           </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="MailIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Inbox</span>
+          <li @click="open('/billing')" class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
+            <feather-icon icon="CreditCardIcon" svgClasses="w-4 h-4" />
+            <span class="ml-2">Billing</span>
           </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Tasks</span>
-          </li>
-
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="MessageSquareIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Chat</span>
-          </li>
-
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="HeartIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Wish List</span>
-          </li>
-
-          <vs-divider class="m-1" /> -->
+          <vs-divider class="m-1" />
 
           <li
             class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
@@ -67,6 +51,9 @@ export default {
     }
   },
   methods: {
+    open(link){
+      this.$router.push(link);
+    },
     logout() {
         const vendor = this.activeUserInfo.info.vendor.username;
         this.$store.commit('UPDATE_USER_INFO', null);

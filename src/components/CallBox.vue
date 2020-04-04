@@ -6,14 +6,14 @@
       </div>
       <div id="remote-media-div"></div>
       <div id="controls">
-        <v-btn @click="toggle_mute_camera">
-          <vs-button v-if="localCamIsEnabled">Mute Camera</vs-button>
-          <vs-button v-if="!localCamIsEnabled">Unmute Camera</vs-button>
-        </v-btn>
-        <v-btn @click="toggle_mute_mic">
-          <vs-button v-if="localMicIsEnabled">Mute Mic</vs-button>
-          <vs-button v-if="!localMicIsEnabled">Unmute Mic</vs-button>
-        </v-btn>
+        <div @click="toggle_mute_camera">
+          <vs-button radius icon="videocam" type="filled" color="primary" v-if="localCamIsEnabled"></vs-button>
+          <vs-button radius icon="videocam_off" type="filled" color="danger" v-if="!localCamIsEnabled"></vs-button>
+        </div>
+        <div @click="toggle_mute_mic">
+          <vs-button radius icon="volume_up" type="filled" color="primary" v-if="localMicIsEnabled"></vs-button>
+          <vs-button radius icon="volume_off" type="filled" color="danger" v-if="!localMicIsEnabled"></vs-button>
+        </div>
       </div>
     </div>
   </div>
@@ -241,6 +241,10 @@
     position: absolute;
     right: 0;
     margin: 10px;
+  }
+
+  .call_box #controls button{
+    margin-bottom: 3px;
   }
 
   #local-media {

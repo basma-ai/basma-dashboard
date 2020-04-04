@@ -117,8 +117,8 @@ const mutations = {
     //     // Update key in localStorage
     //     userInfo[property] = payload[property]
     //   }
-      state.AppActiveUser = JSON.parse(JSON.stringify(payload));
-      userInfo = JSON.parse(JSON.stringify(payload));
+    state.AppActiveUser = JSON.parse(JSON.stringify(payload));
+    userInfo = JSON.parse(JSON.stringify(payload));
 
 
     // }

@@ -1,122 +1,101 @@
 <template>
   <div>
 
-    <div style="text-align:center">
-      <vs-card :loading="loading">
-        <div style="padding: 20px">
-
-          <div id="rigntone" v-if="screen_status == 'dashboard'">
-            <div  style="float:right;">
-              <label>Ringtone {{ ringtone_switch ? 'On' : 'Off' }}</label>
-              <vs-switch name="ringtone_switch" v-model="ringtone_switch" vs-icon="ring_volume" color="success"/>
-            </div>
-<!--            <div class="mr-3" style="float:right;">-->
-<!--              <label>Agent {{ online_switch ? 'Online' : 'Offline' }}</label>-->
-<!--              <vs-switch vs-type="success" name="online_switch" v-model="online_switch" color="success" vs-icon="highlight"/>-->
-<!--            </div>-->
+    <!-- Video Connecting Screen -->
+    <div v-if="screen_status == 'dashboard'" style="text-align:center">
+      <vs-card style="padding: 20px">
+        <div id="rigntone" v-if="screen_status == 'dashboard'">
+          <div  style="float:right;">
+            <label>Ringtone {{ ringtone_switch ? 'On' : 'Off' }}</label>
+            <vs-switch name="ringtone_switch" v-model="ringtone_switch" vs-icon="ring_volume" color="success"/>
           </div>
-
-          <ul class="services mt-5 mb-10" v-if="screen_status == 'dashboard'">
-            <!--            <p>{{selected_services}}</p>-->
-            <li style="float: left" class="mr-2 mb-2">
-              <vs-checkbox v-model="noFilter">All Services</vs-checkbox>
-            </li>
-            <li @change="checkFilter" style="float: left" class="mr-2 mb-2" v-for="(service, index) in services"
-                :key="index">
-              <vs-checkbox v-model="selected_services" :vs-value="service">{{ service.name }}</vs-checkbox>
-            </li>
-          </ul>
-
-
-          <!-- Video Connecting Screen -->
-          <div v-if="screen_status == 'dashboard'">
-
-            <div v-if="pending_calls_list.length > 0" style="font-size:20px">
-              <h1 style="display: inline-block">{{pending_calls_list.length}}</h1> people waiting 😃
-            </div>
-
-            <br/>
-            <br/>
-
-            <vs-row class="agent_call_boxes_container">
-              <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="3"
-                      v-for="call in pending_calls_list">
-                <div class="agent_call_box">
-
-                  <div id="icon">
-                    <vs-icon size="40">videocam</vs-icon>
-                  </div>
-
-                  <div id="text">
-                    <div id="title">#{{call.id}}</div>
-                    <div id="service">{{call.vendor_service.name}}</div>
-                    <div id="time">
-                      <vs-icon>access_time</vs-icon>
-                      {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
-                    </div>
-                  </div>
-
-                  <div id="action">
-                    <vs-button @click="answer_call(call)" icon="videocam" color="green" size="large"></vs-button>
-                  </div>
-
-                </div>
-              </vs-col>
-            </vs-row>
-
-            <div v-if="pending_calls_list.length < 1">
-              <div style="text-align:center; font-size:30px">
-                😞
-                <br/>
-                no pending calls
-              </div>
-            </div>
-
-          </div>
-
-
-          <!-- In Call -->
-          <div v-if="screen_status == 'in_call'">
-
-            <div styte="height:10px"></div>
-
-            <div v-if="call.status == 'started' && call.connection_agent_token != null">
-              <v-row>
-
-                <v-col cols="12" sm="12" md="3">
-                  <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id"
-                           style="width:100%;"></CallBox>
-                </v-col>
-
-                <v-col>
-                  <vs-textarea v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea"/>
-                  <vs-button @click="end_call">End Call</vs-button>
-                  <vs-button style="margin-left: 5px" color="success" type="border">Save Notes</vs-button>
-                  <vs-button style="margin-left: 5px" color="success">Request for Signature / Consent</vs-button>
-                </v-col>
-
-              </v-row>
-
-            </div>
-
-            <br/><br/>
-
-          </div>
-
+          <!--            <div class="mr-3" style="float:right;">-->
+          <!--              <label>Agent {{ online_switch ? 'Online' : 'Offline' }}</label>-->
+          <!--              <vs-switch vs-type="success" name="online_switch" v-model="online_switch" color="success" vs-icon="highlight"/>-->
+          <!--            </div>-->
         </div>
 
+        <ul class="services mt-5 mb-10" v-if="screen_status == 'dashboard'">
+          <!--            <p>{{selected_services}}</p>-->
+          <li style="float: left" class="mr-2 mb-2">
+            <vs-checkbox v-model="noFilter">All Services</vs-checkbox>
+          </li>
+          <li @change="checkFilter" style="float: left" class="mr-2 mb-2" v-for="(service, index) in services"
+              :key="index">
+            <vs-checkbox v-model="selected_services" :vs-value="service">{{ service.name }}</vs-checkbox>
+          </li>
+        </ul>
+
+        <div v-if="pending_calls_list.length > 0" style="font-size:20px">
+          <h1 style="display: inline-block">{{pending_calls_list.length}}</h1> people waiting 😃
+        </div>
+
+        <br/>
+        <br/>
+
+        <vs-row class="agent_call_boxes_container">
+          <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="4"
+                  v-for="call in pending_calls_list">
+            <div class="agent_call_box" @click="answer_call(call)">
+
+              <div id="icon">
+                <vs-icon size="40">videocam</vs-icon>
+              </div>
+
+              <div id="text">
+                <div id="title">#{{call.id}}</div>
+                <div id="service">{{call.vendor_service.name}}</div>
+                <div id="time">
+                  <vs-icon>access_time</vs-icon>
+                  {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
+                </div>
+              </div>
+
+              <div id="action">
+                <vs-button icon="videocam" color="green" size="large"></vs-button>
+              </div>
+
+            </div>
+          </vs-col>
+        </vs-row>
+
+        <div v-if="pending_calls_list.length < 1">
+          <div style="text-align:center; font-size:30px">
+            😞
+            <br/>
+            no pending calls
+          </div>
+        </div>
       </vs-card>
     </div>
 
+    <!-- In Call -->
+    <vs-row v-if="screen_status == 'in_call'">
+
+      <vs-col vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
+        <vs-card style="width:100%;">
+          <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
+        </vs-card>
+      </vs-col>
+
+      <vs-col id="right-sidebar" vs-type="flex" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
+        <vs-card>
+          <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">End Call</vs-button>
+          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea"/>
+          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>
+        </vs-card>
+      </vs-col>
+
+    </vs-row>
 
   </div>
 </template>
-
 
 <script>
   import axios from '@/axios.js';
   import API from '@/api.js';
   import CallBox from '@/components/CallBox.vue';
+  import ChatBox from '@/components/chat-box/ChatBox.vue'
   import Vue from "vue";
 
   Vue.use(require('vue-moment'));
@@ -147,7 +126,8 @@
       agent_notes: ''
     }),
     components: {
-      CallBox
+      CallBox,
+      ChatBox
     },
     watch: {
       noFilter: function (val) {
@@ -238,10 +218,9 @@
           });
 
       },
-
       end_call: function () {
 
-        this.ringtone_audio.play();
+        this.ringtone_switch = true
         this.screen_status = 'loading';
         this.loading = true;
 
@@ -270,8 +249,6 @@
           });
 
       },
-
-
       request_agent_token: function () {
         this.loading = true;
         this.agent_token_loading = true;
@@ -292,8 +269,7 @@
         this.screen_status = 'loading';
 
         this.call_id = selected_call.id;
-        this.ringtone_audio.pause();
-
+        this.ringtone_switch = false
 
         let thisApp = this;
         axios.post('/agent/answer_call', {
@@ -358,7 +334,6 @@
       this.ringtone_audio = null;
       console.log("we are at onDestroy");
     }
-
   }
 </script>
 
@@ -373,7 +348,7 @@
   }
 
   .agent_call_box {
-    border: 2px solid green;
+    border: 2px solid #e4e4e4;
     border-radius: 5px;
     width: 100%;
     padding: 10px;
@@ -386,6 +361,7 @@
     margin: 5px;
     animation: shake 1s;
     animation-iteration-count: infinite;
+    cursor: pointer;
   }
 
   /* .agent_call_boxes_container #the_col:first-child .agent_call_box {
@@ -394,7 +370,7 @@
   } */
 
   .agent_call_box:hover {
-    box-shadow: 0px 0px 13px 0px rgba(0, 102, 20, 1);
+    box-shadow: 0px 0px 13px 0px #e4e4e4;
   }
 
   .agent_call_box #icon * {
@@ -415,9 +391,14 @@
   }
 
   .agent_call_box #text #time {
-    margin-top: 5px;
-    font-size: 15px;
-    fint-weight: bold;
+    font-size: 10px;
+    top: 8px;
+    position: relative;
+  }
+
+  .agent_call_box #text #time .vs-icon {
+    top: 3px;
+    position: relative;
   }
 
   .agent_call_box #text #service {
@@ -435,6 +416,16 @@
     position: absolute;
   }
 
+  #right-sidebar {
+    padding-left: 15px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    #right-sidebar {
+      padding-left: 0px;
+    }
+  }
 
   @keyframes shake {
     0% {

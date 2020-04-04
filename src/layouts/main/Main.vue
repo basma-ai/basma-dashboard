@@ -69,31 +69,31 @@
                                :isRTL="$vs.rtl"/>
 
                 <!-- DROPDOWN -->
-                <!--                <vs-dropdown vs-trigger-click class="ml-auto md:block hidden cursor-pointer">-->
-                <!--                  <vs-button radius icon="icon-settings" icon-pack="feather" />-->
+<!--                <vs-dropdown vs-trigger-click class="ml-auto md:block hidden cursor-pointer">-->
+<!--                  <vs-button radius icon="icon-settings" icon-pack="feather" />-->
 
-                <!--                  <vs-dropdown-menu class="w-32">-->
-                <!--                    <vs-dropdown-item>-->
-                <!--                      <div @click="$router.push('/pages/profile').catch(() => {})" class="flex items-center">-->
-                <!--                        <feather-icon icon="UserIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />-->
-                <!--                        <span>Profile</span>-->
-                <!--                      </div>-->
-                <!--                    </vs-dropdown-item>-->
-                <!--                    <vs-dropdown-item>-->
-                <!--                      <div @click="$router.push('/apps/todo').catch(() => {})" class="flex items-center">-->
-                <!--                        <feather-icon icon="CheckSquareIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />-->
-                <!--                        <span>Tasks</span>-->
-                <!--                      </div>-->
-                <!--                    </vs-dropdown-item>-->
-                <!--                    <vs-dropdown-item>-->
-                <!--                      <div @click="$router.push('/apps/email').catch(() => {})" class="flex items-center">-->
-                <!--                        <feather-icon icon="MailIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />-->
-                <!--                        <span>Inbox</span>-->
-                <!--                      </div>-->
-                <!--                    </vs-dropdown-item>-->
-                <!--                  </vs-dropdown-menu>-->
+<!--                  <vs-dropdown-menu class="w-32">-->
+<!--                    <vs-dropdown-item>-->
+<!--                      <div @click="$router.push('/pages/profile').catch(() => {})" class="flex items-center">-->
+<!--                        <feather-icon icon="UserIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />-->
+<!--                        <span>Profile</span>-->
+<!--                      </div>-->
+<!--                    </vs-dropdown-item>-->
+<!--                    <vs-dropdown-item>-->
+<!--                      <div @click="$router.push('/apps/todo').catch(() => {})" class="flex items-center">-->
+<!--                        <feather-icon icon="CheckSquareIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />-->
+<!--                        <span>Tasks</span>-->
+<!--                      </div>-->
+<!--                    </vs-dropdown-item>-->
+<!--                    <vs-dropdown-item>-->
+<!--                      <div @click="$router.push('/apps/email').catch(() => {})" class="flex items-center">-->
+<!--                        <feather-icon icon="MailIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />-->
+<!--                        <span>Inbox</span>-->
+<!--                      </div>-->
+<!--                    </vs-dropdown-item>-->
+<!--                  </vs-dropdown-menu>-->
 
-                <!--                </vs-dropdown>-->
+<!--                </vs-dropdown>-->
 
               </div>
             </transition>
@@ -232,7 +232,8 @@
         this.permissions = permissions;
       },
       checkLoginStatus() {
-        this.isLoggedIn = null != this.$store.state.AppActiveUser
+        this.isLoggedIn = "" != this.$store.state.AppActiveUser.token
+        console.log("this.isLoggedIn: ",this.isLoggedIn);
         if (!this.isLoggedIn) {
           this.$router.push('/404').catch(() => {
           })
@@ -261,6 +262,11 @@
       this.setNavMenuVisibility(this.$store.state.mainLayoutType)
 
       this.checkLoginStatus();
+
+      if (!this.isLoggedIn){
+        return;
+      }
+
       this.getPermissions();
 
       console.log("permissions:" + this.permissions);

@@ -69,6 +69,17 @@ Vue.use(vueDebounce)
 import 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
 
+
+import VueTidio from 'vue-tidio';
+Vue.use(VueTidio, { appKey: '77fscjhhflm0kexipxspnyfeyulm4pz9' });
+
+
+import VueSocketIO from 'vue-socket.io'
+Vue.use(new VueSocketIO({
+  debug: false,
+  connection: "https://video-api.basma.ai",
+}))
+
 // Feather font icon
 require('./assets/css/iconfont.css')
 

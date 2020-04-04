@@ -39,7 +39,7 @@ const router = new Router({
         {
           path: '/agent-phone',
           name: 'agent-phone',
-          component: () => import('./views/AgentPhone.vue')
+          component: () => import('./views/agent-phone/AgentPhone.vue')
         },
         {
           path: '/calls-history',
@@ -145,6 +145,15 @@ const router = new Router({
           },
         },
         {
+          path: '/billing',
+          name: 'billing',
+          component: () => import('./views/billing/Billing.vue'),
+          meta: {
+            pageTitle: 'Billing',
+            showChat: false
+          },
+        },
+        {
           path: '/roles',
           name: 'roles',
           component: () => import('./views/roles/ListRoles.vue'),
@@ -206,5 +215,10 @@ router.afterEach(() => {
     appLoading.style.display = "none";
   }
 })
+
+router.afterEach((to) => {
+  Vue.prototype.$tidioChatApi &&
+  Vue.prototype.$tidioChatApi.display(to.meta.showChat);
+});
 
 export default router

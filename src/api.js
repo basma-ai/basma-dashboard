@@ -3,6 +3,7 @@ export default {
 
   CALLS_LIST: '/vendor/calls/list',
   CALLS_GET: '/vendor/calls/get',
+  CALLS_GET_RECORDING: '/vendor/calls/get_recording',
 
   USERS_CREATE: '/vendor/users/create',
   USERS_LIST: '/vendor/users/list',
