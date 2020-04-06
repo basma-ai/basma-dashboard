@@ -39,7 +39,26 @@ const router = new Router({
         {
           path: '/agent-phone',
           name: 'agent-phone',
-          component: () => import('./views/agent-phone/AgentPhone.vue')
+          component: () => import('./views/agent-phone/AgentPhone.vue'),
+        },
+        {
+          path: '/agent-phone/:token',
+          name: 'agent-phone',
+          component: () => import('./views/agent-phone/AgentPhone.vue'),
+          props: true
+        },
+        {
+          path: '/call-requests',
+          name: 'call-requests',
+          component: () => import('./views/call-requests/CallRequests.vue'),
+          meta: {
+            pageTitle: 'Call Requests',
+            breadcrumb: [
+              {title: 'Home', url: '/'},
+              {title: 'Call Requests'},
+              {title: 'List', active: true}
+            ],
+          }
         },
         {
           path: '/calls-history',

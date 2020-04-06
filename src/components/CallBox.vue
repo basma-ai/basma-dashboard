@@ -218,6 +218,12 @@
           });
         });
 
+        // Attach the Participant's Media to a <div> element.
+        room.on("participantDisconnected", (participant) => {
+          console.log(`Participant disconnected: ${participant.identity}`);
+          document.getElementById("remote-media-div").innerHTML = ""
+        });
+
       });
 
 

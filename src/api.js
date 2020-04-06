@@ -5,6 +5,12 @@ export default {
   CALLS_GET: '/vendor/calls/get',
   CALLS_GET_RECORDING: '/vendor/calls/get_recording',
 
+  CALL_REQUESTS_CREATE: '/vendor/call_requests/create',
+  CALL_REQUESTS_LIST: '/vendor/call_requests/list',
+  CALL_REQUESTS_EDIT: '/vendor/call_requests/edit',
+  CALL_REQUESTS_GET: '/vendor/call_requests/get',
+  CALL_REQUESTS_JOIN: '/vendor/call_requests/join',
+
   USERS_CREATE: '/vendor/users/create',
   USERS_LIST: '/vendor/users/list',
   USERS_EDIT: '/vendor/users/edit',

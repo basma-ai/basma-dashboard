@@ -290,6 +290,15 @@
         });
       }
 
+      if (this.isAllowed("call_requests")) {
+        this.navMenuItems.push({
+          url: "/call-requests",
+          name: "Call Requests",
+          slug: "calls-requests",
+          icon: "PhoneOutgoingIcon"
+        });
+      }
+
       if (this.isAllowed("calls_history")) {
         this.navMenuItems.push({
           url: "/calls-history",
@@ -313,31 +322,6 @@
             //   slug: "top-services",
             // }
           // ]
-        });
-      }
-
-      // TODO: need to find better way
-      if (this.isAllowed("superuser")) {
-        this.navMenuItems.push({
-          name: "User Management",
-          icon: "UsersIcon",
-          submenu: [
-            {
-              url: "/users",
-              name: "Users",
-              slug: "users",
-            },
-            {
-              url: "/groups",
-              name: "Groups",
-              slug: "groups",
-            },
-            {
-              url: "/roles",
-              name: "Roles",
-              slug: "roles",
-            }
-          ]
         });
       }
 
@@ -365,6 +349,31 @@
           name: "Audit Logs",
           slug: "audit-logs",
           icon: "ClockIcon"
+        });
+      }
+
+      // TODO: need to find better way
+      if (this.isAllowed("superuser")) {
+        this.navMenuItems.push({
+          name: "User Management",
+          icon: "UsersIcon",
+          submenu: [
+            {
+              url: "/users",
+              name: "Users",
+              slug: "users",
+            },
+            {
+              url: "/groups",
+              name: "Groups",
+              slug: "groups",
+            },
+            {
+              url: "/roles",
+              name: "Roles",
+              slug: "roles",
+            }
+          ]
         });
       }
 

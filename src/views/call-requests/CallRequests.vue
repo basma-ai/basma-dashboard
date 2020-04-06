@@ -1,6 +1,8 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
 
+    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar" :data="sidebarData"/>
+
     <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
 
       <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
@@ -49,6 +51,13 @@
             </vs-dropdown-menu>
           </vs-dropdown>
 
+          <!-- ADD NEW -->
+          <div
+            class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
+            @click="addNewData">
+            <feather-icon icon="PlusIcon" svgClasses="h-4 w-4"/>
+            <span class="ml-2 text-base text-primary">Schedule a New Call</span>
+          </div>
         </div>
 
         <!-- ITEMS PER PAGE -->
@@ -80,7 +89,8 @@
       <template slot="thead">
         <vs-th sort-key="id">#ID</vs-th>
         <vs-th sort-key="name">Agent Name</vs-th>
-        <vs-th sort-key="time">Time</vs-th>
+        <vs-th sort-key="time">Creation Time</vs-th>
+        <vs-th sort-key="time">Schedule Time</vs-th>
         <vs-th sort-key="status">Status</vs-th>
         <vs-th sort-key="service">Service</vs-th>
         <vs-th>Action</vs-th>
@@ -108,17 +118,21 @@
           </vs-td>
 
           <vs-td>
-            <vs-chip :color="getOrderStatusColor(tr.status)" class="product-order-status">{{ tr.status }}</vs-chip>
+            <p>{{ tr.scheduled_time | moment("YYYY-MM-DD h:mm:ss a") }}</p>
           </vs-td>
 
-          <vs-td v-if="null != tr.vendor_service">
-            <p>{{ tr.vendor_service.name }}</p>
+          <vs-td>
+            <vs-chip :color="getOrderStatusColor(tr.send_sms)" class="product-order-status">{{ tr.send_sms ? "YES" : "NO" }}</vs-chip>
           </vs-td>
-          <vs-td v-else>
+
+          <vs-td>
+            <p>{{ tr.service.name }}</p>
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
-            <feather-icon icon="EyeIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
+<!--            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
+<!--                          @click.stop="editData(tr)"/>-->
+            <feather-icon icon="PhoneIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" class="ml-2"
                           @click.stop="viewData(tr)"/>
           </vs-td>
 
@@ -136,11 +150,14 @@
   import axios from '@/axios.js'
   import API from '@/api.js'
   import Vue from 'vue';
+  import DataViewSidebar from './DataViewSidebar.vue'
 
   Vue.use(require('vue-moment'));
 
   export default {
-    components: {},
+    components: {
+      DataViewSidebar
+    },
     data() {
       return {
         selected: [],
@@ -175,6 +192,15 @@
       },
     },
     methods: {
+      addNewData() {
+        this.sidebarData = {}
+        this.toggleDataSidebar(true)
+      },
+      editData(data) {
+        // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
+        this.sidebarData = data
+        this.toggleDataSidebar(true)
+      },
       changePerPage: function (pages) {
         console.log(pages);
         this.perPage = pages;
@@ -185,12 +211,11 @@
         // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
         // this.sidebarData = data
         console.log(data);
-        this.$router.push(`/calls-history/view-call/${data.id}`).catch(() => {})
+        this.$router.push(`/agent-phone/${data.id}`).catch(() => {})
       },
       getOrderStatusColor(status) {
-        if (status === 'ended') return 'success'
-        if (status === 'started') return 'warning'
-        if (status === 'missed') return 'danger'
+        if (status === 1) return 'success'
+        if (status === 0) return 'warning'
         return 'primary'
       },
       getPopularityColor(num) {
@@ -212,7 +237,7 @@
           "per_page": this.perPage
         };
 
-        axios.post(API.CALLS_LIST, params).then((res) => {
+        axios.post(API.CALL_REQUESTS_LIST, params).then((res) => {
           console.log(res);
           this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {

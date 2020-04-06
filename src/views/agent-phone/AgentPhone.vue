@@ -34,7 +34,7 @@
         <br/>
 
         <vs-row class="agent_call_boxes_container">
-          <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="4"
+          <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="12" vs-lg="12"
                   v-for="call in pending_calls_list">
             <div class="agent_call_box" @click="answer_call(call)">
 
@@ -51,11 +51,16 @@
                 </div>
               </div>
 
-              <div id="action">
-                <vs-button icon="videocam" color="green" size="large"></vs-button>
+              <div id="details">
+                <table>
+                  <tr v-for="field in call.custom_fields_values">
+                    <td class="font-semibold" style="min-width:80px; text-transform: uppercase">{{ field.label }}:</td>
+                    <td>{{ field.value }}</td>
+                  </tr>
+                </table>
               </div>
-
             </div>
+
           </vs-col>
         </vs-row>
 
@@ -81,8 +86,16 @@
       <vs-col id="right-sidebar" vs-type="flex" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
         <vs-card>
           <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">End Call</vs-button>
-          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea"/>
-          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>
+          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="10"/>
+          <div class="details">
+            <table>
+              <tr v-for="field in call.custom_fields_values">
+                <td class="font-semibold" style="min-width:80px; text-transform: uppercase">{{ field.label }}:</td>
+                <td>{{ field.value }}</td>
+              </tr>
+            </table>
+          </div>
+<!--          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>-->
         </vs-card>
       </vs-col>
 
@@ -101,10 +114,11 @@
   Vue.use(require('vue-moment'));
 
   export default {
+    props: ['token'],
     data: () => ({
       loading: false,
       vendor: {},
-      screen_status: 'login',
+      screen_status: 'dashboard',
       guest_token: null,
       services_list: [],
       vendor_id: 0,
@@ -311,10 +325,30 @@
         }).catch((err) => {
           console.log(err);
         });
+      },
+      join_call_by_token(token) {
+        const this_app = this;
+
+        const params = {
+          "vu_token": this.$store.state.AppActiveUser.token,
+          "call_request_id": token,
+        };
+
+        axios.post(API.CALL_REQUESTS_JOIN, params).then((res) => {
+          console.log(res);
+          this_app.answer_call({ id : res.data.data.call_id });
+        }).catch((err) => {
+          console.log(err);
+        });
       }
 
     },
     created() {
+      console.log('this.token',this.token);
+
+      if (this.token != null) {
+        this.join_call_by_token(this.token);
+      }
 
       this.ringtone_audio = new Audio('https://basma-cdn.s3.me-south-1.amazonaws.com/assets/audio/agent_default_ringtone.mp3');
       this.vendor_id = this.$store.state.AppActiveUser.info.vendor.id;
@@ -352,14 +386,14 @@
     border-radius: 5px;
     width: 100%;
     padding: 10px;
-    height: 140px;
+    /*height: 140px;*/
     position: relative;
     text-align: left;
     background-color: white;
     cursor: default;
     transition: all 0.2s;
     margin: 5px;
-    animation: shake 1s;
+    animation: shake 1.5s;
     animation-iteration-count: infinite;
     cursor: pointer;
   }
@@ -383,6 +417,13 @@
   .agent_call_box #text {
     margin-top: 10px;
     margin-left: 65px;
+    margin-bottom: 20px;
+  }
+
+  .agent_call_box #details {
+    padding: 8px;
+    border-top: 2px solid #e4e4e4;
+    font-size: 14px;
   }
 
   .agent_call_box #text #title {
