@@ -39,7 +39,22 @@
         <!-- read the fields from the db, and then show them according to their type -->
         <div v-for="(field, index) in custom_fields" v-bind:key="field.id">
           <vs-input
-            v-if="field.type === 'text' || field.type === 'number'"
+            v-if="field.type === 'text'"
+            v-model="field.value"
+            :label="field.label + (field.is_mandatory ? '*' : '')"
+            :rules="field.is_mandatory ? requiredRules : []"
+            class="w-full mb-6" />
+
+          <vs-input
+            v-if="field.type === 'number' && field.name === 'mobile'"
+            v-model="field.value"
+            placeholder="97333112233"
+            :label="field.label + (field.is_mandatory ? '*' : '')"
+            :rules="field.is_mandatory ? requiredRules : []"
+            class="w-full mb-6" />
+
+          <vs-input
+            v-if="field.type === 'number' && field.name !== 'mobile'"
             v-model="field.value"
             :label="field.label + (field.is_mandatory ? '*' : '')"
             :rules="field.is_mandatory ? requiredRules : []"
