@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="call_box">
-      <div id="local-media" v-if="!isItIos">
-        <CamPreview v-if="localCamIsEnabled"></CamPreview>
+<!--      <div id="local-media" v-if="!isItIos">-->
+      <div id="local-media">
+<!--        <CamPreview v-if="localCamIsEnabled"></CamPreview>-->
       </div>
       <div id="remote-media-div"></div>
       <div id="controls">
@@ -194,6 +195,15 @@
       }).then(room => {
         console.log(`Connected to Room: ${room.name}`);
         // console.log(JSON.stringify(room));
+
+        room.localParticipant.tracks.forEach((a)=>{
+          console.log('room.localParticipant.tracks',a)
+          if(a.kind === "video"){
+            const localMediaContainer = document.getElementById("local-media");
+            document.getElementById("local-media").innerHTML = "";
+            localMediaContainer.prepend(a.track.attach());
+          }
+        })
 
         console.log("PARTICIPANTS");
         thisApp.room = room;
