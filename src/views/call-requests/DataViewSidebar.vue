@@ -24,6 +24,7 @@
         <label class="vs-input--label">Schedule Date/Time</label>
         <flat-pickr :config="configdateTimePicker" v-model="datetime" placeholder="Date Time" class="w-full mb-6" />
 
+
 <!--        <vs-input-->
 <!--          v-if="custom_fields && custom_fields.filter(x => x['name'].toLowerCase() === 'name') == null"-->
 <!--          v-model="name"-->
@@ -136,7 +137,7 @@
         datetime: new Date(),
         configdateTimePicker: {
           enableTime: true,
-          dateFormat: 'Y-m-d H:i K',
+          dateFormat: 'Y-m-d h:i K',
           minuteIncrement: 15
         },
 
