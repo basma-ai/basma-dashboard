@@ -82,7 +82,7 @@
           <vs-select-item :value="r.id" :text="r.name" v-for="r in services"/>
         </vs-select>
 
-        <vs-checkbox v-model="send_sms">Send SMS</vs-checkbox>
+        <vs-checkbox v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
 
       </div>
     </component>
@@ -138,7 +138,8 @@
         configdateTimePicker: {
           enableTime: true,
           dateFormat: 'Y-m-d h:i K',
-          minuteIncrement: 15
+          minuteIncrement: 15,
+          minDate: new Date()
         },
 
         settings: { // perfectscrollbar settings

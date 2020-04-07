@@ -43,7 +43,7 @@ const router = new Router({
         },
         {
           path: '/agent-phone/:token',
-          name: 'agent-phone',
+          name: 'agent-phone-with-token',
           component: () => import('./views/agent-phone/AgentPhone.vue'),
           props: true
         },

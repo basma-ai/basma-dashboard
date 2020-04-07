@@ -91,8 +91,8 @@
         <vs-th sort-key="name">Agent Name</vs-th>
         <vs-th sort-key="time">Creation Time</vs-th>
         <vs-th sort-key="time">Schedule Time</vs-th>
-        <vs-th sort-key="status">Status</vs-th>
         <vs-th sort-key="service">Service</vs-th>
+        <vs-th sort-key="sms">Send SMS?</vs-th>
         <vs-th>Action</vs-th>
       </template>
 
@@ -122,14 +122,16 @@
           </vs-td>
 
           <vs-td>
-            <vs-chip :color="getOrderStatusColor(tr.send_sms)" class="product-order-status">{{ tr.send_sms ? "YES" : "NO" }}</vs-chip>
-          </vs-td>
-
-          <vs-td>
             <p>{{ tr.service.name }}</p>
           </vs-td>
 
+          <vs-td>
+            <vs-chip :color="getOrderStatusColor(tr.send_sms)" class="product-order-status">{{ tr.send_sms ? "YES" : "NO" }}</vs-chip>
+          </vs-td>
+
           <vs-td class="whitespace-no-wrap">
+            <feather-icon icon="CopyIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                          @click.stop="copyLink(tr)"/>
 <!--            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
 <!--                          @click.stop="editData(tr)"/>-->
             <feather-icon icon="PhoneIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" class="ml-2"
@@ -206,6 +208,21 @@
         this.perPage = pages;
         this.currentPage = 1;
         this.loadData()
+      },
+      copyLink(data) {
+        let this_app = this;
+        this.$copyText("https://video.basma.ai/" + this.$store.state.AppActiveUser.info.vendor.username + "?token=" + data.token).then(function (e) {
+          this_app.$vs.notify({
+            title: 'Success',
+            text: "Call request link is copied!",
+            iconPack: 'feather',
+            icon: 'icon-check-circle',
+            color: 'success'
+          });
+          console.log(e)
+        }, function (e) {
+          console.log(e)
+        })
       },
       viewData(data) {
         // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))

@@ -73,11 +73,15 @@ import 'prismjs/themes/prism-tomorrow.css'
 // import VueTidio from 'vue-tidio';
 // Vue.use(VueTidio, { appKey: '77fscjhhflm0kexipxspnyfeyulm4pz9' });
 
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 
 import VueSocketIO from 'vue-socket.io'
+import SocketIO from "socket.io-client"
+
 Vue.use(new VueSocketIO({
-  debug: false,
-  connection: "https://video-api.basma.ai",
+  debug: true,
+  connection: SocketIO("https://video-api.basma.ai"),
 }))
 
 // Feather font icon

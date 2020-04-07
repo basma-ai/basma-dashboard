@@ -1,6 +1,14 @@
 <template>
   <div>
 
+    <!-- Loading -->
+    <div v-show="screen_status == 'loading'">
+      <div class="fill-row-loading">
+        <div id="loading" class="vs-con-loading__container loading-example">
+        </div>
+      </div>
+    </div>
+
     <!-- Video Connecting Screen -->
     <div v-if="screen_status == 'dashboard'" style="text-align:center">
       <vs-card style="padding: 20px">
@@ -83,11 +91,10 @@
         </vs-card>
       </vs-col>
 
-      <vs-col id="right-sidebar" vs-type="flex" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
+      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
         <vs-card>
           <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">End Call</vs-button>
-          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="10"/>
-          <div class="details">
+          <div class="sidebar-details">
             <table>
               <tr v-for="field in call.custom_fields_values">
                 <td class="font-semibold" style="min-width:80px; text-transform: uppercase">{{ field.label }}:</td>
@@ -95,6 +102,7 @@
               </tr>
             </table>
           </div>
+          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="10"/>
 <!--          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>-->
         </vs-card>
       </vs-col>
@@ -118,7 +126,7 @@
     data: () => ({
       loading: false,
       vendor: {},
-      screen_status: 'dashboard',
+      screen_status: 'loading',
       guest_token: null,
       services_list: [],
       vendor_id: 0,
@@ -144,8 +152,12 @@
       ChatBox
     },
     watch: {
+      loading: function(loading) {
+        if (loading) {
+          this.screen_status = 'loading';
+        }
+      },
       noFilter: function (val) {
-        console.log("All Services is: ", val);
         if (val) {
           this.selected_services = this.services
         } else {
@@ -171,144 +183,14 @@
       }
     },
     methods: {
-      updateNotes() {
-        let thisApp = this;
-
-        axios.post('/agent/update_call', {
-          vu_token: this.$store.state.AppActiveUser.token,
-          call_id: this.call_id,
-          agent_notes: this.agent_notes
-        })
-          .then(function (res) {
-            console.log(res);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      checkFilter() {
-        let isEqual = this.selected_services.length === this.services.length;
-
-        if (isEqual) {
-          console.log("equal")
-          this.noFilter = true
-        } else {
-          console.log("not equal")
-          this.noFilter = false
-        }
-      },
-      list_pending_calls: function () {
-        // this.loading = true;
-        let thisApp = this;
-
-        axios.post('/agent/list_pending_calls', {
-          vu_token: this.$store.state.AppActiveUser.token,
-          services_ids: this.selected_services.map(x => x.id)
-        })
-          .then(function (response) {
-
-            if (response.data.success) {
-
-              thisApp.pending_calls_list = response.data.data.pending_calls_list;
-              if (thisApp.pending_calls_list.length > 0) {
-                thisApp.ringtone_audio.play();
-              } else {
-                thisApp.ringtone_audio.pause();
-              }
-
-            } else {
-              // console.log("it's a failure!");
-            }
-
-            setTimeout(function () {
-              thisApp.list_pending_calls();
-            }, 500);
-
-            // thisApp.loading = false;
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-      },
-      end_call: function () {
-
-        this.ringtone_switch = true
-        this.screen_status = 'loading';
-        this.loading = true;
-
-        this.$refs.call_box.end_call();
-
-        let thisApp = this;
-        axios.post('/agent/end_call', {
-          vu_token: this.$store.state.AppActiveUser.token,
-          call_id: this.call_id
-        })
-          .then(function (response) {
-
-            if (response.data.success) {
-
-              thisApp.screen_status = 'dashboard';
-
-            } else {
-              // console.log("it's a failure!");
-            }
-
-            thisApp.loading = false;
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-      },
       request_agent_token: function () {
-        this.loading = true;
-        this.agent_token_loading = true;
-
-
         let thisApp = this;
+        this.loading = true;
 
         thisApp.screen_status = 'dashboard';
         thisApp.list_pending_calls();
 
         thisApp.loading = false;
-        thisApp.agent_token_loading = false;
-
-      },
-      answer_call: function (selected_call) {
-
-        this.loading = true;
-        this.screen_status = 'loading';
-
-        this.call_id = selected_call.id;
-        this.ringtone_switch = false
-
-        let thisApp = this;
-        axios.post('/agent/answer_call', {
-          vu_token: this.$store.state.AppActiveUser.token,
-          call_id: selected_call.id
-        })
-          .then(function (response) {
-
-            if (response.data.success) {
-
-              thisApp.call = response.data.data.call;
-              thisApp.screen_status = 'in_call';
-
-            } else {
-              // console.log("it's a failure!");
-            }
-
-            thisApp.loading = false;
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-
       },
       loadServices() {
         const this_app = this;
@@ -326,12 +208,117 @@
           console.log(err);
         });
       },
-      join_call_by_token(token) {
+      updateNotes() {
+        axios.post('/agent/update_call', {
+          vu_token: this.$store.state.AppActiveUser.token,
+          call_id: this.call_id,
+          agent_notes: this.agent_notes
+        })
+        .then(function (res) {
+          console.log(res);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      },
+      checkFilter() {
+        let isEqual = this.selected_services.length === this.services.length;
+
+        if (isEqual) {
+          this.noFilter = true
+        } else {
+          this.noFilter = false
+        }
+      },
+      list_pending_calls: function () {
+        let thisApp = this;
+
+        axios.post('/agent/list_pending_calls', {
+          vu_token: this.$store.state.AppActiveUser.token,
+          services_ids: this.selected_services.map(x => x.id)
+        })
+          .then(function (response) {
+
+            if (response.data.success) {
+              thisApp.pending_calls_list = response.data.data.pending_calls_list;
+              if (thisApp.pending_calls_list.length > 0) {
+                thisApp.ringtone_audio.play();
+              } else {
+                thisApp.ringtone_audio.pause();
+              }
+            } else {
+              // console.log("it's a failure!");
+            }
+
+            setTimeout(function () {
+              thisApp.list_pending_calls();
+            }, 500);
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+      },
+      end_call: function () {
+        let thisApp = this;
+
+        this.loading = true;
+        this.ringtone_switch = true
+
+        this.$refs.call_box.end_call();
+
+        axios.post('/agent/end_call', {
+          vu_token: this.$store.state.AppActiveUser.token,
+          call_id: this.call_id
+        })
+          .then(function (response) {
+            thisApp.loading = false;
+
+            if (response.data.success) {
+              thisApp.screen_status = 'dashboard';
+            } else {
+              // console.log("it's a failure!");
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      answer_call: function (selected_call) {
+        let thisApp = this;
+
+        thisApp.loading = true;
+
+        thisApp.call_id = selected_call.id;
+        thisApp.ringtone_switch = false
+
+        axios.post('/agent/answer_call', {
+          vu_token: this.$store.state.AppActiveUser.token,
+          call_id: selected_call.id
+        })
+          .then(function (response) {
+            thisApp.loading = false;
+
+            if (response.data.success) {
+
+              thisApp.call = response.data.data.call;
+              thisApp.screen_status = 'in_call';
+
+            } else {
+              // console.log("it's a failure!");
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      join_call_by_token() {
         const this_app = this;
 
         const params = {
           "vu_token": this.$store.state.AppActiveUser.token,
-          "call_request_id": token,
+          "call_request_id": this.token,
         };
 
         axios.post(API.CALL_REQUESTS_JOIN, params).then((res) => {
@@ -341,18 +328,23 @@
           console.log(err);
         });
       }
-
+    },
+    mounted() {
+      this.$vs.loading({
+        container: "#loading",
+        background: 'transparent',
+        scale: 1.5
+      })
     },
     created() {
-      console.log('this.token',this.token);
+      console.log('this.token', this.token);
 
       if (this.token != null) {
-        this.join_call_by_token(this.token);
+        this.join_call_by_token();
       }
 
       this.ringtone_audio = new Audio('https://basma-cdn.s3.me-south-1.amazonaws.com/assets/audio/agent_default_ringtone.mp3');
       this.vendor_id = this.$store.state.AppActiveUser.info.vendor.id;
-
 
       if (this.ringtone_audio != null) {
         this.ringtone_audio.pause();
@@ -371,8 +363,7 @@
   }
 </script>
 
-
-<style>
+<style lang="scss">
 
   ul.services {
     display: inline-block;
@@ -504,4 +495,34 @@
     }
   }
 
+  .fill-row-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    .loading-example {
+      width: 120px;
+      float: left;
+      height: 120px;
+      margin: 8px;
+      transition: all 0.3s ease;
+      h4 {
+        z-index: 40000;
+        position: relative;
+        text-align: center;
+        padding: 10px;
+      }
+
+    }
+  }
+  .sidebar-details {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    padding: 7px;
+  }
+  .vs-textarea-primary {
+    border-color: #eee !important;
+  }
 </style>

@@ -36,7 +36,8 @@
                       icon-pack="feather"
                       label-placeholder="Username"
                       v-model="username"
-                      class="w-full"/>
+                      class="w-full"
+                      v-on:keyup.enter="login" />
 
                   <vs-input
                       type="password"
@@ -46,7 +47,8 @@
                       icon-pack="feather"
                       label-placeholder="Password"
                       v-model="password"
-                      class="w-full mt-6" />
+                      class="w-full mt-6"
+                      v-on:keyup.enter="login" />
 
                   <div class="flex flex-wrap justify-between my-5">
                       <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
@@ -141,7 +143,7 @@ export default{
         console.log("HELOOW BABY!");
 
         console.log(this_app.$store.state.AppActiveUser);
-        
+
         this.$router.push('/').catch(() => {})
       }).catch((err) => {
         console.log(err);

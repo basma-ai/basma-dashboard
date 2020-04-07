@@ -45,30 +45,33 @@
     methods: {
       toggle_mute_camera: function () {
 
-        let thisApp = this;
+        let this_app = this;
 
-        this.localTracks.forEach((track) => {
-          console.log('In mute function code');
-          console.log(JSON.stringify(track));
-          try{
-            if(track.kind == 'video') {
-              if (track.isEnabled) {
-                track.disable();
-                thisApp.localCamIsEnabled = false;
-              } else {
-                track.enable();
-                thisApp.localCamIsEnabled = true;
+        if (undefined != this.localTracks) {
+          this.localTracks.forEach((track) => {
+            console.log('In mute function code');
+            console.log(JSON.stringify(track));
+            try{
+              if(track.kind == 'video') {
+                if (track.isEnabled) {
+                  track.disable();
+                  this_app.localCamIsEnabled = false;
+                } else {
+                  track.enable();
+                  this_app.localCamIsEnabled = true;
+                }
               }
+            } catch(ex) {
+              console.log(ex.toString());
             }
-          } catch(ex) {
-            console.log(ex.toString());
-          }
-        })
+          })
+        }
+
 
       },
       toggle_mute_mic: function () {
 
-        let thisApp = this;
+        let this_app = this;
 
         this.localTracks.forEach((track) => {
           console.log('In mute function code');
@@ -77,10 +80,10 @@
             if(track.kind == 'audio') {
               if (track.isEnabled) {
                 track.disable();
-                thisApp.localMicIsEnabled = false;
+                this_app.localMicIsEnabled = false;
               } else {
                 track.enable();
-                thisApp.localMicIsEnabled = true;
+                this_app.localMicIsEnabled = true;
               }
             }
           } catch(ex) {
@@ -90,7 +93,7 @@
 
       },
       end_call: function () {
-        let thisApp = this;
+        let this_app = this;
 
         if (this.room != null) {
           this.room.disconnect();
@@ -106,10 +109,10 @@
                 track.stop();
                 const attachedElements = track.detach();
                 attachedElements.forEach(element => element.remove());
-                thisApp.localMicIsEnabled = false;
+                this_app.localMicIsEnabled = false;
               } else {
                 track.enable();
-                thisApp.localMicIsEnabled = true;
+                this_app.localMicIsEnabled = true;
               }
           } catch(ex) {
             console.log(ex.toString());
@@ -169,23 +172,16 @@
         this.isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       }
 
-
-      // createLocalVideoTrack().then(track => {
-      //   const localMediaContainer = document.getElementById('local-media');
-      //   document.getElementById('local-media').innerHTML = "";
-      //   localMediaContainer.appendChild(track.attach());
-      // });
-
       let token = this.connection_token;
 
-      var thisApp = this;
+      let this_app = this;
 
       createLocalTracks({
         audio: true,
         video: {width: 640}
       }).then(localTracks => {
 
-        thisApp.localTracks = localTracks;
+        this_app.localTracks = localTracks;
         return connect(token, {
           name: this.room_name,
           tracks: localTracks
@@ -200,14 +196,14 @@
           console.log('room.localParticipant.tracks',a)
           if(a.kind === "video"){
             const localMediaContainer = document.getElementById("local-media");
-            document.getElementById("local-media").innerHTML = "";
+            localMediaContainer.innerHTML = "";
             localMediaContainer.prepend(a.track.attach());
           }
         })
 
         console.log("PARTICIPANTS");
-        thisApp.room = room;
-        thisApp.check_remote(room);
+        this_app.room = room;
+        this_app.check_remote(room);
 
 
         // Attach the Participant's Media to a <div> element.
