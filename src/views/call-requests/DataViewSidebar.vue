@@ -24,7 +24,6 @@
         <label class="vs-input--label">Schedule Date/Time</label>
         <flat-pickr :config="configdateTimePicker" v-model="datetime" placeholder="Date Time" class="w-full mb-6" />
 
-
 <!--        <vs-input-->
 <!--          v-if="custom_fields && custom_fields.filter(x => x['name'].toLowerCase() === 'name') == null"-->
 <!--          v-model="name"-->
@@ -134,12 +133,13 @@
 
         send_sms: false,
 
-        datetime: new Date(),
+        datetime: null,
         configdateTimePicker: {
           enableTime: true,
-          dateFormat: 'Y-m-d h:i K',
+          // dateFormat: 'd-m-Y H:i',
           minuteIncrement: 15,
-          minDate: new Date()
+          minDate: new Date(),
+          // defaultDate: new Date().toDateString(),
         },
 
         settings: { // perfectscrollbar settings
@@ -280,6 +280,9 @@
           return
         }
 
+        // console.log(this.$moment(this.datetime).unix() * 1000);
+        // return;
+
         const this_app = this;
         this_app.$vs.loading();
 
@@ -287,7 +290,7 @@
           "vu_token": this.$store.state.AppActiveUser.token,
           "vu_id": this.user_id,
           "service_id": this.service_id,
-          "scheduled_time": new Date(this.datetime).getTime(),
+          "scheduled_time": this.$moment(this.datetime).unix() * 1000,
           "send_sms": this.send_sms,
           "custom_fields_values": this.custom_fields,
         };

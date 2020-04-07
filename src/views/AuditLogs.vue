@@ -208,10 +208,7 @@
 <script>
   import axios from '@/axios.js'
   import API from '@/api.js'
-  import Vue from 'vue';
   import UserChip from '@/components/UserChip.vue';
-
-  Vue.use(require('vue-moment'));
 
   export default {
     components: {

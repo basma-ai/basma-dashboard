@@ -118,7 +118,7 @@
           </vs-td>
 
           <vs-td>
-            <p>{{ tr.scheduled_time | moment("YYYY-MM-DD h:mm:ss a") }}</p>
+            <p>{{ tr.scheduled_time | moment("YYYY-MM-DD h:mm a") }}</p>
           </vs-td>
 
           <vs-td>
@@ -151,10 +151,7 @@
 <script>
   import axios from '@/axios.js'
   import API from '@/api.js'
-  import Vue from 'vue';
   import DataViewSidebar from './DataViewSidebar.vue'
-
-  Vue.use(require('vue-moment'));
 
   export default {
     components: {

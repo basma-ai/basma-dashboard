@@ -145,9 +145,6 @@
   import axios from '@/axios.js'
   import API from '@/api.js'
   import DataViewSidebar from './DataViewSidebar.vue'
-  import Vue from 'vue';
-
-  Vue.use(require('vue-moment'));
 
   export default {
     components: {

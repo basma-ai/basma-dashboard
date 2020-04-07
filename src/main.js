@@ -87,6 +87,8 @@ Vue.use(new VueSocketIO({
 // Feather font icon
 require('./assets/css/iconfont.css')
 
+// adding moment globally
+Vue.use(require('vue-moment'))
 
 // Vue select css
 // Note: In latest version you have to add it separately

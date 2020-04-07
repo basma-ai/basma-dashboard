@@ -117,9 +117,6 @@
   import API from '@/api.js';
   import CallBox from '@/components/CallBox.vue';
   import ChatBox from '@/components/chat-box/ChatBox.vue'
-  import Vue from "vue";
-
-  Vue.use(require('vue-moment'));
 
   export default {
     props: ['token'],

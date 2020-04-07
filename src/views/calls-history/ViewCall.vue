@@ -101,12 +101,9 @@
 <script>
   import axios from '@/axios.js'
   import API from '@/api.js'
-  import Vue from 'vue';
   import StarRating from 'vue-star-rating'
   import { videoPlayer }     from 'vue-video-player'
   import 'video.js/dist/video-js.css'
-
-  Vue.use(require('vue-moment'));
 
   export default {
     data() {
