@@ -42,4 +42,7 @@ export default {
   AUDIT_LOG_GET: '/vendor/logs/get',
 
   REPORTS_CALLS: '/vendor/reports/calls',
+
+  SETTINGS_GET: '/vendor/settings/get',
+  SETTINGS_EDIT: '/vendor/settings/edit',
 };

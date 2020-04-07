@@ -12,16 +12,16 @@
 <!--    </div>-->
 
     <!-- Info -->
-    <vs-input class="w-full mb-base" disabled label-placeholder="Name" v-model="name"></vs-input>
     <vs-input class="w-full mb-base" disabled label-placeholder="Username" v-model="username"></vs-input>
+    <vs-input class="w-full mb-base" disabled label-placeholder="Name" v-model="name"></vs-input>
     <vs-input class="w-full" disabled label-placeholder="Email" v-model="email"></vs-input>
 
 <!--    <vs-alert icon-pack="feather" icon="icon-info" class="h-full my-4" color="warning">-->
 <!--      <span>Your account is not verified. <a href="#" class="hover:underline">Resend Confirmation</a></span>-->
 <!--    </vs-alert>-->
 
-<!--    <vs-input class="w-full my-base" disabled label-placeholder="Company" v-model="company"></vs-input>-->
-<!--    <vs-input class="w-full my-base" disabled label-placeholder="Call Center URL" v-model="company_cc_url"></vs-input>-->
+    <vs-input class="w-full my-base" disabled label-placeholder="Company" v-model="company"></vs-input>
+    <vs-input class="w-full my-base" disabled label-placeholder="Call Center URL" v-model="company_cc_url"></vs-input>
 
     <!-- Save & Reset Button -->
 <!--    <div class="flex flex-wrap items-center justify-end">-->

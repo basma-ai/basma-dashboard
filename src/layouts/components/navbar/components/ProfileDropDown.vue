@@ -58,7 +58,7 @@ export default {
         const vendor = this.activeUserInfo.info.vendor.username;
         this.$store.commit('UPDATE_USER_INFO', null);
         // this.$router.push().catch(() => {})
-        window.location = '/'+vendor+'/login';
+        window.location = '/' + vendor;
     },
   }
 }

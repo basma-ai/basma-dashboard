@@ -54,6 +54,8 @@
 
         axios.post(API.USERS_EDIT, params).then((res) => {
 
+          this_app.$vs.loading.close();
+
           if (res.data.success){
             this_app.$vs.notify({
               title: 'Success',
@@ -64,14 +66,12 @@
             });
 
             setTimeout(() => {
-              this_app.$vs.loading.close();
+
               this_app.$store.commit('UPDATE_USER_INFO', null);
               window.location = '/' + vendor;
             }, 1000);
 
           } else {
-
-            this_app.$vs.loading.close();
             const error = res.data.data.errors[0];
 
             this_app.$vs.notify({
@@ -82,6 +82,7 @@
               color: 'danger'
             });
 
+            return
           }
 
 

@@ -1,7 +1,7 @@
 <template>
     <div id="demo-card-analytics">
         <!-- ROW 1 -->
-        <div class="vx-row">
+        <div v-if="false" class="vx-row">
 
             <!-- LINE CHART -->
             <div class="vx-col w-full md:w-2/3 mb-base">

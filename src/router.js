@@ -128,12 +128,24 @@ const router = new Router({
         {
           path: '/settings',
           name: 'settings',
-          component: () => import('./views/user-settings/UserSettings.vue'),
+          component: () => import('./views/vendor-settings/UserSettings.vue'),
           meta: {
-            pageTitle: 'Settings',
+            pageTitle: 'Account Settings',
             breadcrumb: [
               {title: 'Home', url: '/'},
-              {title: 'Settings'}
+              {title: 'Account Settings'}
+            ]
+          },
+        },
+        {
+          path: '/profile',
+          name: 'profile',
+          component: () => import('./views/user-settings/UserSettings.vue'),
+          meta: {
+            pageTitle: 'My Profile',
+            breadcrumb: [
+              {title: 'Home', url: '/'},
+              {title: 'My Profile'}
             ]
           },
         },
@@ -207,6 +219,11 @@ const router = new Router({
         // =============================================================================
         // PAGES
         // =============================================================================
+        {
+          path: '/:id',
+          name: 'page-vendor',
+          component: () => import('@/views/pages/Login.vue')
+        },
         {
           path: '/:id/login',
           name: 'page-login',
