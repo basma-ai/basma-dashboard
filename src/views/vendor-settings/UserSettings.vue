@@ -1,5 +1,5 @@
 <template>
-  <vs-tabs :position="isSmallerScreen ? 'top' : 'left'" class="tabs-shadow-none" id="profile-tabs" :key="isSmallerScreen">
+  <vs-tabs v-if="vendor != null" :position="isSmallerScreen ? 'top' : 'left'" class="tabs-shadow-none" id="profile-tabs" :key="isSmallerScreen">
 
     <!-- GENERAL -->
 <!--    <vs-tab icon-pack="feather" icon="icon-user" :label="!isSmallerScreen ? 'My Profile' : ''">-->
@@ -56,7 +56,7 @@ export default {
   },
   data () {
     return {
-      vendor: {}
+      vendor: null
     }
   },
   computed: {

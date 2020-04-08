@@ -1,16 +1,31 @@
 <template>
   <vx-card no-shadow>
     <!-- Name -->
-    <vs-input class="w-full mt-8" label-placeholder="Company" v-model="vendor.name"></vs-input>
+    <div class="mt-5">
+      <label class="text-xs">Organization Name</label>
+      <vs-input class="w-full" v-model="vendor.name"></vs-input>
+    </div>
 
     <!-- Bio -->
 <!--    <vs-textarea label="Bio" v-model="bio" placeholder="Your bio..." />-->
 
     <!-- SMS Template -->
-    <vs-textarea class="w-full mt-5" label="SMS Template" rows="4" v-model="vendor.call_request_sms_template" placeholder="Your SMS call request template" />
+    <div class="mt-5">
+      <label class="text-xs">Call Request SMS Template</label>
+      <vs-textarea class="w-full" rows="4" v-model="vendor.call_request_sms_template" placeholder="Your " />
+    </div>
 
     <!-- Website  -->
-    <vs-input class="w-full mt-8" disabled label-placeholder="Call Center URL" v-model="website"></vs-input>
+    <div class="mt-5">
+      <label class="text-xs">Video Call Center URL</label>
+      <vs-input class="w-full" disabled v-model="website"></vs-input>
+    </div>
+
+    <!-- Business Hours -->
+    <div class="mt-5">
+      <label class="text-xs">Business Hours</label>
+      <business-hours v-if="days != null" color="#FFB600" type="select" :days="days"></business-hours>
+    </div>
 
     <!-- DOB -->
 <!--    <div class="mt-8">-->
@@ -48,15 +63,18 @@ import 'flatpickr/dist/flatpickr.css'
 import vSelect from 'vue-select'
 import axios from '@/axios.js'
 import API from '@/api.js'
+import BusinessHours from 'vue-business-hours';
 
 export default {
   props: ["vendor"],
   components: {
     flatPickr,
-    vSelect
+    vSelect,
+    BusinessHours
   },
   data () {
     return {
+      days: null,
       bio: this.$store.state.AppActiveUser.about,
       dob: null,
       country: 'Bahrain',
@@ -89,9 +107,21 @@ export default {
       ]
     }
   },
+  // watch: {
+  //   vendor: function (newQuestion, oldQuestion) {
+  //     console.log(this.vendor.working_hours);
+  //   }
+  // },
   computed: {
     activeUserInfo() {
       return this.$store.state.AppActiveUser
+    }
+  },
+  created() {
+    console.log(this.vendor);
+
+    if (this.vendor.working_hours != null) {
+      this.days = JSON.parse(this.vendor.working_hours);
     }
   },
   methods: {
@@ -103,11 +133,13 @@ export default {
       this_app.$vs.loading();
 
       const vendor = this.activeUserInfo.info.vendor.username;
+      let days = JSON.stringify(this.days);
 
       let params = {
         "vu_token": this.activeUserInfo.token,
         "name": this.vendor.name,
-        "call_request_sms_template": this.vendor.call_request_sms_template
+        "call_request_sms_template": this.vendor.call_request_sms_template,
+        "working_hours": days
       };
 
       axios.post(API.SETTINGS_EDIT, params).then((res) => {

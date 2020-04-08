@@ -90,6 +90,10 @@ require('./assets/css/iconfont.css')
 // adding moment globally
 Vue.use(require('vue-moment'))
 
+// Business Hours
+import BusinessHours from 'vue-business-hours';
+Vue.use(BusinessHours);
+
 // Vue select css
 // Note: In latest version you have to add it separately
 // import 'vue-select/dist/vue-select.css';
