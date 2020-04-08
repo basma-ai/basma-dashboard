@@ -1,58 +1,36 @@
 <template>
   <vs-tabs v-if="vendor != null" :position="isSmallerScreen ? 'top' : 'left'" class="tabs-shadow-none" id="profile-tabs" :key="isSmallerScreen">
-
-    <!-- GENERAL -->
-<!--    <vs-tab icon-pack="feather" icon="icon-user" :label="!isSmallerScreen ? 'My Profile' : ''">-->
-<!--      <div class="tab-general md:ml-4 md:mt-0 mt-4 ml-0">-->
-<!--        <user-settings-general />-->
-<!--      </div>-->
-<!--    </vs-tab>-->
-<!--    <vs-tab icon-pack="feather" icon="icon-lock" :label="!isSmallerScreen ? 'Change Password' : ''">-->
-<!--      <div class="tab-change-pwd md:ml-4 md:mt-0 mt-4 ml-0">-->
-<!--        <user-settings-change-password />-->
-<!--      </div>-->
-<!--    </vs-tab>-->
     <vs-tab icon-pack="feather" icon="icon-info" :label="!isSmallerScreen ? 'Info' : ''">
       <div class="tab-info md:ml-4 md:mt-0 mt-4 ml-0">
         <user-settings-info :vendor="vendor"/>
       </div>
     </vs-tab>
-<!--    <vs-tab icon-pack="feather" icon="icon-github" :label="!isSmallerScreen ? 'Social Links' : ''">-->
-<!--      <div class="tab-social-links md:ml-4 md:mt-0 mt-4 ml-0">-->
-<!--        <user-settings-social-links />-->
-<!--      </div>-->
-<!--    </vs-tab>-->
-<!--    <vs-tab icon-pack="feather" icon="icon-link-2" :label="!isSmallerScreen ? 'Connections' : ''">-->
-<!--      <div class="tab-text md:ml-4 md:mt-0 mt-4 ml-0">-->
-<!--        <user-settings-connections />-->
-<!--      </div>-->
-<!--    </vs-tab>-->
-    <vs-tab icon-pack="feather" icon="icon-bell" :label="!isSmallerScreen ? 'Features' : ''">
-      <div class="tab-text md:ml-4 md:mt-0 mt-4 ml-0">
-        <user-settings-notifications :vendor="vendor"/>
+    <vs-tab icon-pack="feather" icon="icon-clock" :label="!isSmallerScreen ? 'Working Hours' : ''">
+      <div class="tab-info md:ml-4 md:mt-0 mt-4 ml-0">
+        <user-settings-working-hours :vendor="vendor"/>
       </div>
     </vs-tab>
+    <vs-tab icon-pack="feather" icon="icon-film" :label="!isSmallerScreen ? 'Recording' : ''">
+      <div class="tab-text md:ml-4 md:mt-0 mt-4 ml-0">
+        <user-settings-recording :vendor="vendor"/>
+      </div>
+    </vs-tab>
+
   </vs-tabs>
 </template>
 
 <script>
-import UserSettingsGeneral from './UserSettingsGeneral.vue'
-import UserSettingsChangePassword from './UserSettingsChangePassword.vue'
 import UserSettingsInfo from './UserSettingsInfo.vue'
-import UserSettingsSocialLinks from './UserSettingsSocialLinks.vue'
-import UserSettingsConnections from './UserSettingsConnections.vue'
-import UserSettingsNotifications from './UserSettingsNotifications.vue'
+import UserSettingsWorkingHours from './UserSettingsWorkingHours.vue'
+import UserSettingsRecording from "./UserSettingsRecording";
 import axios from '@/axios.js'
 import API from '@/api.js'
 
 export default {
   components: {
-    // UserSettingsGeneral,
-    // UserSettingsChangePassword,
     UserSettingsInfo,
-    // UserSettingsSocialLinks,
-    // UserSettingsConnections,
-    UserSettingsNotifications
+    UserSettingsWorkingHours,
+    UserSettingsRecording
   },
   data () {
     return {

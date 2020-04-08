@@ -133,7 +133,7 @@ const router = new Router({
             pageTitle: 'Account Settings',
             breadcrumb: [
               {title: 'Home', url: '/'},
-              {title: 'Account Settings'}
+              {title: 'Account Settings', active: true}
             ]
           },
         },

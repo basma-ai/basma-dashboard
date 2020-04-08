@@ -2,7 +2,7 @@
   <vx-card no-shadow>
 
     <div class="mb-base">
-      <h6 class="mb-4">Recordings</h6>
+      <h6 class="mb-4">Recording</h6>
 
       <div class="flex items-center mb-4">
         <vs-switch v-model="vendor.recording_enabled" disabled/>
@@ -37,7 +37,7 @@
 
     <!-- Save & Reset Button -->
     <div class="flex flex-wrap items-center justify-end mt-base">
-      <vs-button class="ml-auto mt-2" @click="update">Save Changes</vs-button>
+      <vs-button class="ml-auto mt-2" @click="update" disabled>Save Changes</vs-button>
     </div>
 
   </vx-card>
