@@ -94,10 +94,14 @@ Vue.use(require('vue-moment'))
 import BusinessHours from 'vue-business-hours';
 Vue.use(BusinessHours);
 
+// VuePhoneNumberInput
+import VuePhoneNumberInput from 'vue-phone-number-input';
+import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+Vue.component('vue-phone-number-input', VuePhoneNumberInput);
+
 // Vue select css
 // Note: In latest version you have to add it separately
 // import 'vue-select/dist/vue-select.css';
-
 
 Vue.config.productionTip = false
 

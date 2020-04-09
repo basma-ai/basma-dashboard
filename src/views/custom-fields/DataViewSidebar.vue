@@ -22,21 +22,35 @@
 
         <vs-input label="Label" v-model="label" class="mt-5 w-full" name="item-name" v-validate="'required'"/>
 
-        <!-- NAME -->
-        <vs-input label="Name" v-model="name" class="mt-5 w-full" name="item-name" v-validate="'required'"/>
-
-<!--        <vs-input label="Type" v-model="type" class="mt-5 w-full" name="item-name" v-validate="'required'"/>-->
         <!-- SERVICE -->
-        <vs-select v-validate="'required'" name="type" label="Type" v-model="type" class="w-full mb-6">
-          <vs-select-item :value="r.value" :text="r.text" v-for="r in types" />
+        <vs-select v-validate="'required'" name="type" label="Type" v-model="type" class="w-full mt-5">
+          <vs-select-item :value="r.value" :text="r.text" v-for="r in types"/>
         </vs-select>
 
-        <vs-tooltip text="If this is check true, the field will be required to enter by the user prior to the call" position="top" >
-          <vs-checkbox label="Is Mandatory?" v-model="is_mandatory" class="mt-5 w-full" name="item-name" v-validate="'required'">Is Mandatory?</vs-checkbox>
-        </vs-tooltip>
-        <vs-tooltip text="If this is check true, the field will be visible to the agent before answering the call" position="top" >
-          <vs-checkbox label="Is Visible?" v-model="is_visible_in_menus" class="mt-5 w-full" name="item-name" v-validate="'required'">Is Visible?</vs-checkbox>
-        </vs-tooltip>
+        <!-- Values -->
+        <vs-chips v-if="isChecklist" placeholder="Type and enter.." class="w-full mt-5" v-model="chips">
+          <vs-chip
+            color="primary"
+            :key="chip"
+            @click="remove(chip)"
+            v-for="chip in chips"
+            closable>
+            {{ chip }}
+          </vs-chip>
+        </vs-chips>
+
+        <vs-checkbox label="Is Mandatory?" v-model="is_mandatory" class="mt-5 w-full" name="item-name"
+                     v-validate="'required'">Is Mandatory?
+        </vs-checkbox>
+
+        <vs-checkbox label="Is Visible?" v-model="is_visible_in_menus" class="mt-5 w-full" name="item-name"
+                     v-validate="'required'">Is Visible?
+        </vs-checkbox>
+
+        <vs-checkbox label="Is For Agent?" v-model="is_for_agent" class="mt-5 w-full" name="item-name"
+                     v-validate="'required'">Is For Agent?
+        </vs-checkbox>
+
       </div>
     </component>
 
@@ -73,22 +87,30 @@
         id: null,
         name: '',
         type: '',
+        chips: [],
         types: [{
           text: 'Text',
           value: 'text'
-        },{
+        }, {
           text: 'Number',
           value: 'number'
+        }, {
+          text: 'Mobile',
+          value: 'mobile'
         }, {
           text: 'Checkbox',
           value: 'boolean'
         }, {
           text: 'Date',
           value: 'date'
+        }, {
+          text: 'Checklist',
+          value: 'checklist'
         }],
         label: '',
         is_mandatory: false,
         is_visible_in_menus: false,
+        is_for_agent: false,
 
         settings: { // perfectscrollbar settings
           maxScrollbarLength: 60,
@@ -103,19 +125,26 @@
           this.initValues()
           // this.$validator.reset()
         } else {
-          const {id, name, type, label, is_mandatory, is_visible_in_menus} = JSON.parse(JSON.stringify(this.data))
+          const {id, name, type, label, is_mandatory, is_visible_in_menus, agent_only, value_description} = JSON.parse(JSON.stringify(this.data))
           this.id = id
           this.name = name
           this.type = type
           this.label = label
           this.is_mandatory = is_mandatory
           this.is_visible_in_menus = is_visible_in_menus
+          this.is_for_agent = agent_only
+          if (null != value_description) {
+            this.chips = JSON.parse(value_description)
+          }
           this.initValues()
         }
         // Object.entries(this.data).length === 0 ? this.initValues() : { this.id, this.name, this.dataCategory, this.dataOrder_status, this.dataPrice } = JSON.parse(JSON.stringify(this.data))
       }
     },
     computed: {
+      isChecklist() {
+        return this.type === "checklist"
+      },
       isNew() {
         return Object.entries(this.data).length === 0
       },
@@ -131,17 +160,17 @@
           }
         }
       },
-      nameToLower(){
-        return this.name.toLowerCase().replace(' ', '_')
-      },
       isFormValid() {
-        return this.name
+        return this.label
       },
       scrollbarTag() {
         return this.$store.getters.scrollbarTag
       }
     },
     methods: {
+      remove(item) {
+        this.chips.splice(this.chips.indexOf(item), 1)
+      },
       initValues() {
         if (this.data.id) return
         this.id = null
@@ -150,7 +179,8 @@
         this.label = ''
         this.is_mandatory = false
         this.is_visible_in_menus = false
-        this.is_restricted = false
+        this.is_for_agent = false
+        this.chips = []
       },
       submitData() {
         if (!this.isFormValid) {
@@ -162,14 +192,18 @@
 
         const params = {
           "vu_token": this.$store.state.AppActiveUser.token,
-          "name": this.nameToLower,
-          "type": this.type,
           "label": this.label,
+          "type": this.type,
           "is_mandatory": this.is_mandatory,
-          "is_visible_in_menus": this.is_visible_in_menus
+          "is_visible_in_menus": this.is_visible_in_menus,
+          "agent_only": this.is_for_agent
         };
 
-        if (!this_app.isNew){
+        if (this_app.isChecklist) {
+          params.value_description = JSON.stringify(this_app.chips)
+        }
+
+        if (!this_app.isNew) {
           params.custom_field_id = this_app.data.id;
         }
 
@@ -247,5 +281,12 @@
     &:not(.ps) {
       overflow-y: auto;
     }
+  }
+
+
+</style>
+<style>
+  .con-chips {
+    justify-content: flex-start !important;
   }
 </style>

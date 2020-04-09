@@ -89,7 +89,6 @@
 
       <template slot="thead">
         <vs-th sort-key="name">Label</vs-th>
-        <vs-th sort-key="name">Field Name</vs-th>
         <vs-th sort-key="name">Type</vs-th>
         <vs-th sort-key="name">Is Mandatory?</vs-th>
         <vs-th sort-key="name">Is Visible?</vs-th>
@@ -102,10 +101,6 @@
 
           <vs-td :data="tr.label">
             {{ tr.label }}
-          </vs-td>
-
-          <vs-td :data="tr.name">
-            {{ tr.name }}
           </vs-td>
 
           <vs-td :data="tr.type">

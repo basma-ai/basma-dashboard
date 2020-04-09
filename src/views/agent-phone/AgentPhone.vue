@@ -95,14 +95,9 @@
         <vs-card>
           <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">End Call</vs-button>
           <div class="sidebar-details">
-            <table>
-              <tr v-for="field in call.custom_fields_values">
-                <td class="font-semibold" style="min-width:80px; text-transform: uppercase">{{ field.label }}:</td>
-                <td>{{ field.value }}</td>
-              </tr>
-            </table>
+            <custom-fields v-if="call.custom_fields_values != null" :custom_fields="call.custom_fields_values"></custom-fields>
           </div>
-          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="10"/>
+          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="5"/>
 <!--          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>-->
         </vs-card>
       </vs-col>
@@ -117,6 +112,7 @@
   import API from '@/api.js';
   import CallBox from '@/components/CallBox.vue';
   import ChatBox from '@/components/chat-box/ChatBox.vue'
+  import CustomFields from '@/components/CustomFields.vue';
 
   export default {
     props: ['token'],
@@ -142,13 +138,23 @@
       online_switch: true,
       selected_services: [],
       services: [],
-      agent_notes: ''
+      agent_notes: '',
+      wasSidebarOpen: null
     }),
     components: {
       CallBox,
-      ChatBox
+      ChatBox,
+      CustomFields
     },
     watch: {
+      screen_status: function(status){
+        if (status == 'in_call'){
+          this.wasSidebarOpen = this.$store.state.reduceButton
+          this.$store.commit('TOGGLE_REDUCE_BUTTON', true)
+        }else{
+          if (!this.wasSidebarOpen) this.$store.commit('TOGGLE_REDUCE_BUTTON', false)
+        }
+      },
       loading: function(loading) {
         if (loading) {
           this.screen_status = 'loading';
@@ -209,7 +215,8 @@
         axios.post('/agent/update_call', {
           vu_token: this.$store.state.AppActiveUser.token,
           call_id: this.call_id,
-          agent_notes: this.agent_notes
+          agent_notes: this.agent_notes,
+          custom_fields_values: this.call.custom_fields_values,
         })
         .then(function (res) {
           console.log(res);
@@ -258,6 +265,8 @@
 
       },
       end_call: function () {
+        this.updateNotes();
+
         let thisApp = this;
 
         this.loading = true;
@@ -323,6 +332,8 @@
           this_app.answer_call({ id : res.data.data.call_id });
         }).catch((err) => {
           console.log(err);
+        }).finally(()=>{
+          this_app.token = null;
         });
       }
     },
@@ -334,9 +345,8 @@
       })
     },
     created() {
-      console.log('this.token', this.token);
-
       if (this.token != null) {
+        console.log('this.token', this.token);
         this.join_call_by_token();
       }
 
@@ -353,8 +363,12 @@
       this.loadServices();
     },
     beforeDestroy() {
+      if (this.screen_status == 'in_call') {
+        this.end_call();
+      }
       this.ringtone_audio.pause();
       this.ringtone_audio = null;
+      if (!this.wasSidebarOpen) this.$store.commit('TOGGLE_REDUCE_BUTTON', false)
       console.log("we are at onDestroy");
     }
   }
@@ -513,13 +527,13 @@
     }
   }
   .sidebar-details {
-    border: 1px solid #eee;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 12px;
-    padding: 7px;
+    /*border: 1px solid #eee;*/
+    /*border-radius: 5px;*/
+    /*margin-bottom: 15px;*/
+    /*font-size: 12px;*/
+    /*padding: 7px;*/
   }
-  .vs-textarea-primary {
-    border-color: #eee !important;
-  }
+  /*.vs-textarea-primary {*/
+  /*  border-color: #eee !important;*/
+  /*}*/
 </style>

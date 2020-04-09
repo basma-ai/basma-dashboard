@@ -21,53 +21,9 @@
 
       <div class="p-6">
 
+        <!-- Schedule Date/Time -->
         <label class="vs-input--label">Schedule Date/Time</label>
         <flat-pickr :config="configdateTimePicker" v-model="datetime" placeholder="Date Time" class="w-full mb-6" />
-
-<!--        <vs-input-->
-<!--          v-if="custom_fields && custom_fields.filter(x => x['name'].toLowerCase() === 'name') == null"-->
-<!--          v-model="name"-->
-<!--          class="w-full mb-6"-->
-<!--          label="Name" />-->
-
-<!--        <vs-input-->
-<!--          v-if="custom_fields && custom_fields.filter(x => x['name'].toLowerCase() ==='mobile') == null"-->
-<!--          v-model="mobile"-->
-<!--          class="w-full mb-6"-->
-<!--          label="Mobile" />-->
-
-        <!-- read the fields from the db, and then show them according to their type -->
-        <div v-for="(field, index) in custom_fields" v-bind:key="field.id">
-          <vs-input
-            v-if="field.type === 'text'"
-            v-model="field.value"
-            :label="field.label + (field.is_mandatory ? '*' : '')"
-            :rules="field.is_mandatory ? requiredRules : []"
-            class="w-full mb-6" />
-
-          <vs-input
-            v-if="field.type === 'number' && field.name === 'mobile'"
-            v-model="field.value"
-            placeholder="97333112233"
-            :label="field.label + (field.is_mandatory ? '*' : '')"
-            :rules="field.is_mandatory ? requiredRules : []"
-            class="w-full mb-6" />
-
-          <vs-input
-            v-if="field.type === 'number' && field.name !== 'mobile'"
-            v-model="field.value"
-            :label="field.label + (field.is_mandatory ? '*' : '')"
-            :rules="field.is_mandatory ? requiredRules : []"
-            class="w-full mb-6" />
-
-          <vs-checkbox
-            v-if="field.type === 'boolean'"
-            v-model="field.value"
-            :label="field.label + (field.is_mandatory ? '*' : '')"
-            :rules="field.is_mandatory ? requiredRules : []"
-            class="w-full mb-6"
-            style="text-align: justify;" />
-        </div>
 
         <!-- AGENT -->
         <vs-select v-validate="'required'" name="user_id" label="Agents" v-model="user_id"
@@ -81,8 +37,9 @@
           <vs-select-item :value="r.id" :text="r.name" v-for="r in services"/>
         </vs-select>
 
-        <vs-checkbox v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
+        <custom-fields v-if="custom_fields != null" :custom_fields="custom_fields"></custom-fields>
 
+        <vs-checkbox v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
       </div>
     </component>
 
@@ -100,6 +57,7 @@
   import {Validator} from 'vee-validate';
   import flatPickr from 'vue-flatpickr-component';
   import 'flatpickr/dist/flatpickr.css';
+  import CustomFields from '@/components/CustomFields.vue';
 
   // register custom messages
   Validator.localize('en')
@@ -118,11 +76,13 @@
     },
     components: {
       VuePerfectScrollbar,
-      flatPickr
+      flatPickr,
+      CustomFields
     },
     data() {
       return {
         // errors: [''],
+        chips: [],
         name: '',
         mobile: '',
         services: [],
@@ -131,7 +91,7 @@
         user_id: '',
         custom_fields: [],
 
-        send_sms: false,
+        send_sms: true,
 
         datetime: null,
         configdateTimePicker: {
