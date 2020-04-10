@@ -81,7 +81,7 @@ import SocketIO from "socket.io-client"
 
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: SocketIO("https://video-api.basma.ai"),
+  connection: SocketIO(process.env.VUE_APP_VIDEO_API_URL),
 }))
 
 // Feather font icon

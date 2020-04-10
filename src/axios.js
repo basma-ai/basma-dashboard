@@ -1,9 +1,7 @@
 // axios
 import axios from 'axios'
 
-const baseURL = "https://video-api.basma.ai"
-// const baseURL = "http://localhost:1061"
-// const baseURL = "https://ecda0df3.ngrok.io"
+const baseURL = process.env.VUE_APP_VIDEO_API_URL
 
 export default axios.create({
   baseURL: baseURL
