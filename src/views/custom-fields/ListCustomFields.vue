@@ -115,6 +115,10 @@
             {{ tr.is_visible_in_menus ? 'YES' : 'NO'  }}
           </vs-td>
 
+          <vs-td :data="tr.agent_only">
+            {{ tr.agent_only ? 'YES' : 'NO'  }}
+          </vs-td>
+
           <vs-td class="whitespace-no-wrap">
             <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
                           @click.stop="editData(tr)"/>
@@ -190,9 +194,47 @@
         this.toggleDataSidebar(true)
       },
       deleteData(id) {
-        // this.$store.dispatch('dataList/removeItem', id).catch(err => {
-        //   console.error(err)
-        // })
+        let this_app = this;
+
+        this_app.$vs.dialog({
+          type: 'confirm',
+          color: 'danger',
+          title: `Confirm`,
+          text: 'Are you sure you want to delete this?',
+          accept: function () {
+
+            const params = {
+              "vu_token": this_app.$store.state.AppActiveUser.token,
+              "custom_field_id": id,
+            };
+
+            axios.post(API.CUSTOM_FIELDS_DELETE, params).then((res) => {
+              if (res.data.success) {
+                this_app.$vs.notify({
+                  title: 'Success',
+                  text: "Custom field is deleted!",
+                  iconPack: 'feather',
+                  icon: 'icon-check-circle',
+                  color: 'success'
+                });
+                this_app.loadData();
+              } else {
+                const error = res.data.data.errors[0];
+
+                this_app.$vs.notify({
+                  title: 'Error',
+                  text: error,
+                  iconPack: 'feather',
+                  icon: 'icon-alert-circle',
+                  color: 'danger'
+                });
+              }
+              console.log(res);
+            }).catch((err) => {
+              console.log(err);
+            });
+          }
+        })
       },
       editData(data) {
         // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))

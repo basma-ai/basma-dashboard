@@ -170,8 +170,46 @@
         this.toggleDataSidebar(true)
       },
       deleteData(id) {
-        this.$store.dispatch('dataList/removeItem', id).catch(err => {
-          console.error(err)
+        let this_app = this;
+
+        this_app.$vs.dialog({
+          type: 'confirm',
+          color: 'danger',
+          title: `Confirm`,
+          text: 'Are you sure you want to delete this?',
+          accept: function () {
+
+            const params = {
+              "vu_token": this_app.$store.state.AppActiveUser.token,
+              "role_id": id,
+            };
+
+            axios.post(API.ROLES_DELETE, params).then((res) => {
+              if (res.data.success) {
+                this_app.$vs.notify({
+                  title: 'Success',
+                  text: "Role is deleted!",
+                  iconPack: 'feather',
+                  icon: 'icon-check-circle',
+                  color: 'success'
+                });
+                this_app.loadData();
+              } else {
+                const error = res.data.data.errors[0];
+
+                this_app.$vs.notify({
+                  title: 'Error',
+                  text: error,
+                  iconPack: 'feather',
+                  icon: 'icon-alert-circle',
+                  color: 'danger'
+                });
+              }
+              console.log(res);
+            }).catch((err) => {
+              console.log(err);
+            });
+          }
         })
       },
       editData(data) {

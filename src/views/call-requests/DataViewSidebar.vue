@@ -32,12 +32,12 @@
         </vs-select>
 
         <!-- SERVICE -->
-        <vs-select v-validate="'required'" name="service_id" label="Service" v-model="service_id"
+        <vs-select v-if="services.length > 0" v-validate="'required'" name="service_id" label="Service" v-model="service_id"
                    class="w-full mb-6">
           <vs-select-item :value="r.id" :text="r.name" v-for="r in services"/>
         </vs-select>
 
-        <custom-fields v-if="custom_fields != null" :custom_fields="custom_fields"></custom-fields>
+        <custom-fields :is_agent_view="false" v-if="custom_fields != null" :custom_fields="custom_fields"></custom-fields>
 
         <vs-checkbox v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
       </div>
@@ -175,23 +175,28 @@
         axios.post(API.CUSTOM_FIELDS_LIST, params).then((res) => {
           console.log(res);
           let custom_fields = res.data.data.list;
-          this_app.custom_fields = res.data.data.list;
 
-          if (custom_fields.filter(x => x['name'].toLowerCase() === 'mobile') == null) {
+          let matched = custom_fields.filter((a) => {
+            return a.type === 'mobile' && a.agent_only === 0;
+          });
+
+          if(matched[0] == null) {
             custom_fields.unshift({
-              type: "number",
-              name: "mobile",
+              type: "mobile",
               label: "Mobile",
-              is_mandatory: 1})
+              value_description: "",
+              value: "",
+              is_mandatory: 1,
+              agent_only: 0})
           }
 
-          if (custom_fields.filter(x => x['name'].toLowerCase() === 'name') == null) {
-            custom_fields.unshift({
-              type: "text",
-              name: "name",
-              label: "Name",
-              is_mandatory: 1})
-          }
+          // if (custom_fields.filter(x => x['name'].toLowerCase() === 'name') == null) {
+          //   custom_fields.unshift({
+          //     type: "text",
+          //     name: "name",
+          //     label: "Name",
+          //     is_mandatory: 1})
+          // }
 
           this_app.custom_fields = custom_fields
 

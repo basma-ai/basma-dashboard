@@ -196,13 +196,17 @@
         });
       },
       initValues() {
-        if (this.data.id) return
-        this.username = ''
-        this.password = ''
-        this.name = ''
-        this.email = ''
-        this.groups_ids = []
-        this.roles_ids = []
+        if (this.data.id) {
+          this.password = ''
+          return
+        }else{
+          this.username = ''
+          this.password = ''
+          this.name = ''
+          this.email = ''
+          this.groups_ids = []
+          this.roles_ids = []
+        }
       },
       submitData() {
         if (!this.isFormValid) {

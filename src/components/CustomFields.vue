@@ -1,21 +1,20 @@
 <template>
   <div>
-    <!-- read the fields from the db, and then show them according to their type -->
-    <div v-for="(field, index) in custom_fields" v-bind:key="field.id">
+    <div v-if="!read_only" v-for="field in custom_fields" v-bind:key="field.id">
       <vs-input
-        v-if="field.type === 'text'"
+        v-if="field.type === 'text' && isShow(field)"
         v-model="field.value"
         :label="field.label + (field.is_mandatory ? '*' : '')"
         :rules="field.is_mandatory ? requiredRules : []"
         class="w-full mb-6"/>
 
-      <div v-if="field.type === 'mobile'">
+      <div v-if="field.type === 'mobile' && isShow(field)">
         <label class="vs-input--label">Mobile Number</label>
-        <VuePhoneNumberInput default-country-code="BH" v-model="field.value_description" class="w-full mb-6"
+        <VuePhoneNumberInput default-country-code="BH" ignored-countries="['IL']" v-model="field.value_description" class="w-full mb-6"
                              @update="field.value = $event.e164"/>
       </div>
 
-      <div v-if="field.type === 'number'">
+      <div v-if="field.type === 'number' && isShow(field)">
         <vs-input
           v-model="field.value"
           :label="field.label + (field.is_mandatory ? '*' : '')"
@@ -24,15 +23,15 @@
       </div>
 
       <vs-checkbox
-        v-if="field.type === 'boolean'"
+        v-if="field.type === 'boolean' && isShow(field)"
         v-model="field.value"
         :label="field.label + (field.is_mandatory ? '*' : '')"
         :rules="field.is_mandatory ? requiredRules : []"
         class="w-full mb-6"
         style="text-align: justify"/>
 
-      <div v-if="field.type === 'checklist' && field.agent_only">
-        <vs-select multiple v-validate="'required'" name="checklist" label="Checklist" v-model="field.value"
+      <div v-if="field.type === 'checklist' && isShow(field)">
+        <vs-select multiple v-validate="'required'" name="checklist" :label="field.label" v-model="field.value"
                    class="w-full mb-6">
           <vs-select-item :value="chip" :text="chip" v-for="chip in JSON.parse(field.value_description)"
                           v-bind:key="chip"/>
@@ -40,6 +39,16 @@
       </div>
 
     </div>
+
+    <table v-if="read_only">
+      <tr v-for="field in custom_fields" v-bind:key="field.id">
+        <td class="font-semibold" style="text-transform: capitalize">{{ field.label }}</td>
+        <td v-if="field.type != 'checklist'">{{ field.value }}</td>
+        <td v-else>
+          <vs-chip color="primary" v-for="chip in field.value" >{{ chip }}</vs-chip>
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 <script>
@@ -50,28 +59,44 @@
 
   export default {
     props: {
-      custom_fields: []
+      is_agent_view: false,
+      custom_fields: null,
+      values: null,
+      read_only: false
     },
     components: {
       flatPickr,
       VuePhoneNumberInput
     },
     data() {
-      return {
+      return {}
+    },
+    watch: {},
+    computed: {},
+    methods: {
+      isShow(field) {
+        return (!field.agent_only || (field.agent_only && this.is_agent_view))
+      },
+      feedValues(){
+        if (this.values != null) {
+          let i = 0
 
+          for (let field of this.custom_fields){
+            let matching_val = this.values.filter((a) => {
+              return a.id == field.id;
+            });
+
+            if(matching_val[0] != null) {
+              this.custom_fields[i].value = matching_val[0].value;
+            }
+
+            i++
+          }
+        }
       }
     },
-    watch: {
-
-    },
-    computed: {
-
-    },
-    methods: {
-
-    },
     created() {
-
+      this.feedValues()
     }
   }
 </script>

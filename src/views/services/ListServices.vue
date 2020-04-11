@@ -1,7 +1,8 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
 
-    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar" :data="sidebarData"/>
+    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar"
+                       :data="sidebarData"/>
 
     <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
 
@@ -96,7 +97,7 @@
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
 
           <vs-td :data="tr.name">
-              {{ tr.name }}
+            {{ tr.name }}
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
@@ -111,9 +112,9 @@
       </template>
     </vs-table>
 
-<!--    <span>-->
-<!--      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}-->
-<!--    </span>-->
+    <!--    <span>-->
+    <!--      perPage:{{perPage}}, total:{{total}}, total:{{totalPages}}, currentPage {{currentPage}}-->
+    <!--    </span>-->
 
     <vs-pagination :total="totalPages" v-model="currentPage" :max="5" prev-icon="arrow_back"
                    next-icon="arrow_forward"></vs-pagination>
@@ -174,8 +175,46 @@
         this.toggleDataSidebar(true)
       },
       deleteData(id) {
-        this.$store.dispatch('dataList/removeItem', id).catch(err => {
-          console.error(err)
+        let this_app = this;
+
+        this_app.$vs.dialog({
+          type: 'confirm',
+          color: 'danger',
+          title: `Confirm`,
+          text: 'Are you sure you want to delete this?',
+          accept: function () {
+
+            const params = {
+              "vu_token": this_app.$store.state.AppActiveUser.token,
+              "service_id": id,
+            };
+
+            axios.post(API.SERVICES_DELETE, params).then((res) => {
+              if (res.data.success) {
+                this_app.$vs.notify({
+                  title: 'Success',
+                  text: "Service is deleted!",
+                  iconPack: 'feather',
+                  icon: 'icon-check-circle',
+                  color: 'success'
+                });
+                this_app.loadData();
+              } else {
+                const error = res.data.data.errors[0];
+
+                this_app.$vs.notify({
+                  title: 'Error',
+                  text: error,
+                  iconPack: 'feather',
+                  icon: 'icon-alert-circle',
+                  color: 'danger'
+                });
+              }
+              console.log(res);
+            }).catch((err) => {
+              console.log(err);
+            });
+          }
         })
       },
       editData(data) {

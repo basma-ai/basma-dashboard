@@ -1,11 +1,12 @@
 <template>
   <div>
     <div class="call_box">
-<!--      <div id="local-media" v-if="!isItIos">-->
-      <div id="local-media">
-<!--        <CamPreview v-if="localCamIsEnabled"></CamPreview>-->
+
+      <div id="local-media"></div>
+      <div id="remote-media-div">
+          <loading v-if="!isVideoLoaded"></loading>
       </div>
-      <div id="remote-media-div"></div>
+
       <div id="controls">
         <div @click="toggle_mute_camera">
           <vs-button radius icon="videocam" type="filled" color="primary" v-if="localCamIsEnabled"></vs-button>
@@ -24,6 +25,7 @@
 <script>
   import Vue from 'vue'
   import CamPreview from '@/components/CamPreview.vue';
+  import Loading from '@/components/Loading.vue';
   import {isIOS} from 'mobile-device-detect';
 
   const {connect, createLocalTracks, createLocalVideoTrack, LocalVideoTrack} = require('twilio-video');
@@ -39,9 +41,13 @@
       previewTracks: '',
       room: null,
       localCamIsEnabled: true,
-      localMicIsEnabled: true
+      localMicIsEnabled: true,
+      isVideoLoaded: false,
     }),
-    components: {CamPreview},
+    components: {
+      CamPreview,
+      Loading
+    },
     methods: {
       toggle_mute_camera: function () {
 
@@ -49,10 +55,10 @@
 
         if (undefined != this.localTracks) {
           this.localTracks.forEach((track) => {
-            console.log('In mute function code');
-            console.log(JSON.stringify(track));
-            try{
-              if(track.kind == 'video') {
+            // console.log('In mute function code');
+            // console.log(JSON.stringify(track));
+            try {
+              if (track.kind == 'video') {
                 if (track.isEnabled) {
                   track.disable();
                   this_app.localCamIsEnabled = false;
@@ -61,8 +67,8 @@
                   this_app.localCamIsEnabled = true;
                 }
               }
-            } catch(ex) {
-              console.log(ex.toString());
+            } catch (ex) {
+              // console.log(ex.toString());
             }
           })
         }
@@ -74,10 +80,10 @@
         let this_app = this;
 
         this.localTracks.forEach((track) => {
-          console.log('In mute function code');
-          console.log(JSON.stringify(track));
-          try{
-            if(track.kind == 'audio') {
+          // console.log('In mute function code');
+          // console.log(JSON.stringify(track));
+          try {
+            if (track.kind == 'audio') {
               if (track.isEnabled) {
                 track.disable();
                 this_app.localMicIsEnabled = false;
@@ -86,8 +92,8 @@
                 this_app.localMicIsEnabled = true;
               }
             }
-          } catch(ex) {
-            console.log(ex.toString());
+          } catch (ex) {
+            // console.log(ex.toString());
           }
         })
 
@@ -101,21 +107,21 @@
         }
 
         this.localTracks.forEach((track) => {
-          console.log('In mute function code');
-          console.log(JSON.stringify(track));
-          try{
-              if (track.isEnabled) {
-                track.disable();
-                track.stop();
-                const attachedElements = track.detach();
-                attachedElements.forEach(element => element.remove());
-                this_app.localMicIsEnabled = false;
-              } else {
-                track.enable();
-                this_app.localMicIsEnabled = true;
-              }
-          } catch(ex) {
-            console.log(ex.toString());
+          // console.log('In mute function code');
+          // console.log(JSON.stringify(track));
+          try {
+            if (track.isEnabled) {
+              track.disable();
+              track.stop();
+              const attachedElements = track.detach();
+              attachedElements.forEach(element => element.remove());
+              this_app.localMicIsEnabled = false;
+            } else {
+              track.enable();
+              this_app.localMicIsEnabled = true;
+            }
+          } catch (ex) {
+            // console.log(ex.toString());
           }
         })
       },
@@ -124,38 +130,39 @@
         let this_app = this;
         room.participants.forEach(participant => {
 
-          console.log("PARTICIPANT");
-          console.log(JSON.stringify(participant));
+          // console.log("PARTICIPANT");
+          // console.log(JSON.stringify(participant));
 
 
           if (!this_app.found_remote_track) {
           }
-          console.log(`Participant "${participant.identity}" is connected to the Room`);
+          // console.log(`Participant "${participant.identity}" is connected to the Room`);
 
           setTimeout(function () {
             participant.tracks.forEach(publication => {
 
-              console.log("PUBLICATION");
-              console.log(JSON.stringify(publication));
+              // console.log("PUBLICATION");
+              // console.log(JSON.stringify(publication));
 
               if (publication.isSubscribed) {
 
-                console.log("I am inside IF(publication.isSubscribed)");
+                // console.log("I am inside IF(publication.isSubscribed)");
                 const track = publication.track;
 
                 if (track == null) {
-                  console.log("track is null");
+                  // console.log("track is null");
                   this_app.check_remote(room);
                 } else {
-                  console.log("track is not null");
+                  // console.log("track is not null");
                   this_app.found_remote_track = true;
                   //document.getElementById('remote-media-div').innerHTML = "";
                   document.getElementById('remote-media-div').appendChild(track.attach());
+                  this_app.isVideoLoaded = true;
                 }
 
 
               } else {
-                console.log("I am inside ELSE(publication.isSubscribed)");
+                // console.log("I am inside ELSE(publication.isSubscribed)");
                 this_app.check_remote(room);
               }
             });
@@ -163,10 +170,8 @@
 
         });
       }
-    }
-    ,
+    },
     created() {
-
       // check if isIos
       if (process.client) {
         this.isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -189,63 +194,65 @@
 
 
       }).then(room => {
-        console.log(`Connected to Room: ${room.name}`);
+        // console.log(`Connected to Room: ${room.name}`);
         // console.log(JSON.stringify(room));
 
-        room.localParticipant.tracks.forEach((a)=>{
-          console.log('room.localParticipant.tracks',a)
-          if(a.kind === "video"){
+        room.localParticipant.tracks.forEach((a) => {
+          // console.log('room.localParticipant.tracks', a)
+          if (a.kind === "video") {
             const localMediaContainer = document.getElementById("local-media");
             localMediaContainer.innerHTML = "";
             localMediaContainer.prepend(a.track.attach());
           }
         })
 
-        console.log("PARTICIPANTS");
+        // console.log("PARTICIPANTS");
         this_app.room = room;
         this_app.check_remote(room);
 
 
         // Attach the Participant's Media to a <div> element.
         room.on('participantConnected', participant => {
-          console.log("A participant has been connected");
-          console.log(`Participant "${participant.identity}" connected`);
+          // console.log("A participant has been connected");
+          // console.log(`Participant "${participant.identity}" connected`);
 
           participant.tracks.forEach(publication => {
             if (publication.isSubscribed) {
               const track = publication.track;
               // document.getElementById('remote-media-div').innerHTML = "";
               document.getElementById('remote-media-div').appendChild(track.attach());
+              this_app.isVideoLoaded = true;
             }
           });
 
           participant.on('trackSubscribed', track => {
             document.getElementById('remote-media-div').appendChild(track.attach());
+            this_app.isVideoLoaded = true;
           });
         });
 
         // Attach the Participant's Media to a <div> element.
         room.on("participantDisconnected", (participant) => {
-          console.log(`Participant disconnected: ${participant.identity}`);
+          // console.log(`Participant disconnected: ${participant.identity}`);
           document.getElementById("remote-media-div").innerHTML = ""
         });
 
       });
 
 
-    }
+    },
   }
 </script>
-<style>
+<style lang="scss">
   .call_box {
     width: inherit;
-    background: #DDD;
+    background: #fff;
     border: 1px solid #DDD;
     position: relative;
     height: inherit;
-    background: #000;
+    /*background: #000;*/
     display: inline-block;
-    min-height: 300px;
+    min-height: 425px;
   }
 
   .call_box #controls {
@@ -255,7 +262,7 @@
     margin: 10px;
   }
 
-  .call_box #controls button{
+  .call_box #controls button {
     margin-bottom: 3px;
   }
 
@@ -275,12 +282,11 @@
 
   #remote-media-div video {
     width: 100%;
-    max-height: 600px;
+    max-height: 700px;
     margin: 0;
     padding: 0;
     height: 100%;
     margin-bottom: -6px;
   }
-
 
 </style>

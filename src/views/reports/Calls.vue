@@ -241,15 +241,15 @@
       totalPages() {
         return this.total === 0 ? 1 : Math.ceil(this.total / this.perPage)
       },
-      currentPage: {
-        get () {
-          if (this.gridApi) return this.gridApi.paginationGetCurrentPage() + 1
-          else return 1
-        },
-        set (val) {
-          this.gridApi.paginationGoToPage(val - 1)
-        }
-      }
+      // currentPage: {
+      //   get () {
+      //     if (this.gridApi) return this.gridApi.paginationGetCurrentPage() + 1
+      //     else return 1
+      //   },
+      //   set (val) {
+      //     this.gridApi.paginationGoToPage(val - 1)
+      //   }
+      // }
     },
     methods: {
       changePerPage: function (pages) {

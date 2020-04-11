@@ -67,13 +67,7 @@
 
         <div class="vx-col lg:w-1/2 w-full">
           <vx-card title="User Information" class="mb-base">
-            <table>
-              <tr v-for="field in call.custom_fields_values">
-                <td class="font-semibold" style="text-transform: capitalize">{{ field.label }}</td>
-                <td>{{ field.value }}</td>
-              </tr>
-
-            </table>
+            <custom-fields :read_only="true" v-if="call.custom_fields_values" :custom_fields="call.custom_fields_values"></custom-fields>
           </vx-card>
           <vx-card v-if="call.is_recorded && canSeeRecording" title="Recording" class="overflow-hidden">
             <div v-if="call.recording_status != 'complete'">
@@ -104,6 +98,7 @@
   import StarRating from 'vue-star-rating'
   import { videoPlayer }     from 'vue-video-player'
   import 'video.js/dist/video-js.css'
+  import CustomFields from '@/components/CustomFields.vue';
 
   export default {
     data() {
@@ -117,7 +112,8 @@
     },
     components: {
       StarRating,
-      videoPlayer
+      videoPlayer,
+      CustomFields
     },
     computed: {
       canSeeRecording() {

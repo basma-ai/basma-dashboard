@@ -25,7 +25,7 @@
 
         <ul class="services mt-5 mb-10" v-if="screen_status == 'dashboard'">
           <!--            <p>{{selected_services}}</p>-->
-          <li style="float: left" class="mr-2 mb-2">
+          <li @change="checkFilter" style="float: left" class="mr-2 mb-2">
             <vs-checkbox v-model="noFilter">All Services</vs-checkbox>
           </li>
           <li @change="checkFilter" style="float: left" class="mr-2 mb-2" v-for="(service, index) in services"
@@ -42,31 +42,28 @@
         <br/>
 
         <vs-row class="agent_call_boxes_container">
-          <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="12" vs-lg="12"
+          <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="6"
                   v-for="call in pending_calls_list">
             <div class="agent_call_box" @click="answer_call(call)">
 
-              <div id="icon">
-                <vs-icon size="40">videocam</vs-icon>
-              </div>
-
-              <div id="text">
-                <div id="title">#{{call.id}}</div>
-                <div id="service">{{call.vendor_service.name}}</div>
-                <div id="time">
-                  <vs-icon>access_time</vs-icon>
-                  {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
+              <vs-col vs-sm="12" vs-md="6" vs-lg="6">
+                <div id="icon">
+                  <vs-icon size="40">videocam</vs-icon>
                 </div>
-              </div>
 
-              <div id="details">
-                <table>
-                  <tr v-for="field in call.custom_fields_values">
-                    <td class="font-semibold" style="min-width:80px; text-transform: uppercase">{{ field.label }}:</td>
-                    <td>{{ field.value }}</td>
-                  </tr>
-                </table>
-              </div>
+                <div id="text">
+                  <div id="title">#{{call.id}}</div>
+                  <div id="time">
+                    <vs-icon>access_time</vs-icon>
+                    {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
+                  </div>
+                </div>
+              </vs-col>
+
+              <vs-col id="details" vs-sm="12" vs-md="6" vs-lg="6">
+                <div id="service">{{call.vendor_service.name}}</div>
+                <custom-fields :read_only="true" v-if="call.custom_fields_values" :custom_fields="call.custom_fields_values"></custom-fields>
+              </vs-col>
             </div>
 
           </vs-col>
@@ -85,19 +82,19 @@
     <!-- In Call -->
     <vs-row v-if="screen_status == 'in_call'">
 
-      <vs-col vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
+      <vs-col v-if="call.status != 'ended'" vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
         <vs-card style="width:100%;">
           <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
         </vs-card>
       </vs-col>
 
-      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
+      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" :vs-offset="call.status == 'ended' ? 4 : 0" class="pa-2">
         <vs-card>
-          <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">End Call</vs-button>
+          <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">{{call.status == 'ended' ? 'Save & Go Back' : 'Save & End Call'}}</vs-button>
           <div class="sidebar-details">
-            <custom-fields v-if="call.custom_fields_values != null" :custom_fields="call.custom_fields_values"></custom-fields>
+            <custom-fields :is_agent_view="true" v-if="custom_fields != null" :custom_fields="custom_fields" :values="call.custom_fields_values"></custom-fields>
           </div>
-          <vs-textarea placeholder="Your private notes goes here, as you type it gets saved automatically.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="5"/>
+          <vs-textarea placeholder="Your private notes goes here.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="5"/>
 <!--          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>-->
         </vs-card>
       </vs-col>
@@ -139,7 +136,8 @@
       selected_services: [],
       services: [],
       agent_notes: '',
-      wasSidebarOpen: null
+      wasSidebarOpen: null,
+      custom_fields: []
     }),
     components: {
       CallBox,
@@ -167,6 +165,18 @@
           this.selected_services = []
         }
       },
+      selected_services: function(val){
+        let this_app = this;
+
+        // update the socket
+        const params = {
+          user_type: "vu",
+          user_token: this.$store.state.AppActiveUser.token,
+          services_ids: this.selected_services.map(x => x.id)
+        };
+
+        this_app.$socket.emit("services_list_update", params);
+      },
       ringtone_switch: function (val) {
         console.log("ringtone switch clicked!!");
         if (val) {
@@ -187,13 +197,23 @@
     },
     methods: {
       request_agent_token: function () {
-        let thisApp = this;
+        let this_app = this;
         this.loading = true;
 
-        thisApp.screen_status = 'dashboard';
-        thisApp.list_pending_calls();
+        this_app.screen_status = 'dashboard';
 
-        thisApp.loading = false;
+        // call the socket
+        const params = {
+          user_type: "vu",
+          user_token: this_app.$store.state.AppActiveUser.token
+        };
+
+        this_app.$socket.emit("start_socket", params);
+        this_app.$socket.emit("request_pending_list", params);
+
+        console.log("start_socket");
+
+        this_app.loading = false;
       },
       loadServices() {
         const this_app = this;
@@ -211,12 +231,25 @@
           console.log(err);
         });
       },
+      loadCustomFields() {
+        const this_app = this;
+
+        const params = {
+          "vu_token": this.$store.state.AppActiveUser.token
+        };
+
+        axios.post(API.CUSTOM_FIELDS_LIST, params).then((res) => {
+          this_app.custom_fields = res.data.data.list;
+        }).catch((err) => {
+          console.log(err);
+        });
+      },
       updateNotes() {
         axios.post('/agent/update_call', {
           vu_token: this.$store.state.AppActiveUser.token,
           call_id: this.call_id,
           agent_notes: this.agent_notes,
-          custom_fields_values: this.call.custom_fields_values,
+          custom_fields_values: this.custom_fields,
         })
         .then(function (res) {
           console.log(res);
@@ -226,90 +259,84 @@
         });
       },
       checkFilter() {
-        let isEqual = this.selected_services.length === this.services.length;
+        let this_app = this;
 
-        if (isEqual) {
-          this.noFilter = true
-        } else {
-          this.noFilter = false
-        }
-      },
-      list_pending_calls: function () {
-        let thisApp = this;
-
-        axios.post('/agent/list_pending_calls', {
-          vu_token: this.$store.state.AppActiveUser.token,
-          services_ids: this.selected_services.map(x => x.id)
-        })
-          .then(function (response) {
-
-            if (response.data.success) {
-              thisApp.pending_calls_list = response.data.data.pending_calls_list;
-              if (thisApp.pending_calls_list.length > 0) {
-                thisApp.ringtone_audio.play();
-              } else {
-                thisApp.ringtone_audio.pause();
-              }
-            } else {
-              // console.log("it's a failure!");
-            }
-
-            setTimeout(function () {
-              thisApp.list_pending_calls();
-            }, 500);
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
+        this.noFilter = this.selected_services.length === this.services.length;
       },
       end_call: function () {
         this.updateNotes();
 
-        let thisApp = this;
+        let this_app = this;
 
-        this.loading = true;
-        this.ringtone_switch = true
+        this_app.$vs.dialog({
+          type: 'confirm',
+          color: 'danger',
+          title: `Confirm`,
+          text: 'Are you sure you want to end the call?',
+          accept: function () {
 
-        this.$refs.call_box.end_call();
+            this_app.loading = true;
+            this_app.ringtone_switch = true
 
-        axios.post('/agent/end_call', {
-          vu_token: this.$store.state.AppActiveUser.token,
-          call_id: this.call_id
+            this_app.$refs.call_box.end_call();
+
+            axios.post('/agent/end_call', {
+              vu_token: this_app.$store.state.AppActiveUser.token,
+              call_id: this_app.call_id
+            })
+              .then(function (response) {
+                this_app.loading = false;
+
+                if (response.data.success) {
+                  this_app.screen_status = 'dashboard';
+
+                  // call the socket
+                  const params = {
+                    user_type: "vu",
+                    user_token: this_app.$store.state.AppActiveUser.token,
+                    call_id: null
+                  };
+
+                  this_app.$socket.emit("start_socket", params);
+
+                } else {
+                  // console.log("it's a failure!");
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
         })
-          .then(function (response) {
-            thisApp.loading = false;
-
-            if (response.data.success) {
-              thisApp.screen_status = 'dashboard';
-            } else {
-              // console.log("it's a failure!");
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
       },
       answer_call: function (selected_call) {
-        let thisApp = this;
+        let this_app = this;
 
-        thisApp.loading = true;
+        this_app.loading = true;
 
-        thisApp.call_id = selected_call.id;
-        thisApp.ringtone_switch = false
+        this_app.call_id = selected_call.id;
+        this_app.ringtone_switch = false
 
         axios.post('/agent/answer_call', {
           vu_token: this.$store.state.AppActiveUser.token,
-          call_id: selected_call.id
+          call_id: this_app.call_id
         })
           .then(function (response) {
-            thisApp.loading = false;
+            this_app.loading = false;
 
             if (response.data.success) {
 
-              thisApp.call = response.data.data.call;
-              thisApp.screen_status = 'in_call';
+              this_app.call = response.data.data.call;
+              this_app.screen_status = 'in_call';
+
+              // call the socket
+              const params = {
+                user_type: "vu",
+                user_token: this_app.$store.state.AppActiveUser.token,
+                call_id: this_app.call.id
+              };
+
+              this_app.$socket.emit("start_socket", params);
 
             } else {
               // console.log("it's a failure!");
@@ -335,6 +362,25 @@
         }).finally(()=>{
           this_app.token = null;
         });
+      },
+      on_call_update(call){
+        let this_app = this;
+        console.log(call)
+
+        this_app.call_id = call.id;
+        this_app.call = call;
+
+        if (call.status == "ended") {
+          this_app.$vs.notify({
+            title: 'Goodbye!',
+            text: "Participant has left the call",
+            iconPack: 'feather',
+            icon: 'icon-alert-circle',
+            color: 'success',
+            position:'top-center',
+            time: 4000,
+          });
+        }
       }
     },
     mounted() {
@@ -343,6 +389,36 @@
         background: 'transparent',
         scale: 1.5
       })
+    },
+    sockets: {
+      connect: function () {
+        console.log('sockets: connected!')
+      },
+      disconnect: function () {
+        console.log('sockets: disconnected!')
+      },
+      on_update: function (data) {
+        console.log('sockets: on_update:', data)
+
+        let this_app = this;
+
+        if (data.type == 'call_info'){
+          this_app.on_call_update(data.data);
+
+        }else if (data.type == 'pending_list') {
+
+          this_app.pending_calls_list = data.data.pending_calls_list;
+
+          if (this_app.pending_calls_list.length > 0) {
+            this_app.ringtone_audio.play();
+          } else {
+            this_app.ringtone_audio.pause();
+          }
+        }else{
+          console.log('data.type', data.type)
+        }
+
+      }
     },
     created() {
       if (this.token != null) {
@@ -361,6 +437,7 @@
       this.ringtone_audio.volume = 1;
 
       this.loadServices();
+      this.loadCustomFields();
     },
     beforeDestroy() {
       if (this.screen_status == 'in_call') {
@@ -424,8 +501,7 @@
 
   .agent_call_box #details {
     padding: 8px;
-    border-top: 2px solid #e4e4e4;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .agent_call_box #text #title {
@@ -434,7 +510,7 @@
   }
 
   .agent_call_box #text #time {
-    font-size: 10px;
+    font-size: 12px;
     top: 8px;
     position: relative;
   }
@@ -444,13 +520,17 @@
     position: relative;
   }
 
-  .agent_call_box #text #service {
+  .agent_call_box #details #service {
     border: 1px solid #a27913;
     display: inline-block;
     padding: 4px 5px;
     border-radius: 5px;
     background-color: #ffb600;
     color: #000;
+    margin-bottom: 10px;
+    font-size: 12px;
+    overflow-wrap: break-word;
+    width:100%;
   }
 
   .agent_call_box #action {
@@ -467,6 +547,7 @@
     /* For mobile phones: */
     #right-sidebar {
       padding-left: 0px;
+      margin-left: 0px !important;
     }
   }
 
@@ -526,14 +607,5 @@
 
     }
   }
-  .sidebar-details {
-    /*border: 1px solid #eee;*/
-    /*border-radius: 5px;*/
-    /*margin-bottom: 15px;*/
-    /*font-size: 12px;*/
-    /*padding: 7px;*/
-  }
-  /*.vs-textarea-primary {*/
-  /*  border-color: #eee !important;*/
-  /*}*/
+
 </style>
