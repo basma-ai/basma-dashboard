@@ -1,13 +1,3 @@
-/*=========================================================================================
-  File Name: router.js
-  Description: Routes for vue-router. Lazy loading is enabled.
-  ----------------------------------------------------------------------------------------
-  Item Name: basma.ai
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
-
-
 import Vue from 'vue'
 import Router from 'vue-router'
 

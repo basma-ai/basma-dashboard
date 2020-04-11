@@ -1,13 +1,3 @@
-<!-- =========================================================================================
-    File Name: VxCard.vue
-    Description: Card Component
-    Component Name: VxCard
-    ----------------------------------------------------------------------------------------
-    Item Name: basma.ai
-      Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
  <template>
     <div class="vx-card" ref="card" :class="[
         {'overflow-hidden': tempHidden},

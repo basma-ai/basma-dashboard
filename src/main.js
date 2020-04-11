@@ -1,13 +1,3 @@
-/*=========================================================================================
-  File Name: main.js
-  Description: main vue(js) file
-  ----------------------------------------------------------------------------------------
-  Item Name: basma.ai
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
-
-
 import Vue from 'vue'
 import App from './App.vue'
 
@@ -93,11 +83,6 @@ Vue.use(require('vue-moment'))
 // Business Hours
 import BusinessHours from 'vue-business-hours';
 Vue.use(BusinessHours);
-
-// VuePhoneNumberInput
-import VuePhoneNumberInput from 'vue-phone-number-input';
-import 'vue-phone-number-input/dist/vue-phone-number-input.css';
-Vue.component('vue-phone-number-input', VuePhoneNumberInput);
 
 // Vue select css
 // Note: In latest version you have to add it separately

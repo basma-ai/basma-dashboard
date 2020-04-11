@@ -1,14 +1,3 @@
-<!-- =========================================================================================
-  File Name: TheNavbar.vue
-  Description: Navbar component
-  Component Name: TheNavbar
-  ----------------------------------------------------------------------------------------
-  Item Name: basma.ai
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template>
   <div class="relative">
 

@@ -1,13 +1,3 @@
-/*=========================================================================================
-  File Name: store.js
-  Description: Vuex store
-  ----------------------------------------------------------------------------------------
-  Item Name: basma.ai
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
-
-
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'

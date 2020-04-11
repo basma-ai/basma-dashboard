@@ -1,12 +1,3 @@
-/*=========================================================================================
-  File Name: themeConfig.js
-  Description: Theme configuration
-  ----------------------------------------------------------------------------------------
-  Item Name: basma.ai
-  Author: Pixinvent
-  Author URL: hhttp://www.themeforest.net/user/pixinvent
-==========================================================================================*/
-
 // MAIN COLORS - VUESAX THEME COLORS
 let colors = {
   primary : '#FFB600',

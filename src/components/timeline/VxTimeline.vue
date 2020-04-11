@@ -1,13 +1,3 @@
-<!-- =========================================================================================
-    File Name: VxTimeline.vue
-    Description: Timeline Component
-    Component Name: VxTimeline
-    ----------------------------------------------------------------------------------------
-    Item Name: basma.ai
-      Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
 <template>
   <ul class="vx-timeline">
       <li v-for="item in data" :key="item.title">

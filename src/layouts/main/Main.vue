@@ -1,13 +1,3 @@
-<!-- =========================================================================================
-    File Name: Main.vue
-    Description: Main layout
-    ----------------------------------------------------------------------------------------
-    Item Name: basma.ai
-    Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template>
   <div v-if="isLoggedIn" class="layout--main"
        :class="[layoutTypeClass, navbarClasses, footerClasses, {'no-scroll': isAppPage}]">

@@ -1,12 +1,3 @@
-    <!-- =========================================================================================
-    File Name: ChangeTimeDurationDropdown.vue
-    Description: Change duration dropdown component
-    ----------------------------------------------------------------------------------------
-    Item Name: basma.ai
-      Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
 <!-- :class="data.class" -->
 
 <template functional>

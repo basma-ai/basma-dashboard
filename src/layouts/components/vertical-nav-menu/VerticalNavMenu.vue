@@ -1,14 +1,3 @@
-<!-- =========================================================================================
-  File Name: VerticalNavMenu.vue
-  Description: Vertical NavMenu Component
-  Component Name: VerticalNavMenu
-  ----------------------------------------------------------------------------------------
-  Item Name: basma.ai
-    Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template>
   <div class="parentx">
 

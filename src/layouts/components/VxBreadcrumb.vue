@@ -1,14 +1,3 @@
-<!-- =========================================================================================
-    File Name: VxBreadcrumb.vue
-    Description: Breadcrumb component
-    Component Name: VxBreadcrumb
-    ----------------------------------------------------------------------------------------
-    Item Name: basma.ai
-      Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template functional>
     <div class="vx-breadcrumb" :class="data.staticClass">
         <ul class="flex flex-wrap items-center">
