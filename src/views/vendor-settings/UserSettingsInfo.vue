@@ -110,18 +110,13 @@
         ]
       }
     },
-    // watch: {
-    //   vendor: function (newQuestion, oldQuestion) {
-    //     console.log(this.vendor.working_hours);
-    //   }
-    // },
     computed: {
       activeUserInfo() {
         return this.$store.state.AppActiveUser
       }
     },
     created() {
-      console.log(this.vendor);
+
 
       if (this.vendor.working_hours != null) {
         this.days = JSON.parse(this.vendor.working_hours);
@@ -169,7 +164,7 @@
             });
           }
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       copyLink(data) {
@@ -182,9 +177,9 @@
             icon: 'icon-check-circle',
             color: 'success'
           });
-          console.log(e)
+
         }, function (e) {
-          console.log(e)
+
         })
       },
     }

@@ -111,7 +111,7 @@
         this.activeProfileSidebar = value
       },
       updateActiveChatUser (contactId) {
-        // console.log(contactId);
+
         this.activeChatUser = 1
         // if (this.$store.getters['chat/chatDataOfUser'](this.activeChatUser)) {
         //   this.$store.dispatch('chat/markSeenAllMessages', contactId)
@@ -193,12 +193,12 @@
       this.sockets.subscribe("on_update", (data) => {
         let thisApp = this;
 
-        console.log("on_update", data);
+
       });
     },
     sockets: {
       connect: function () {
-        console.log('connected!')
+
       },
     },
   }

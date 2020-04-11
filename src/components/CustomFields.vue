@@ -10,7 +10,7 @@
 
       <div v-if="field.type === 'mobile' && isShow(field)">
         <label class="vs-input--label">Mobile Number</label>
-        <VuePhoneNumberInput default-country-code="BH" ignored-countries="['IL']" v-model="field.value_description" class="w-full mb-6"
+        <VuePhoneNumberInput default-country-code="BH" :ignored-countries="['IL']" v-model="field.value_description" class="w-full mb-6"
                              @update="field.value = $event.e164"/>
       </div>
 

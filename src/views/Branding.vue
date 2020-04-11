@@ -58,10 +58,10 @@ export default {
 		loadData() {
 			const this_app = this;
 			axios.post("/vendor/dashboard_numbers", {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
-				console.log(res);
+
 				this_app.analytics = res.data.data;
 			}).catch((err) => {
-				console.log(err);
+
 			});
 		}
 	}

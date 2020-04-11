@@ -1,6 +1,8 @@
 {
-  "name": "vuexy-vuejs-html-laravel-dashboard-admin-template",
-  "version": "4.2.0",
+  "name": "basma-video-dashboard",
+  "version": "1.0.0",
+  "description": "Basma Video Call Center - Dashboard",
+  "author": "Basma Team",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

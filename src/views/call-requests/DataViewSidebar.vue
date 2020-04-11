@@ -1,13 +1,3 @@
-<!-- =========================================================================================
-  File Name: AddNewDataSidebar.vue
-  Description: Add New Data - Sidebar component
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template>
   <vs-sidebar click-not-close position-right parent="body" default-index="1" color="primary"
               class="add-new-data-sidebar items-no-padding" spacer v-model="isSidebarActiveLocal">
@@ -123,7 +113,7 @@
           };
 
           axios.post(API.CALL_REQUESTS_GET, params).then((res) => {
-            console.log(res);
+
             const {username, name, email, role, groups, roles} = res.data.data.user;
             this_app.username = username
             this_app.name = name
@@ -131,7 +121,7 @@
             this_app.role = role
             this_app.initValues()
           }).catch((err) => {
-            console.log(err);
+
           });
 
         }
@@ -173,7 +163,7 @@
         };
 
         axios.post(API.CUSTOM_FIELDS_LIST, params).then((res) => {
-          console.log(res);
+
           let custom_fields = res.data.data.list;
 
           let matched = custom_fields.filter((a) => {
@@ -201,7 +191,7 @@
           this_app.custom_fields = custom_fields
 
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       loadServices() {
@@ -212,10 +202,10 @@
         };
 
         axios.post(API.SERVICES_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.services = res.data.data.list;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       loadUsers() {
@@ -228,10 +218,10 @@
         };
 
         axios.post(API.USERS_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.users = res.data.data.list;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       initValues() {
@@ -244,9 +234,6 @@
         if (!this.isFormValid) {
           return
         }
-
-        // console.log(this.$moment(this.datetime).unix() * 1000);
-        // return;
 
         const this_app = this;
         this_app.$vs.loading();
@@ -264,12 +251,12 @@
           // params.vu_id = this_app.data.id;
         }
 
-        console.log("params: ", params);
+
 
         const endpoint = this_app.isNew ? API.CALL_REQUESTS_CREATE : API.CALL_REQUESTS_EDIT;
 
         axios.post(endpoint, params).then((res) => {
-          console.log(res);
+
 
           this_app.$vs.loading.close();
 
@@ -300,7 +287,7 @@
           }
 
         }).catch((err) => {
-          console.log(err);
+
         });
       }
     },

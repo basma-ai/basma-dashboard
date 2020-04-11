@@ -80,7 +80,7 @@ import VueSocketIO from 'vue-socket.io'
 import SocketIO from "socket.io-client"
 
 Vue.use(new VueSocketIO({
-  debug: true,
+  debug: process.env.VUE_APP_DEBUG_SOCKET_IO,
   connection: SocketIO(process.env.VUE_APP_VIDEO_API_URL),
 }))
 

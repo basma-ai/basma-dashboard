@@ -59,7 +59,7 @@ export default {
       axios.post(API.SETTINGS_GET, params).then((res) => {
         this_app.vendor = res.data.data.vendor
       }).catch((err) => {
-        console.log(err);
+
       });
     },
   }

@@ -115,67 +115,67 @@ export default {
     // // Sessions By Device
     // this.$http.get('/api/card/card-analytics/session-by-device')
     //   .then((response) => { this.sessionsData = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Products Order
     // this.$http.get('/api/card/card-analytics/products-orders')
     //   .then((response) => { this.productsOrder = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Customers
     // this.$http.get('/api/card/card-analytics/customers')
     //   .then((response) => { this.customersData = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Sales Radar
     // this.$http.get('/api/card/card-analytics/sales/radar')
     //   .then((response) => { this.salesRadar = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Support Tracker
     // this.$http.get('/api/card/card-analytics/support-tracker')
     //   .then((response) => { this.supportTracker = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Revenue Comparison
     // this.$http.get('/api/card/card-analytics/revenue-comparison')
     //   .then((response) => { this.revenueComparisonLine = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Goal Overview
     // this.$http.get('/api/card/card-analytics/goal-overview')
     //   .then((response) => { this.goalOverview = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Sales bar
     // this.$http.get('/api/card/card-analytics/sales/bar')
     //   .then((response) => { this.salesBarSession = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Todo
     // this.$http.get('/api/card/card-analytics/todo/today')
     //   .then((response) => { this.todoToday = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Funding
     // this.$http.get('/api/card/card-analytics/funding')
     //   .then((response) => { this.funding = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Sales line
     // this.$http.get('/api/card/card-analytics/sales/line')
     //   .then((response) => { this.salesLine = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Browser Analytics
     // this.$http.get('/api/card/card-analytics/browser-analytics')
     //   .then((response) => { this.browserStatistics = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
     //
     //   // Client Retention
     // this.$http.get('/api/card/card-analytics/client-retention')
     //   .then((response) => { this.clientRetentionBar = response.data })
-    //   .catch((error) => { console.log(error) })
+    //   .catch((error) => {  })
   }
 }
 </script>

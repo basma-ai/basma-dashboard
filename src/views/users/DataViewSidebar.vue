@@ -1,13 +1,3 @@
-<!-- =========================================================================================
-  File Name: AddNewDataSidebar.vue
-  Description: Add New Data - Sidebar component
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template>
   <vs-sidebar click-not-close position-right parent="body" default-index="1" color="primary"
               class="add-new-data-sidebar items-no-padding" spacer v-model="isSidebarActiveLocal">
@@ -120,7 +110,7 @@
           };
 
           axios.post(API.USERS_GET, params).then((res) => {
-            console.log(res);
+
             const {username, name, email, role, groups, roles} = res.data.data.user;
             this_app.username = username
             this_app.name = name
@@ -130,7 +120,7 @@
             this_app.roles_ids = roles.map(x => x.id)
             this_app.initValues()
           }).catch((err) => {
-            console.log(err);
+
           });
 
 
@@ -175,10 +165,10 @@
         };
 
         axios.post(API.GROUPS_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.groups = res.data.data.list;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       loadRoles() {
@@ -189,10 +179,10 @@
         };
 
         axios.post(API.ROLES_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.roles = res.data.data.list;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       initValues() {
@@ -233,12 +223,12 @@
           params.password = this_app.password;
         }
 
-        console.log("params: ", params);
+
 
         const endpoint = this_app.isNew ? API.USERS_CREATE : API.USERS_EDIT;
 
         axios.post(endpoint, params).then((res) => {
-          console.log(res);
+
 
           this_app.$vs.loading.close();
 
@@ -269,7 +259,7 @@
           }
 
         }).catch((err) => {
-          console.log(err);
+
         });
       }
     },

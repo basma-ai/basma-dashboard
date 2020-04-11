@@ -147,10 +147,10 @@
         };
 
         axios.post(API.CALLS_GET, params).then((res) => {
-          console.log(res);
+
           this_app.call = res.data.data.call;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       getRecording(){
@@ -164,7 +164,7 @@
         };
 
         axios.post(API.CALLS_GET_RECORDING, params).then((res) => {
-          console.log(res);
+
           this.$vs.loading.close()
           this_app.recording = res.data.data;
 
@@ -187,7 +187,7 @@
           this_app.popupActive = true;
 
         }).catch((err) => {
-          console.log(err);
+
         });
       },
 

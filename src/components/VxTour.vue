@@ -1,12 +1,3 @@
-<!-- =========================================================================================
-    File Name: VxTour.vue
-    Description: Tour Component
-    ----------------------------------------------------------------------------------------
-    Item Name: basma.ai
-      Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
 <template>
     <v-tour name="vuexyTour" :steps="steps">
         <template slot-scope="tour">

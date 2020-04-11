@@ -1,12 +1,3 @@
-<!-- =========================================================================================
-  File Name: AddNewDataSidebar.vue
-  Description: Add New Data - Sidebar component
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
 <template>
   <vs-sidebar click-not-close position-right parent="body" default-index="1" color="primary"
               class="add-new-data-sidebar items-no-padding" spacer v-model="isSidebarActiveLocal">
@@ -210,7 +201,7 @@
         const endpoint = this_app.isNew ? API.CUSTOM_FIELDS_CREATE : API.CUSTOM_FIELDS_EDIT;
 
         axios.post(endpoint, params).then((res) => {
-          console.log(res);
+
 
           this_app.$vs.loading.close();
 
@@ -241,7 +232,7 @@
           }
 
         }).catch((err) => {
-          console.log(err);
+
         });
       }
     }

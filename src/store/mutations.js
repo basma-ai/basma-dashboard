@@ -103,7 +103,7 @@ const mutations = {
     //   return
     // }
 
-    console.log(payload);
+
 
     // Get Data localStorage
     let userInfo = JSON.parse(localStorage.getItem("userInfo")) || state.AppActiveUser

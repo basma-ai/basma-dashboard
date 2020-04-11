@@ -1,12 +1,3 @@
-<!-- =========================================================================================
-  File Name: UserList.vue
-  Description: User List page
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
 <template>
 
   <div id="page-user-list">
@@ -208,7 +199,7 @@ export default {
   },
   watch: {
     currentPage(obj) {
-      console.log("currentPage: ",obj);
+
       this.loadData();
     },
     roleFilter ( v) {
@@ -232,7 +223,7 @@ export default {
   },
   methods: {
     changePerPage: function(pages) {
-      console.log(pages);
+
       this.perPage = pages;
       this.currentPage = 1;
       this.loadData()
@@ -272,7 +263,7 @@ export default {
     };
 
 		axios.post("/vendor/calls/list", params).then((res) => {
-			console.log(res);
+
 			this_app.callsData = res.data.data.list;
       if (!!res.data.data.pagination.total) {
         this_app.total = res.data.data.pagination.total;
@@ -280,7 +271,7 @@ export default {
       this_app.from = res.data.data.pagination.from;
       this_app.to = res.data.data.pagination.to;
 		}).catch((err) => {
-			console.log(err);
+
 		});
 	}
   },

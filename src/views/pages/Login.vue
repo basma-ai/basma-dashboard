@@ -89,13 +89,13 @@ export default{
     const this_app = this;
 
     // if (null != this.$store.state.AppActiveUser.token)
-    console.log("hi I'm here");
+
 
     axios.post("/guest/get_vendor", {"vendor_username": this.$route.params.id}).then((res) => {
-      console.log(res);
+
       this_app.vendor = res.data.data.vendor
     }).catch((err) => {
-      console.log(err);
+
     });
 
   },
@@ -112,7 +112,7 @@ export default{
 
       axios.post("/agent/request_token", payload).then((res) => {
         this.$vs.loading.close()
-        console.log(res);
+
 
         if (!res.data.success){
           const error = res.data.data.errors[0];
@@ -136,17 +136,17 @@ export default{
           photo_url: res.data.data.vu_user.photo_url
         }
 
-        console.log(user_data);
+
 
         this_app.$store.commit('UPDATE_USER_INFO', user_data);
 
-        console.log("HELOOW BABY!");
 
-        console.log(this_app.$store.state.AppActiveUser);
+
+
 
         this.$router.push('/').catch(() => {})
       }).catch((err) => {
-        console.log(err);
+
       });
 
 

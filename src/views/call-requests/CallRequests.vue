@@ -184,7 +184,7 @@
     watch: {
       currentPage: {
         handler(current, old) {
-          console.log("current", current, "old", old)
+
           this.loadData()
         },
         immediate: true
@@ -201,7 +201,7 @@
         this.toggleDataSidebar(true)
       },
       changePerPage: function (pages) {
-        console.log(pages);
+
         this.perPage = pages;
         this.currentPage = 1;
         this.loadData()
@@ -216,15 +216,15 @@
             icon: 'icon-check-circle',
             color: 'success'
           });
-          console.log(e)
+
         }, function (e) {
-          console.log(e)
+
         })
       },
       viewData(data) {
         // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
         // this.sidebarData = data
-        console.log(data);
+
         this.$router.push(`/agent-phone/${data.id}`).catch(() => {})
       },
       getOrderStatusColor(status) {
@@ -252,7 +252,7 @@
         };
 
         axios.post(API.CALL_REQUESTS_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {
             this_app.total = res.data.data.pagination.total;
@@ -260,7 +260,7 @@
           this_app.from = res.data.data.pagination.from;
           this_app.to = res.data.data.pagination.to;
         }).catch((err) => {
-          console.log(err);
+
         });
       }
     },

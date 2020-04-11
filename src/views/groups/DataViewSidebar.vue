@@ -72,7 +72,7 @@ export default {
         this.id = id
         this.name = name
         this.service_ids = services.map(x => x.id)
-        console.log("services: ",services.map(x => x.id))
+
         this.initValues()
       }
       // Object.entries(this.data).length === 0 ? this.initValues() : { this.dataId, this.dataName, this.dataCategory, this.dataOrder_status, this.dataPrice } = JSON.parse(JSON.stringify(this.data))
@@ -110,10 +110,10 @@ export default {
       };
 
       axios.post(API.SERVICES_LIST, params).then((res) => {
-        console.log(res);
+
         this_app.services = res.data.data.list;
       }).catch((err) => {
-        console.log(err);
+
       });
     },
     initValues () {
@@ -142,7 +142,7 @@ export default {
       const endpoint = this_app.isNew ? API.GROUPS_CREATE : API.GROUPS_EDIT;
 
       axios.post(endpoint, params).then((res) => {
-        console.log(res);
+
 
         this_app.$vs.loading.close();
 
@@ -173,7 +173,7 @@ export default {
         }
 
       }).catch((err) => {
-        console.log(err);
+
       });
     },
   },

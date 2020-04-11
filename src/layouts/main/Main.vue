@@ -233,7 +233,7 @@
       },
       checkLoginStatus() {
         this.isLoggedIn = "" != this.$store.state.AppActiveUser.token
-        console.log("this.isLoggedIn: ",this.isLoggedIn);
+
         if (!this.isLoggedIn) {
           this.$router.push('/404').catch(() => {
           })
@@ -269,7 +269,7 @@
 
       this.getPermissions();
 
-      console.log("permissions:" + this.permissions);
+
 
       // setup the menu
       if (this.isAllowed("dashboard")) {

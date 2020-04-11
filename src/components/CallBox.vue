@@ -55,8 +55,6 @@
 
         if (undefined != this.localTracks) {
           this.localTracks.forEach((track) => {
-            // console.log('In mute function code');
-            // console.log(JSON.stringify(track));
             try {
               if (track.kind == 'video') {
                 if (track.isEnabled) {
@@ -68,11 +66,10 @@
                 }
               }
             } catch (ex) {
-              // console.log(ex.toString());
+
             }
           })
         }
-
 
       },
       toggle_mute_mic: function () {
@@ -80,8 +77,6 @@
         let this_app = this;
 
         this.localTracks.forEach((track) => {
-          // console.log('In mute function code');
-          // console.log(JSON.stringify(track));
           try {
             if (track.kind == 'audio') {
               if (track.isEnabled) {
@@ -93,7 +88,7 @@
               }
             }
           } catch (ex) {
-            // console.log(ex.toString());
+
           }
         })
 
@@ -107,8 +102,6 @@
         }
 
         this.localTracks.forEach((track) => {
-          // console.log('In mute function code');
-          // console.log(JSON.stringify(track));
           try {
             if (track.isEnabled) {
               track.disable();
@@ -121,7 +114,7 @@
               this_app.localMicIsEnabled = true;
             }
           } catch (ex) {
-            // console.log(ex.toString());
+
           }
         })
       },
@@ -130,39 +123,27 @@
         let this_app = this;
         room.participants.forEach(participant => {
 
-          // console.log("PARTICIPANT");
-          // console.log(JSON.stringify(participant));
-
-
-          if (!this_app.found_remote_track) {
-          }
-          // console.log(`Participant "${participant.identity}" is connected to the Room`);
+          if (!this_app.found_remote_track) {}
 
           setTimeout(function () {
             participant.tracks.forEach(publication => {
 
-              // console.log("PUBLICATION");
-              // console.log(JSON.stringify(publication));
-
               if (publication.isSubscribed) {
 
-                // console.log("I am inside IF(publication.isSubscribed)");
                 const track = publication.track;
 
                 if (track == null) {
-                  // console.log("track is null");
+
                   this_app.check_remote(room);
                 } else {
-                  // console.log("track is not null");
+
                   this_app.found_remote_track = true;
                   //document.getElementById('remote-media-div').innerHTML = "";
                   document.getElementById('remote-media-div').appendChild(track.attach());
                   this_app.isVideoLoaded = true;
                 }
 
-
               } else {
-                // console.log("I am inside ELSE(publication.isSubscribed)");
                 this_app.check_remote(room);
               }
             });
@@ -192,13 +173,9 @@
           tracks: localTracks
         });
 
-
       }).then(room => {
-        // console.log(`Connected to Room: ${room.name}`);
-        // console.log(JSON.stringify(room));
 
         room.localParticipant.tracks.forEach((a) => {
-          // console.log('room.localParticipant.tracks', a)
           if (a.kind === "video") {
             const localMediaContainer = document.getElementById("local-media");
             localMediaContainer.innerHTML = "";
@@ -206,15 +183,11 @@
           }
         })
 
-        // console.log("PARTICIPANTS");
         this_app.room = room;
         this_app.check_remote(room);
 
-
         // Attach the Participant's Media to a <div> element.
         room.on('participantConnected', participant => {
-          // console.log("A participant has been connected");
-          // console.log(`Participant "${participant.identity}" connected`);
 
           participant.tracks.forEach(publication => {
             if (publication.isSubscribed) {
@@ -233,12 +206,11 @@
 
         // Attach the Participant's Media to a <div> element.
         room.on("participantDisconnected", (participant) => {
-          // console.log(`Participant disconnected: ${participant.identity}`);
+
           document.getElementById("remote-media-div").innerHTML = ""
         });
 
       });
-
 
     },
   }

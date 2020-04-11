@@ -76,11 +76,11 @@
         this.loading = true;
         const this_app = this;
         axios.post(API.DASHBOARD_NUMBERS, {"vu_token": this.$store.state.AppActiveUser.token}).then((res) => {
-          console.log(res);
+
           this_app.analytics = res.data.data;
           this.loading = false;
         }).catch((err) => {
-          console.log(err);
+
         });
       }
     }

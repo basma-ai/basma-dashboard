@@ -178,7 +178,7 @@
         this_app.$socket.emit("services_list_update", params);
       },
       ringtone_switch: function (val) {
-        console.log("ringtone switch clicked!!");
+
         if (val) {
 
           this.ringtone_audio.volume = 1;
@@ -211,7 +211,7 @@
         this_app.$socket.emit("start_socket", params);
         this_app.$socket.emit("request_pending_list", params);
 
-        console.log("start_socket");
+
 
         this_app.loading = false;
       },
@@ -223,12 +223,12 @@
         };
 
         axios.post(API.SERVICES_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.services = res.data.data.list;
           this_app.selected_services = this_app.services;
           this_app.request_agent_token();
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       loadCustomFields() {
@@ -241,7 +241,7 @@
         axios.post(API.CUSTOM_FIELDS_LIST, params).then((res) => {
           this_app.custom_fields = res.data.data.list;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       updateNotes() {
@@ -252,10 +252,10 @@
           custom_fields_values: this.custom_fields,
         })
         .then(function (res) {
-          console.log(res);
+
         })
         .catch(function (error) {
-          console.log(error);
+
         });
       },
       checkFilter() {
@@ -300,11 +300,11 @@
                   this_app.$socket.emit("start_socket", params);
 
                 } else {
-                  // console.log("it's a failure!");
+
                 }
               })
               .catch(function (error) {
-                console.log(error);
+
               });
           }
         })
@@ -339,11 +339,11 @@
               this_app.$socket.emit("start_socket", params);
 
             } else {
-              // console.log("it's a failure!");
+
             }
           })
           .catch(function (error) {
-            console.log(error);
+
           });
       },
       join_call_by_token() {
@@ -355,17 +355,17 @@
         };
 
         axios.post(API.CALL_REQUESTS_JOIN, params).then((res) => {
-          console.log(res);
+
           this_app.answer_call({ id : res.data.data.call_id });
         }).catch((err) => {
-          console.log(err);
+
         }).finally(()=>{
           this_app.token = null;
         });
       },
       on_call_update(call){
         let this_app = this;
-        console.log(call)
+
 
         this_app.call_id = call.id;
         this_app.call = call;
@@ -392,13 +392,13 @@
     },
     sockets: {
       connect: function () {
-        console.log('sockets: connected!')
+
       },
       disconnect: function () {
-        console.log('sockets: disconnected!')
+
       },
       on_update: function (data) {
-        console.log('sockets: on_update:', data)
+
 
         let this_app = this;
 
@@ -415,14 +415,14 @@
             this_app.ringtone_audio.pause();
           }
         }else{
-          console.log('data.type', data.type)
+
         }
 
       }
     },
     created() {
       if (this.token != null) {
-        console.log('this.token', this.token);
+
         this.join_call_by_token();
       }
 
@@ -446,7 +446,7 @@
       this.ringtone_audio.pause();
       this.ringtone_audio = null;
       if (!this.wasSidebarOpen) this.$store.commit('TOGGLE_REDUCE_BUTTON', false)
-      console.log("we are at onDestroy");
+
     }
   }
 </script>

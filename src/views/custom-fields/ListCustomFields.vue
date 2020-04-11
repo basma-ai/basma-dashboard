@@ -176,7 +176,7 @@
     watch: {
       currentPage: {
         handler(current, old) {
-          console.log("current", current, "old", old)
+
           this.loadData()
         },
         immediate: true
@@ -184,7 +184,7 @@
     },
     methods: {
       changePerPage: function (pages) {
-        console.log(pages);
+
         this.perPage = pages;
         this.currentPage = 1;
         this.loadData()
@@ -229,9 +229,9 @@
                   color: 'danger'
                 });
               }
-              console.log(res);
+
             }).catch((err) => {
-              console.log(err);
+
             });
           }
         })
@@ -254,7 +254,7 @@
         };
 
         axios.post(API.CUSTOM_FIELDS_LIST, params).then((res) => {
-          console.log(res);
+
           this_app.data = res.data.data.list;
           if (!!res.data.data.pagination.total) {
             this_app.total = res.data.data.pagination.total;
@@ -262,7 +262,7 @@
           this_app.from = res.data.data.pagination.from;
           this_app.to = res.data.data.pagination.to;
         }).catch((err) => {
-          console.log(err);
+
         });
       }
     },

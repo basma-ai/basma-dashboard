@@ -26,10 +26,6 @@
                 <td>{{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}</td>
               </tr>
               <tr>
-                <td class="font-semibold">Last Refresh Time</td>
-                <td>{{ -(new Date().getTime() - call.last_refresh_time) | duration('humanize', true) }}</td>
-              </tr>
-              <tr>
                 <td class="font-semibold">Answer Time</td>
                 <td>{{ -(new Date().getTime() - call.answer_time) | duration('humanize', true) }}</td>
               </tr>
@@ -143,10 +139,10 @@
         };
 
         axios.post(API.CALLS_GET, params).then((res) => {
-          console.log(res);
+
           this_app.call = res.data.data.call;
         }).catch((err) => {
-          console.log(err);
+
         });
       },
       getRecording(){
@@ -160,7 +156,7 @@
         };
 
         axios.post(API.CALLS_GET_RECORDING, params).then((res) => {
-          console.log(res);
+
           this.$vs.loading.close()
           this_app.recording = res.data.data;
 
@@ -183,7 +179,7 @@
           this_app.popupActive = true;
 
         }).catch((err) => {
-          console.log(err);
+
         });
       },
 
