@@ -5,7 +5,6 @@
         v-if="field.type === 'text' && isShow(field)"
         v-model="field.value"
         :label="field.label + (field.is_mandatory ? '*' : '')"
-        :rules="field.is_mandatory ? requiredRules : []"
         class="w-full mb-6"/>
 
       <div v-if="field.type === 'mobile' && isShow(field)">
@@ -18,7 +17,6 @@
         <vs-input
           v-model="field.value"
           :label="field.label + (field.is_mandatory ? '*' : '')"
-          :rules="field.is_mandatory ? requiredRules : []"
           class="w-full mb-6"/>
       </div>
 
@@ -26,7 +24,6 @@
         v-if="field.type === 'boolean' && isShow(field)"
         v-model="field.value"
         :label="field.label + (field.is_mandatory ? '*' : '')"
-        :rules="field.is_mandatory ? requiredRules : []"
         class="w-full mb-6"
         style="text-align: justify"/>
 
@@ -87,7 +84,11 @@
             });
 
             if(matching_val[0] != null) {
-              this.custom_fields[i].value = matching_val[0].value;
+              if (this.custom_fields[i].type == 'mobile') {
+                this.custom_fields[i].value_description = matching_val[0].value_description;
+              }else{
+                this.custom_fields[i].value = matching_val[0].value;
+              }
             }
 
             i++

@@ -278,7 +278,9 @@
             this_app.loading = true;
             this_app.ringtone_switch = true
 
-            this_app.$refs.call_box.end_call();
+            if(this_app.$refs.call_box != null) {
+              this_app.$refs.call_box.end_call();
+            }
 
             axios.post('/agent/end_call', {
               vu_token: this_app.$store.state.AppActiveUser.token,
@@ -422,7 +424,6 @@
     },
     created() {
       if (this.token != null) {
-
         this.join_call_by_token();
       }
 
@@ -440,13 +441,18 @@
       this.loadCustomFields();
     },
     beforeDestroy() {
-      if (this.screen_status == 'in_call') {
-        this.end_call();
-      }
-      this.ringtone_audio.pause();
-      this.ringtone_audio = null;
-      if (!this.wasSidebarOpen) this.$store.commit('TOGGLE_REDUCE_BUTTON', false)
+      let this_app = this;
 
+      this_app.$socket.disconnect();
+
+      if (this_app.screen_status == 'in_call') {
+        this_app.end_call();
+      }
+
+      this_app.ringtone_audio.pause();
+      this_app.ringtone_audio = null;
+
+      if (!this_app.wasSidebarOpen) this_app.$store.commit('TOGGLE_REDUCE_BUTTON', false)
     }
   }
 </script>
