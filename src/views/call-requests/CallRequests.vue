@@ -91,7 +91,7 @@
         <vs-th sort-key="name">Agent Name</vs-th>
         <vs-th sort-key="time">Creation Time</vs-th>
         <vs-th sort-key="time">Schedule Time</vs-th>
-        <vs-th sort-key="service">Service</vs-th>
+<!--        <vs-th sort-key="service">Service</vs-th>-->
         <vs-th sort-key="sms">Send SMS?</vs-th>
         <vs-th>Action</vs-th>
       </template>
@@ -121,9 +121,9 @@
             <p>{{ tr.scheduled_time | moment("YYYY-MM-DD h:mm a") }}</p>
           </vs-td>
 
-          <vs-td>
-            <p>{{ tr.service.name }}</p>
-          </vs-td>
+<!--          <vs-td>-->
+<!--            <p>{{ tr.service.name }}</p>-->
+<!--          </vs-td>-->
 
           <vs-td>
             <vs-chip :color="getOrderStatusColor(tr.send_sms)" class="product-order-status">{{ tr.send_sms ? "YES" : "NO" }}</vs-chip>

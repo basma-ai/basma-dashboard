@@ -92,6 +92,7 @@
         <vs-th sort-key="name">Type</vs-th>
         <vs-th sort-key="name">Is Mandatory?</vs-th>
         <vs-th sort-key="name">Is Visible?</vs-th>
+        <vs-th sort-key="name">Is For Agent?</vs-th>
         <vs-th>Action</vs-th>
       </template>
 

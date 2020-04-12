@@ -145,9 +145,9 @@
       },
       isFormValid() {
         if (Object.entries(this.data).length === 0) {
-          return this.user_id && this.service_id && this.datetime && this.custom_fields
+          return this.user_id && this.datetime
         } else {
-          return this.user_id && this.service_id && this.datetime && this.custom_fields
+          return this.user_id && this.datetime
         }
       },
       scrollbarTag() {
@@ -241,7 +241,6 @@
         let params = {
           "vu_token": this.$store.state.AppActiveUser.token,
           "vu_id": this.user_id,
-          "service_id": this.service_id,
           "scheduled_time": this.$moment(this.datetime).unix() * 1000,
           "send_sms": this.send_sms,
           "custom_fields_values": this.custom_fields,
@@ -251,12 +250,13 @@
           // params.vu_id = this_app.data.id;
         }
 
-
+        if (this.service_id !== ''){
+          params.service_id = 0
+        }
 
         const endpoint = this_app.isNew ? API.CALL_REQUESTS_CREATE : API.CALL_REQUESTS_EDIT;
 
         axios.post(endpoint, params).then((res) => {
-
 
           this_app.$vs.loading.close();
 
