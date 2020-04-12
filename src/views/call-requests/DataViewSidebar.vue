@@ -16,10 +16,13 @@
         <flat-pickr :config="configdateTimePicker" v-model="datetime" placeholder="Date Time" class="w-full mb-6" />
 
         <!-- AGENT -->
-        <vs-select v-validate="'required'" name="user_id" label="Agents" v-model="user_id"
-                   class="w-full mb-6">
-          <vs-select-item :value="r.id" :text="r.name" v-for="r in users"/>
-        </vs-select>
+        
+               <label class="vs-input--label">Agent</label>
+        <select name="user_id" label="Agents" v-model="user_id" v-validate="'required'" style="width:100%;font-size:16px;padding:10px!important;">
+          <option v-for="r in users" :key="r.id" :value="r.id">{{r.name}}</option>
+        </select>
+        <div style="height:10px"></div>
+        
 
         <!-- SERVICE -->
         <vs-select v-if="services.length > 0" v-validate="'required'" name="service_id" label="Service" v-model="service_id"
