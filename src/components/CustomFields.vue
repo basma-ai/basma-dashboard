@@ -95,6 +95,7 @@
               }else if (this.custom_fields[i].type == 'text'){
                 // console.log(this.custom_fields[i])
                 this.custom_fields[i].value_description = matching_val[0].value_description;
+                this.custom_fields[i].value = matching_val[0].value_description;
               }
             }
 
