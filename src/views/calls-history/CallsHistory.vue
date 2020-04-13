@@ -81,6 +81,7 @@
         <vs-th sort-key="id">#ID</vs-th>
         <vs-th sort-key="name">Agent Name</vs-th>
         <vs-th sort-key="time">Time</vs-th>
+        <vs-th sort-key="duration">Duration</vs-th>
         <vs-th sort-key="status">Status</vs-th>
         <vs-th sort-key="service">Service</vs-th>
         <vs-th>Action</vs-th>
@@ -106,6 +107,11 @@
           <vs-td>
             <p>{{ -(new Date().getTime() - tr.creation_time) | duration('humanize', true) }}</p>
           </vs-td>
+
+          <vs-td v-if="tr.duration">
+            <p>{{ tr.duration / 1000 | moment("m") }} min</p>
+          </vs-td>
+          <vs-td v-else></vs-td>
 
           <vs-td>
             <vs-chip :color="getOrderStatusColor(tr.status)" class="product-order-status">{{ tr.status }}</vs-chip>

@@ -19,7 +19,9 @@
               </tr>
               <tr>
                 <td class="font-semibold">Status</td>
-                <td>{{ call.status }}</td>
+                <td>
+                  <vs-chip :color="getOrderStatusColor(call.status)" class="product-order-status">{{ call.status }}</vs-chip>
+                </td>
               </tr>
               <tr>
                 <td class="font-semibold">Creation Time</td>
@@ -28,6 +30,10 @@
               <tr>
                 <td class="font-semibold">Answer Time</td>
                 <td>{{ -(new Date().getTime() - call.answer_time) | duration('humanize', true) }}</td>
+              </tr>
+              <tr v-if="call.duration">
+                <td class="font-semibold">Duration Time</td>
+                <td>{{ call.duration / 1000 | moment("m") }} minutes</td>
               </tr>
               <tr>
                 <td class="font-semibold">Agent Notes</td>
@@ -144,6 +150,12 @@
         }).catch((err) => {
 
         });
+      },
+      getOrderStatusColor(status) {
+        if (status === 'ended') return 'success'
+        if (status === 'started') return 'warning'
+        if (status === 'missed') return 'danger'
+        return 'primary'
       },
       getRecording(){
         this.$vs.loading()

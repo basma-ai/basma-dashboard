@@ -82,13 +82,13 @@
     <!-- In Call -->
     <vs-row v-if="screen_status == 'in_call'">
 
-      <vs-col v-if="call.status != 'ended'" vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
+      <vs-col vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
         <vs-card style="width:100%;">
           <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
         </vs-card>
       </vs-col>
 
-      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" :vs-offset="call.status == 'ended' ? 4 : 0" class="pa-2">
+      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
         <vs-card>
           <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">{{call.status == 'ended' ? 'Save & Go Back' : 'Save & End Call'}}</vs-button>
           <div class="sidebar-details">
@@ -357,7 +357,6 @@
         };
 
         axios.post(API.CALL_REQUESTS_JOIN, params).then((res) => {
-
           this_app.answer_call({ id : res.data.data.call_id });
         }).catch((err) => {
 
@@ -379,7 +378,6 @@
             iconPack: 'feather',
             icon: 'icon-alert-circle',
             color: 'success',
-            position:'top-center',
             time: 4000,
           });
         }

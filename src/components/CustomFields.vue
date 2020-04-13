@@ -3,7 +3,7 @@
     <div v-if="!read_only" v-for="field in custom_fields" v-bind:key="field.id">
       <vs-input
         v-if="field.type === 'text' && isShow(field)"
-        v-model="field.value"
+        v-model="field.value_description"
         :label="field.label + (field.is_mandatory ? '*' : '')"
         class="w-full mb-6"/>
 
@@ -28,11 +28,15 @@
         style="text-align: justify"/>
 
       <div v-if="field.type === 'checklist' && isShow(field)">
-        <vs-select multiple v-validate="'required'" name="checklist" :label="field.label" v-model="field.value"
-                   class="w-full mb-6">
-          <vs-select-item :value="chip" :text="chip" v-for="chip in JSON.parse(field.value_description)"
-                          v-bind:key="chip"/>
-        </vs-select>
+        <multiselect class="w-full mb-6" v-model="field.value" :options="JSON.parse(field.value_description)" :multiple="true" :searchable="true" :allow-empty="true" :show-labels="false">
+          <template slot="singleLabel" slot-scope="{ option }">{{ option }}</template>
+        </multiselect>
+
+<!--        <vs-select multiple v-validate="'required'" name="checklist" :label="field.label" v-model="field.value"-->
+<!--                   class="w-full mb-6">-->
+<!--          <vs-select-item :value="chip" :text="chip" v-for="chip in JSON.parse(field.value_description)"-->
+<!--                          v-bind:key="chip"/>-->
+<!--        </vs-select>-->
       </div>
 
     </div>
@@ -84,10 +88,13 @@
             });
 
             if(matching_val[0] != null) {
+              // console.log(matching_val[0])
               if (this.custom_fields[i].type == 'mobile') {
+                // console.log(matching_val[0].value_description)
                 this.custom_fields[i].value_description = matching_val[0].value_description;
-              }else{
-                this.custom_fields[i].value = matching_val[0].value;
+              }else if (this.custom_fields[i].type == 'text'){
+                // console.log(this.custom_fields[i])
+                this.custom_fields[i].value_description = matching_val[0].value_description;
               }
             }
 

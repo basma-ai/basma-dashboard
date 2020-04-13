@@ -24,6 +24,7 @@
     "firebase": "^6.0.4",
     "instantsearch.css": "^7.3.1",
     "jsonwebtoken": "^8.5.1",
+    "luxon": "^1.23.0",
     "material-icons": "^0.3.1",
     "mobile-device-detect": "^0.3.3",
     "perfect-scrollbar": "^1.4.0",
@@ -41,6 +42,7 @@
     "vue-chartjs": "^3.4.2",
     "vue-clipboard2": "^0.3.0",
     "vue-context": "4.0.0",
+    "vue-datetime": "^1.0.0-beta.11",
     "vue-debounce": "^2.5.1",
     "vue-echarts": "^4.0.3",
     "vue-feather-icons": "^5.0.0",
@@ -50,6 +52,7 @@
     "vue-i18n": "^8.11.2",
     "vue-instantsearch": "^2.2.1",
     "vue-moment": "^4.1.0",
+    "vue-multiselect": "^2.1.6",
     "vue-perfect-scrollbar": "^0.1.0",
     "vue-phone-number-input": "^1.1.6",
     "vue-prism-component": "^1.1.1",
@@ -74,6 +77,7 @@
     "vuesax": "3.11.13",
     "vuex": "^3.1.1",
     "vuex-persist": "^2.2.0",
+    "weekstart": "^1.0.1",
     "xlsx": "^0.15.0"
   },
   "devDependencies": {

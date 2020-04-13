@@ -7,6 +7,9 @@ import FeatherIcon  from './components/FeatherIcon.vue'
 import VxInputGroup  from './components/vx-input-group/VxInputGroup.vue'
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+import Multiselect from 'vue-multiselect'
+import { Datetime } from 'vue-datetime';
+import 'vue-datetime/dist/vue-datetime.css'
 
 Vue.component(VxTooltip.name, VxTooltip)
 Vue.component(VxCard.name, VxCard)
@@ -15,6 +18,8 @@ Vue.component(VxBreadcrumb.name, VxBreadcrumb)
 Vue.component(FeatherIcon.name, FeatherIcon)
 Vue.component(VxInputGroup.name, VxInputGroup)
 Vue.component('vue-phone-number-input', VuePhoneNumberInput);
+Vue.component('multiselect', Multiselect)
+Vue.component('datetime', Datetime);
 
 // v-select component
 import vSelect from 'vue-select'

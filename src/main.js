@@ -88,6 +88,9 @@ Vue.use(BusinessHours);
 // Note: In latest version you have to add it separately
 // import 'vue-select/dist/vue-select.css';
 
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+import 'vue-datetime/dist/vue-datetime.css'
+
 Vue.config.productionTip = false
 
 new Vue({

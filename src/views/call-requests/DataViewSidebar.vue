@@ -13,24 +13,30 @@
 
         <!-- Schedule Date/Time -->
         <label class="vs-input--label">Schedule Date/Time</label>
-        <flat-pickr :config="configdateTimePicker" v-model="datetime" placeholder="Date Time" class="w-full mb-6" />
+<!--        <flat-pickr :config="configdateTimePicker" v-model="datetime" placeholder="Date Time" class="w-full mb-6"/>-->
+        <datetime type="datetime" v-model="datetime" use12-hour :minute-step="5" class="w-full mb-6"></datetime>
 
         <!-- AGENT -->
-        
-               <label class="vs-input--label">Agent</label>
-        <select name="user_id" label="Agents" v-model="user_id" v-validate="'required'" style="width:100%;font-size:16px;padding:10px!important;">
-          <option v-for="r in users" :key="r.id" :value="r.id">{{r.name}}</option>
-        </select>
-        <div style="height:10px"></div>
-        
+        <label class="vs-input--label">Agent</label>
+        <multiselect class="w-full mb-6" v-model="selected_user" track-by="name" label="name" :options="users" :searchable="true" :allow-empty="false" :show-labels="false">
+          <template slot="singleLabel" slot-scope="{ option }">{{ option.name }}</template>
+        </multiselect>
+
+        <!--        <select name="user_id" label="Agents" v-model="user_id" v-validate="'required'"-->
+<!--                style="width:100%;font-size:16px;padding:10px!important;">-->
+<!--          <option v-for="r in users" :key="r.id" :value="r.id">{{r.name}}</option>-->
+<!--        </select>-->
 
         <!-- SERVICE -->
-        <vs-select v-if="services.length > 0" v-validate="'required'" name="service_id" label="Service" v-model="service_id"
-                   class="w-full mb-6">
-          <vs-select-item :value="r.id" :text="r.name" v-for="r in services"/>
-        </vs-select>
+        <div v-if="services.length > 0">
+          <label class="vs-input--label">Service</label>
+          <multiselect  class="w-full mb-6" v-model="selected_service" track-by="name" label="name" :options="services" :searchable="true" :allow-empty="false" :show-labels="false">
+            <template slot="singleLabel" slot-scope="{ option }">{{ option.name }}</template>
+          </multiselect>
+        </div>
 
-        <custom-fields :is_agent_view="false" v-if="custom_fields != null" :custom_fields="custom_fields"></custom-fields>
+        <custom-fields :is_agent_view="false" v-if="custom_fields != null"
+                       :custom_fields="custom_fields"></custom-fields>
 
         <vs-checkbox v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
       </div>
@@ -79,14 +85,14 @@
         name: '',
         mobile: '',
         services: [],
-        service_id: '',
+        selected_service: null,
         users: [],
-        user_id: '',
+        selected_user: null,
         custom_fields: [],
 
         send_sms: true,
 
-        datetime: null,
+        datetime: new Date().toISOString(),
         configdateTimePicker: {
           enableTime: true,
           // dateFormat: 'd-m-Y H:i',
@@ -148,9 +154,9 @@
       },
       isFormValid() {
         if (Object.entries(this.data).length === 0) {
-          return this.user_id && this.datetime
+          return this.selected_user && this.datetime
         } else {
-          return this.user_id && this.datetime
+          return this.selected_user && this.datetime
         }
       },
       scrollbarTag() {
@@ -173,14 +179,15 @@
             return a.type === 'mobile' && a.agent_only === 0;
           });
 
-          if(matched[0] == null) {
+          if (matched[0] == null) {
             custom_fields.unshift({
               type: "mobile",
               label: "Mobile",
               value_description: "",
               value: "",
               is_mandatory: 1,
-              agent_only: 0})
+              agent_only: 0
+            })
           }
 
           // if (custom_fields.filter(x => x['name'].toLowerCase() === 'name') == null) {
@@ -229,9 +236,9 @@
       },
       initValues() {
         if (this.data.id) return
-        this.datetime = ''
-        this.user_id = ''
-        this.service_id = ''
+        this.datetime = new Date().toISOString()
+        this.selected_user = null
+        this.selected_service = null
       },
       submitData() {
         if (!this.isFormValid) {
@@ -243,7 +250,7 @@
 
         let params = {
           "vu_token": this.$store.state.AppActiveUser.token,
-          "vu_id": this.user_id,
+          "vu_id": this.selected_user.id,
           "scheduled_time": this.$moment(this.datetime).unix() * 1000,
           "send_sms": this.send_sms,
           "custom_fields_values": this.custom_fields,
@@ -253,8 +260,8 @@
           // params.vu_id = this_app.data.id;
         }
 
-        if (this.service_id !== ''){
-          params.service_id = 0
+        if (this.selected_service !== null) {
+          params.service_id = this.selected_service.id
         }
 
         const endpoint = this_app.isNew ? API.CALL_REQUESTS_CREATE : API.CALL_REQUESTS_EDIT;
@@ -302,6 +309,23 @@
   }
 </script>
 
+<style>
+  .vdatetime-input {
+    padding: .7rem !important;
+    color: inherit;
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0,.2);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,.15);
+    box-shadow: 0 0 0 0 rgba(0,0,0,.15);
+    -webkit-transition: all .3s ease;
+    transition: all .3s ease;
+    width: 100%;
+    font-size: 1rem !important;
+  }
+</style>
 <style lang="scss" scoped>
   .add-new-data-sidebar {
     ::v-deep .vs-sidebar--background {

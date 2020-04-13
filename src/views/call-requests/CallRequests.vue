@@ -91,7 +91,6 @@
         <vs-th sort-key="name">Agent Name</vs-th>
         <vs-th sort-key="time">Creation Time</vs-th>
         <vs-th sort-key="time">Schedule Time</vs-th>
-<!--        <vs-th sort-key="service">Service</vs-th>-->
         <vs-th sort-key="sms">Send SMS?</vs-th>
         <vs-th>Action</vs-th>
       </template>
@@ -130,12 +129,17 @@
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
-            <feather-icon icon="CopyIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                          @click.stop="copyLink(tr)"/>
-<!--            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
-<!--                          @click.stop="editData(tr)"/>-->
-            <feather-icon icon="PhoneIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" class="ml-2"
-                          @click.stop="viewData(tr)"/>
+            <div v-if="tr.call_id == null">
+              <feather-icon icon="CopyIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                            @click.stop="copyLink(tr)"/>
+              <!--            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
+              <!--                          @click.stop="editData(tr)"/>-->
+              <feather-icon icon="PhoneIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" class="ml-2"
+                            @click.stop="viewData(tr)"/>
+            </div>
+            <div v-else>
+              <vs-chip>Called</vs-chip>
+            </div>
           </vs-td>
 
         </vs-tr>
