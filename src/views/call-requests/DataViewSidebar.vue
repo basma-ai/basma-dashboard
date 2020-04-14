@@ -230,6 +230,16 @@
         axios.post(API.USERS_LIST, params).then((res) => {
 
           this_app.users = res.data.data.list;
+
+          let user = this_app.users.filter((u) => {
+              return u.id == this_app.$store.state.AppActiveUser.info.id
+          })
+
+          // console.log(user[0]);
+          // console.log(this_app.$store.state.AppAsctiveUser.info.id);
+
+          this_app.selected_user = user[0];
+
         }).catch((err) => {
 
         });
