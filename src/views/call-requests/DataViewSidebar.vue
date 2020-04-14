@@ -235,10 +235,7 @@
               return u.id == this_app.$store.state.AppActiveUser.info.id
           })
 
-          // console.log(this_app.$store.state.AppAsctiveUser.info);
-
           if (user[0] != null) {
-            // console.log(user[0]);
             this_app.selected_user = user[0];
           }
 

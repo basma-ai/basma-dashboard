@@ -3,7 +3,7 @@
     <div v-if="!read_only" v-for="field in custom_fields" v-bind:key="field.id">
       <vs-input
         v-if="field.type === 'text' && isShow(field)"
-        v-model="field.value_description"
+        v-model="field.value"
         :label="field.label + (field.is_mandatory ? '*' : '')"
         class="w-full mb-6"/>
 
@@ -94,8 +94,7 @@
                 this.custom_fields[i].value_description = matching_val[0].value_description;
               }else if (this.custom_fields[i].type == 'text'){
                 // console.log(this.custom_fields[i])
-                this.custom_fields[i].value_description = matching_val[0].value_description;
-                this.custom_fields[i].value = matching_val[0].value_description;
+                this.custom_fields[i].value = matching_val[0].value;
               }
             }
 
