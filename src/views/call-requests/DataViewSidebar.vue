@@ -235,10 +235,12 @@
               return u.id == this_app.$store.state.AppActiveUser.info.id
           })
 
-          // console.log(user[0]);
-          // console.log(this_app.$store.state.AppAsctiveUser.info.id);
+          // console.log(this_app.$store.state.AppAsctiveUser.info);
 
-          this_app.selected_user = user[0];
+          if (user[0] != null) {
+            // console.log(user[0]);
+            this_app.selected_user = user[0];
+          }
 
         }).catch((err) => {
 
@@ -247,7 +249,7 @@
       initValues() {
         if (this.data.id) return
         this.datetime = new Date().toISOString()
-        this.selected_user = null
+        // this.selected_user = null
         this.selected_service = null
       },
       submitData() {
