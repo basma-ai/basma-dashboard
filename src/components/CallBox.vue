@@ -2,7 +2,7 @@
   <div>
     <div class="call_box">
 
-      <div v-if="isVideoLoaded" id="timer">{{ timer | moment("mm:ss") }}</div>
+      <div v-if="timer != 0" id="timer">{{ timer | moment("mm:ss") }}</div>
 
       <div id="local-media"></div>
       <div id="remote-media-div">
