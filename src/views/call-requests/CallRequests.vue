@@ -171,6 +171,7 @@
         from: 0,
         to: 0,
         isMounted: false,
+        url: process.env.VUE_APP_PUBLIC_LINK + '/',
 
         // Data Sidebar
         addNewDataSidebar: false,
@@ -212,7 +213,7 @@
       },
       copyLink(data) {
         let this_app = this;
-        this.$copyText("https://video.basma.ai/" + this.$store.state.AppActiveUser.info.vendor.username + "?token=" + data.token).then(function (e) {
+        this.$copyText(this.url + this.$store.state.AppActiveUser.info.vendor.username + "?token=" + data.token).then(function (e) {
           this_app.$vs.notify({
             title: 'Success',
             text: "Call request link is copied!",

@@ -82,13 +82,13 @@
     <!-- In Call -->
     <vs-row v-if="screen_status == 'in_call'">
 
-      <vs-col vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
+      <vs-col v-bind:class="{ hide: call.status == 'ended' }" vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
         <vs-card style="width:100%;">
           <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
         </vs-card>
       </vs-col>
 
-      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" class="pa-2">
+      <vs-col id="right-sidebar" vs-justify="space-between" vs-sm="12" vs-md="4" vs-lg="4" :vs-offset="call.status == 'ended' ? 4 : 0" class="pa-2">
         <vs-card>
           <vs-button style="width:100%; margin-bottom: 15px" type="border" color="danger" @click="end_call">{{call.status == 'ended' ? 'Save & Go Back' : 'Save & End Call'}}</vs-button>
           <div class="sidebar-details">
@@ -421,6 +421,8 @@
       }
     },
     created() {
+      this.$socket.connect();
+
       if (this.token != null) {
         this.join_call_by_token();
       }
@@ -457,6 +459,10 @@
 
 <style lang="scss">
 
+  .hide {
+    display: none;
+  }
+  
   ul.services {
     display: inline-block;
     position: relative;

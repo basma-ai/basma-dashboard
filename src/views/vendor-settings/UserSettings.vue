@@ -10,12 +10,16 @@
         <user-settings-working-hours :vendor="vendor"/>
       </div>
     </vs-tab>
+    <vs-tab icon-pack="feather" icon="icon-phone-call" :label="!isSmallerScreen ? 'Customer View' : ''">
+      <div class="tab-text md:ml-4 md:mt-0 mt-4 ml-0">
+        <user-settings-customer-view :vendor="vendor"/>
+      </div>
+    </vs-tab>
     <vs-tab icon-pack="feather" icon="icon-film" :label="!isSmallerScreen ? 'Recording' : ''">
       <div class="tab-text md:ml-4 md:mt-0 mt-4 ml-0">
         <user-settings-recording :vendor="vendor"/>
       </div>
     </vs-tab>
-
   </vs-tabs>
 </template>
 
@@ -23,6 +27,7 @@
 import UserSettingsInfo from './UserSettingsInfo.vue'
 import UserSettingsWorkingHours from './UserSettingsWorkingHours.vue'
 import UserSettingsRecording from "./UserSettingsRecording";
+import UserSettingsCustomerView from "./UserSettingsCustomerView";
 import axios from '@/axios.js'
 import API from '@/api.js'
 
@@ -30,7 +35,8 @@ export default {
   components: {
     UserSettingsInfo,
     UserSettingsWorkingHours,
-    UserSettingsRecording
+    UserSettingsRecording,
+    UserSettingsCustomerView
   },
   data () {
     return {

@@ -2,42 +2,18 @@
   <vx-card no-shadow>
 
     <div class="mb-base">
-      <h6 class="mb-4">Recording</h6>
+      <h6 class="mb-4">Customer View</h6>
 
       <div class="flex items-center mb-4">
-        <vs-switch v-model="vendor.recording_enabled" disabled/>
-        <span class="ml-4">Record all video calls and show them in the call view to the agent.</span>
+        <vs-switch v-model="vendor.is_customer_view_enabled"/>
+        <span class="ml-4">Enable or disable customer view for the public to call at anytime (If disabled you'll not recive calls from the Agent Phone however.</span>
       </div>
-      <!--      <div class="flex items-center mb-4">-->
-      <!--        <vs-switch v-model="answer" />-->
-      <!--        <span class="ml-4">Email me when someone answers on my form</span>-->
-      <!--      </div>-->
-      <!--      <div class="flex items-center mb-4">-->
-      <!--        <vs-switch v-model="follow" />-->
-      <!--        <span class="ml-4">Email me hen someone follows me</span>-->
-      <!--      </div>-->
+
     </div>
-
-    <!--    <div>-->
-    <!--      <h6 class="mb-4">Application</h6>-->
-
-    <!--      <div class="flex items-center mb-4">-->
-    <!--        <vs-switch v-model="news" />-->
-    <!--        <span class="ml-4">News and announcements</span>-->
-    <!--      </div>-->
-    <!--      <div class="flex items-center mb-4">-->
-    <!--        <vs-switch v-model="product_update" />-->
-    <!--        <span class="ml-4">Weekly product updates</span>-->
-    <!--      </div>-->
-    <!--      <div class="flex items-center">-->
-    <!--        <vs-switch v-model="blog" />-->
-    <!--        <span class="ml-4">Weekly blog digest</span>-->
-    <!--      </div>-->
-    <!--    </div>-->
 
     <!-- Save & Reset Button -->
     <div class="flex flex-wrap items-center justify-end mt-base">
-      <vs-button class="ml-auto mt-2" @click="update" disabled>Save Changes</vs-button>
+      <vs-button class="ml-auto mt-2" @click="update">Save Changes</vs-button>
     </div>
 
   </vx-card>
@@ -70,7 +46,7 @@
 
         let params = {
           "vu_token": this.activeUserInfo.token,
-          "recording_enabled": this.vendor.recording_enabled
+          "is_customer_view_enabled": this.vendor.is_customer_view_enabled
         };
 
         axios.post(API.SETTINGS_EDIT, params).then((res) => {

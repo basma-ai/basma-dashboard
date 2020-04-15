@@ -2,6 +2,8 @@
   <div>
     <div class="call_box">
 
+      <div v-if="isVideoLoaded" id="timer">{{ timer | moment("mm:ss") }}</div>
+
       <div id="local-media"></div>
       <div id="remote-media-div">
           <loading v-if="!isVideoLoaded"></loading>
@@ -43,6 +45,7 @@
       localCamIsEnabled: true,
       localMicIsEnabled: true,
       isVideoLoaded: false,
+      timer: 0
     }),
     components: {
       CamPreview,
@@ -150,6 +153,23 @@
           }, 5000);
 
         });
+      },
+      add_one_sec_to_timer: function () {
+        let this_app = this;
+
+        if (this_app.isVideoLoaded) {
+          setTimeout( function () {
+            this_app.timer++;
+            this_app.add_one_sec_to_timer();
+          },1000);
+        }else{
+          this.timer = 0
+        }
+      }
+    },
+    watch: {
+      isVideoLoaded(isTrue) {
+        this.add_one_sec_to_timer();
       }
     },
     created() {
@@ -259,6 +279,20 @@
     padding: 0;
     height: 100%;
     margin-bottom: -6px;
+  }
+
+  #timer {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #ffc13c;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 1rem;
+    min-width: 60px;
+    text-align: center;
   }
 
 </style>
