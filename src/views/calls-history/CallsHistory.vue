@@ -1,7 +1,7 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
 
-    <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
+    <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data" :no-data-text="loadingOrNoData">
 
       <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
 
@@ -11,7 +11,7 @@
           <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
 
             <div
-              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full">
+              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-base font-medium w-32 w-full">
               <span class="mr-2">Actions</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4"/>
             </div>
@@ -91,8 +91,8 @@
         <tbody>
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
 
-          <vs-td :data="tr.id">
-            <p class="font-medium truncate">{{ tr.id }}</p>
+          <vs-td :data="tr.local_id">
+            <p class="font-medium truncate">{{ tr.local_id }}</p>
           </vs-td>
 
           <vs-td v-if="null != tr.vu" :data="tr.vu.name">
@@ -157,10 +157,13 @@
 
         // Data Sidebar
         addNewDataSidebar: false,
-        sidebarData: {}
+        sidebarData: {},
       }
     },
     computed: {
+      loadingOrNoData() {
+        return 'No Data Available'
+      },
       totalPages() {
         return this.total === 0 ? 1 : Math.ceil(this.total / this.perPage)
       },

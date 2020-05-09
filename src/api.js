@@ -50,4 +50,14 @@ export default {
 
   SETTINGS_GET: '/vendor/settings/get',
   SETTINGS_EDIT: '/vendor/settings/edit',
+
+  BILLING_ADD_CARD: '/vendor/billing/payment_method_add',
+  BILLING_REMOVE_CARD: '/vendor/billing/payment_method_detach',
+  BILLING_LIST_CARDS: '/vendor/billing/payment_method_list',
+  BILLING_OVERVIEW: '/vendor/billing/overview',
+  BILLING_SUBSCRIBE: '/vendor/billing/create_subscription',
+  BILLING_INVOICES_LIST: '/vendor/billing/invoices_list',
+  BILLING_PACKAGES_LIST: '/vendor/billing/packages_list',
+
+  SEND_MESSAGE: '/agent/send_message',
 };

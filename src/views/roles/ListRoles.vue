@@ -13,7 +13,7 @@
           <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
 
             <div
-              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full">
+              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-base font-medium w-32 w-full">
               <span class="mr-2">Actions</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4"/>
             </div>
@@ -52,12 +52,12 @@
           </vs-dropdown>
 
           <!-- ADD NEW -->
-          <div
-            class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
+          <vs-button
+            class="btn-add-new p-3 mb-4 mr-4 rounded-lg flex items-center justify-center text-lg font-medium text-base text-white border border-solid border-primary"
             @click="addNewData">
-            <feather-icon icon="PlusIcon" svgClasses="h-4 w-4"/>
-            <span class="ml-2 text-base text-primary">Add New</span>
-          </div>
+            <feather-icon icon="PlusIcon" svgClasses="h-3 w-4"/>
+            <span class="ml-2 text-base">Add New</span>
+          </vs-button>
         </div>
 
         <!-- ITEMS PER PAGE -->

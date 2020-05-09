@@ -19,10 +19,10 @@
             <span class="ml-2">Profile</span>
           </li>
 
-<!--          <li @click="open('/billing')" class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">-->
-<!--            <feather-icon icon="CreditCardIcon" svgClasses="w-4 h-4" />-->
-<!--            <span class="ml-2">Billing</span>-->
-<!--          </li>-->
+          <li @click="open('/billing')" class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
+            <feather-icon icon="CreditCardIcon" svgClasses="w-4 h-4" />
+            <span class="ml-2">Billing</span>
+          </li>
 
           <vs-divider class="m-1" />
 

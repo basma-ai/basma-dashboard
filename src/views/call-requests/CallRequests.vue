@@ -1,7 +1,8 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
 
-    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar" :data="sidebarData"/>
+    <data-view-sidebar :isSidebarActive="addNewDataSidebar" @reloadData="loadData" @closeSidebar="toggleDataSidebar"
+                       :data="sidebarData"/>
 
     <vs-table ref="table" :sst="true" :max-items="perPage" :total="total" :data="data">
 
@@ -13,7 +14,7 @@
           <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
 
             <div
-              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full">
+              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-base font-medium w-32 w-full">
               <span class="mr-2">Actions</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4"/>
             </div>
@@ -52,12 +53,13 @@
           </vs-dropdown>
 
           <!-- ADD NEW -->
-          <div
-            class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
+          <vs-button
+            class="btn-add-new p-3 mb-4 mr-4 rounded-lg flex items-center justify-center text-lg font-medium text-base text-white border border-solid border-primary"
             @click="addNewData">
-            <feather-icon icon="PlusIcon" svgClasses="h-4 w-4"/>
-            <span class="ml-2 text-base text-primary">Schedule a New Call</span>
-          </div>
+            <feather-icon icon="PlusIcon" svgClasses="h-3 w-4"/>
+            <span class="ml-2 text-base">Schedule a New Call</span>
+          </vs-button>
+
         </div>
 
         <!-- ITEMS PER PAGE -->
@@ -99,8 +101,8 @@
         <tbody>
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
 
-          <vs-td :data="tr.id">
-            <p class="font-medium truncate">{{ tr.id }}</p>
+          <vs-td :data="tr.local_id">
+            <p class="font-medium truncate">{{ tr.local_id }}</p>
           </vs-td>
 
           <vs-td v-if="null != tr.vu" :data="tr.vu.name">
@@ -120,12 +122,14 @@
             <p>{{ tr.scheduled_time | moment("YYYY-MM-DD h:mm a") }}</p>
           </vs-td>
 
-<!--          <vs-td>-->
-<!--            <p>{{ tr.service.name }}</p>-->
-<!--          </vs-td>-->
+          <!--          <vs-td>-->
+          <!--            <p>{{ tr.service.name }}</p>-->
+          <!--          </vs-td>-->
 
           <vs-td>
-            <vs-chip :color="getOrderStatusColor(tr.send_sms)" class="product-order-status">{{ tr.send_sms ? "YES" : "NO" }}</vs-chip>
+            <vs-chip :color="getOrderStatusColor(tr.send_sms)" class="product-order-status">{{ tr.send_sms ? "YES" :
+              "NO" }}
+            </vs-chip>
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
@@ -135,10 +139,11 @@
               <!--            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
               <!--                          @click.stop="editData(tr)"/>-->
               <feather-icon icon="PhoneIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" class="ml-2"
-                            @click.stop="viewData(tr)"/>
+                            @click.stop="makeCall(tr)"/>
             </div>
             <div v-else>
-              <vs-chip>Called</vs-chip>
+              <feather-icon icon="EyeIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" class="ml-2"
+                            @click.stop="viewCall(tr)"/>
             </div>
           </vs-td>
 
@@ -189,7 +194,6 @@
     watch: {
       currentPage: {
         handler(current, old) {
-
           this.loadData()
         },
         immediate: true
@@ -226,11 +230,12 @@
 
         })
       },
-      viewData(data) {
-        // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
-        // this.sidebarData = data
-
-        this.$router.push(`/agent-phone/${data.id}`).catch(() => {})
+      makeCall(data) {
+        this.$router.push(`/agent-phone/${data.id}`).catch(() => {
+        })
+      },
+      viewCall(data) {
+        this.$router.push(`/calls-history/view-call/${data.call_id}`).catch(() => {})
       },
       getOrderStatusColor(status) {
         if (status === 1) return 'success'

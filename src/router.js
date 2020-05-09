@@ -171,8 +171,23 @@ const router = new Router({
           component: () => import('./views/billing/Billing.vue'),
           meta: {
             pageTitle: 'Billing',
-            showChat: false
+            breadcrumb: [
+              {title: 'Billing', url: '/', active: true},
+            ]
           },
+        },
+        {
+          path: '/billing/subscribe',
+          name: 'subscribe',
+          component: () => import('@/views/billing/BillingSubscribe.vue'),
+          meta: {
+            pageTitle: 'Upgrade',
+            breadcrumb: [
+              {title: 'Upgrade', url: '/billing/subscribe'},
+              {title: 'Billing', url: '/billing'},
+              {title: 'Upgrade', active: true}
+            ]
+          }
         },
         {
           path: '/roles',
@@ -210,6 +225,16 @@ const router = new Router({
         // PAGES
         // =============================================================================
         {
+          path: '/404',
+          name: 'page-error-404',
+          component: () => import('@/views/pages/Error404.vue')
+        },
+        {
+          path: '/payments/callback',
+          name: 'payments-callback',
+          component: () => import('@/views/pages/PaymentsCallback.vue')
+        },
+        {
           path: '/:id',
           name: 'page-vendor',
           component: () => import('@/views/pages/Login.vue')
@@ -219,11 +244,7 @@ const router = new Router({
           name: 'page-login',
           component: () => import('@/views/pages/Login.vue')
         },
-        {
-          path: '/404',
-          name: 'page-error-404',
-          component: () => import('@/views/pages/Error404.vue')
-        },
+
       ]
     },
     // Redirect to 404 page, if no match found

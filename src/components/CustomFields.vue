@@ -25,7 +25,7 @@
         v-model="field.value"
         :label="field.label + (field.is_mandatory ? '*' : '')"
         class="w-full mb-6"
-        style="text-align: justify"/>
+        style="text-align: justify">{{field.label}}</vs-checkbox>
 
       <div v-if="field.type === 'checklist' && isShow(field)">
         <multiselect class="w-full mb-6" v-model="field.value" :options="JSON.parse(field.value_description)" :multiple="true" :searchable="true" :allow-empty="true" :show-labels="false">
@@ -43,7 +43,7 @@
 
     <table v-if="read_only">
       <tr v-for="field in custom_fields" v-bind:key="field.id">
-        <td class="font-semibold" style="text-transform: capitalize">{{ field.label }}</td>
+        <td class="font-semibold" style="text-transform: capitalize">{{ field.label }}:</td>
         <td v-if="field.type != 'checklist'">{{ field.value }}</td>
         <td v-else>
           <vs-chip color="primary" v-for="chip in field.value" >{{ chip }}</vs-chip>

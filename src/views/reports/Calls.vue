@@ -206,7 +206,7 @@
           },
           {
             headerName: 'Rating',
-            field: 'rating',
+            field: 'rating.rating',
             filter: true,
             width: 125
           }

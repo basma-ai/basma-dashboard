@@ -43,7 +43,7 @@
 
         <vs-row class="agent_call_boxes_container">
           <vs-col vs-type="flex" id="the_col" vs-justify="center" vs-align="center" vs-sm="12" vs-md="6" vs-lg="6"
-                  v-for="call in pending_calls_list">
+                  v-for="(call, index) in pending_calls_list">
             <div class="agent_call_box" @click="answer_call(call)">
 
               <vs-col vs-sm="12" vs-md="6" vs-lg="6">
@@ -52,7 +52,7 @@
                 </div>
 
                 <div id="text">
-                  <div id="title">#{{call.id}}</div>
+                  <div id="title">#{{call.local_id}}</div>
                   <div id="time">
                     <vs-icon>access_time</vs-icon>
                     {{ -(new Date().getTime() - call.creation_time) | duration('humanize', true) }}
@@ -94,8 +94,8 @@
           <div class="sidebar-details">
             <custom-fields :is_agent_view="true" v-if="custom_fields != null" :custom_fields="custom_fields" :values="call.custom_fields_values"></custom-fields>
           </div>
-          <vs-textarea placeholder="Your private notes goes here.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="5"/>
-<!--          <ChatBox :user_token="vu_token" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>-->
+          <vs-textarea placeholder="Your private notes goes here.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="3"/>
+          <ChatBox ref="chatbox" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>
         </vs-card>
       </vs-col>
 
@@ -122,6 +122,7 @@
       vendor_id: 0,
       selected_service: null,
       call_id: 0,
+      call_token: null,
       call: null,
       vu_username: '',
       vu_password: '',
@@ -210,8 +211,6 @@
 
         this_app.$socket.emit("start_socket", params);
         this_app.$socket.emit("request_pending_list", params);
-
-
 
         this_app.loading = false;
       },
@@ -353,7 +352,7 @@
 
         const params = {
           "vu_token": this.$store.state.AppActiveUser.token,
-          "call_request_id": this.token,
+          "call_request_id": this.call_token,
         };
 
         axios.post(API.CALL_REQUESTS_JOIN, params).then((res) => {
@@ -361,7 +360,7 @@
         }).catch((err) => {
 
         }).finally(()=>{
-          this_app.token = null;
+          this_app.call_token = null;
         });
       },
       on_call_update(call){
@@ -414,8 +413,8 @@
           } else {
             this_app.ringtone_audio.pause();
           }
-        }else{
-
+        }else if (data.type == 'message'){
+          this_app.$refs.chatbox.addChat(data.data)
         }
 
       }
@@ -423,7 +422,8 @@
     created() {
       this.$socket.connect();
 
-      if (this.token != null) {
+      if (null != this.token) {
+        this.call_token = this.token;
         this.join_call_by_token();
       }
 
@@ -462,7 +462,7 @@
   .hide {
     display: none;
   }
-  
+
   ul.services {
     display: inline-block;
     position: relative;

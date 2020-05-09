@@ -92,9 +92,6 @@
           text: 'Checkbox',
           value: 'boolean'
         }, {
-          text: 'Date',
-          value: 'date'
-        }, {
           text: 'Checklist',
           value: 'checklist'
         }],

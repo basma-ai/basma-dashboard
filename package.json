@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-countdown": "^1.1.2",
+    "@stripe/stripe-js": "^1.4.0",
     "ag-grid-community": "^21.0.1",
     "ag-grid-vue": "^21.0.1",
     "algoliasearch": "^3.33.0",
@@ -31,7 +32,7 @@
     "postcss-rtl": "1.5.0",
     "prismjs": "^1.16.0",
     "socket.io-client": "^2.3.0",
-    "twilio-video": "^2.2.0",
+    "twilio-video": "^2.3.0",
     "vee-validate": "^2.2.8",
     "vue": "^2.6.10",
     "vue-acl": "4.0.7",

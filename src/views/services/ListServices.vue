@@ -14,7 +14,7 @@
           <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
 
             <div
-              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full">
+              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-base font-medium w-32 w-full">
               <span class="mr-2">Actions</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4"/>
             </div>
@@ -53,12 +53,13 @@
           </vs-dropdown>
 
           <!-- ADD NEW -->
-          <div
-            class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
-            @click="addNewData">
-            <feather-icon icon="PlusIcon" svgClasses="h-4 w-4"/>
-            <span class="ml-2 text-base text-primary">Add New</span>
-          </div>
+          <vs-button
+            class="btn-add-new p-3 mb-4 mr-4 rounded-lg flex items-center justify-center text-lg font-medium text-base text-white border border-solid border-primary"
+            @click="addNewData"
+            :disabled="package_limitation == null">
+            <feather-icon icon="PlusIcon" svgClasses="h-3 w-4"/>
+            <span class="ml-2 text-base">Add New</span>
+          </vs-button>
         </div>
 
         <!-- ITEMS PER PAGE -->
@@ -140,6 +141,7 @@
         from: 0,
         to: 0,
         isMounted: false,
+        package_limitation: null,
 
         // Data Sidebar
         addNewDataSidebar: false,
@@ -157,7 +159,6 @@
     watch: {
       currentPage: {
         handler(current, old) {
-
           this.loadData()
         },
         immediate: true
@@ -171,6 +172,11 @@
         this.loadData()
       },
       addNewData() {
+        if (!this.package_limitation.shall_allow) {
+          this.showUpgraded()
+          return
+        }
+
         this.sidebarData = {}
         this.toggleDataSidebar(true)
       },
@@ -222,6 +228,21 @@
         this.sidebarData = data
         this.toggleDataSidebar(true)
       },
+      showUpgraded() {
+        const this_app = this;
+
+        this_app.$vs.dialog({
+          type: 'confirm',
+          color: 'success',
+          title: 'TIME TO UPGRADE 🚀',
+          text: "You have reached your maximum plan limit.",
+          acceptText: "Upgrade",
+          accept: function () {
+            // move him to the plans;
+            console.log("help me")
+          }
+        })
+      },
       getOrderStatusColor(status) {
         if (status === 'ended') return 'warning'
         if (status === 'started') return 'success'
@@ -249,15 +270,24 @@
 
         axios.post(API.SERVICES_LIST, params).then((res) => {
 
-          this_app.data = res.data.data.list;
-          if (!!res.data.data.pagination.total) {
-            this_app.total = res.data.data.pagination.total;
-          }
-          this_app.from = res.data.data.pagination.from;
-          this_app.to = res.data.data.pagination.to;
+          this_app.populateData(res.data.data);
+
         }).catch((err) => {
 
         });
+      },
+      populateData(data){
+        const this_app = this;
+
+        this_app.data = data.list;
+        this_app.package_limitation = data.package_limitation;
+
+        if (!!data.pagination.total) {
+          this_app.total = data.pagination.total;
+        }
+
+        this_app.from = data.pagination.from;
+        this_app.to = data.pagination.to;
       }
     },
     created() {

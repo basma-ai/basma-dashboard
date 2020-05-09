@@ -259,8 +259,6 @@
 
       this.getPermissions();
 
-
-
       // setup the menu
       if (this.isAllowed("dashboard")) {
         this.navMenuItems.push({
