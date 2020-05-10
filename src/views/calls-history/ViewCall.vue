@@ -61,7 +61,7 @@
               </tr>
               <tr>
                 <td class="font-semibold">Feedback</td>
-                <td>{{ call.feedback_text }}</td>
+                <td>{{ call.rating.feedback_text }}</td>
               </tr>
             </table>
           </vx-card>

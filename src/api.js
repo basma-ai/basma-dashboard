@@ -60,4 +60,7 @@ export default {
   BILLING_PACKAGES_LIST: '/vendor/billing/packages_list',
 
   SEND_MESSAGE: '/agent/send_message',
+
+  FILE_UPLOAD: '/files/upload',
+  FILE_GET: '/files/get',
 };
