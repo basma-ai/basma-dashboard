@@ -2,7 +2,7 @@
 import * as icons from 'vue-feather-icons'
 
 export default {
-    functional:true,
+    functional: true,
     name: 'feather-icon',
     props: {
         icon: { required: true },

@@ -1,11 +1,7 @@
 <template>
-
-  <div>
     <vs-button color="secondary" icon-pack="feather" icon="icon-paperclip" type="border" class="file_box" @click="pick_file">
-      <input type="file" :ref="'upload_file'+_uid" accept="image/*" @change="start_upload($event)">
+      <input :ref="'upload_file'+_uid" type="file" accept="image/*,.pdf,.doc,.docx,.txt,.odt,.odf,.xls,.xlsx,.ppt,.pptx" @change="start_upload($event)">
     </vs-button>
-  </div>
-
 </template>
 
 <style scoped>
@@ -34,20 +30,38 @@
 
         this.loading = true;
 
-        var base64_file = '';
+        let imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        let fileTypes = ['pdf', 'docx', 'txt', 'odt', 'odf', 'xls', 'xlsx', 'ppt', 'pptx'];
 
-        var thisApp = this;
+        let base64_file = '';
 
-        var input = event.target;
+        let thisApp = this;
+
+        let input = event.target;
+
         // Ensure that you have a file before attempting to read it
         if (input.files && input.files[0]) {
+
+          let extension = input.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+            isImage = imageTypes.indexOf(extension) > -1,  //is extension in acceptable types
+            isFile = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+
+          if (!(isImage || isFile)) {
+            console.log("unknown file type, can't be uploaded, sorry mate")
+            return;
+          }
+
+          let file_type = isImage ? 'image' : (isFile ? 'file' : '');
+
           // create a new FileReader to read this file and convert to base64 format
-          var reader = new FileReader();
+          let reader = new FileReader();
+
           // Define a callback function to run, when FileReader finishes its job
           reader.onload = (e) => {
             // Note: arrow function used here, so that "this.fileData" refers to the fileData of Vue component
             // Read file as base64 and set to fileData
             base64_file = e.target.result;
+
 
             axios.post(API.FILE_UPLOAD, {
               "vu_token": this.user_token || this.$store.state.AppActiveUser.token,
@@ -63,7 +77,7 @@
                   thisApp.file_id = response.data.data.file_id;
 
                   let res = {
-                    "type": thisApp.file_type,
+                    "type": file_type,
                     "id": thisApp.file_id
                   };
 
@@ -80,13 +94,10 @@
               });
 
           }
+
           // Start the reader job - read file as a data url (base64 format)
           reader.readAsDataURL(input.files[0]);
-
-
         }
-
-
       }
     }
   }
