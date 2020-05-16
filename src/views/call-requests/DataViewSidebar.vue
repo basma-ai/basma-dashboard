@@ -38,7 +38,8 @@
         <custom-fields :is_agent_view="false" v-if="custom_fields != null"
                        :custom_fields="custom_fields"></custom-fields>
 
-        <vs-checkbox v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
+        <vs-checkbox class="w-full mb-6" v-model="send_sms">Send SMS (upon agent making the call)</vs-checkbox>
+        <vs-checkbox class="w-full mb-6" v-model="make_it_ring">Ring in Agent Phone</vs-checkbox>
       </div>
     </component>
 
@@ -91,6 +92,7 @@
         custom_fields: [],
 
         send_sms: true,
+        make_it_ring: false,
 
         datetime: new Date().toISOString(),
         configdateTimePicker: {
@@ -262,6 +264,7 @@
           "vu_id": this.selected_user.id,
           "scheduled_time": this.$moment(this.datetime).unix() * 1000,
           "send_sms": this.send_sms,
+          "make_it_ring": this.make_it_ring,
           "custom_fields_values": this.custom_fields,
         };
 

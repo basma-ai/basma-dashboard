@@ -61,8 +61,8 @@
               </vs-col>
 
               <vs-col id="details" vs-sm="12" vs-md="6" vs-lg="6">
-                <div id="service">{{call.vendor_service.name}}</div>
-                <custom-fields :read_only="true" v-if="call.custom_fields_values" :custom_fields="call.custom_fields_values"></custom-fields>
+                <div id="service" v-if="null != call.vendor_service">{{call.vendor_service.name}}</div>
+                <custom-fields :read_only="true" v-if="null != call.custom_fields_values" :custom_fields="call.custom_fields_values"></custom-fields>
               </vs-col>
             </div>
 

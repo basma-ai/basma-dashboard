@@ -133,7 +133,7 @@
           </vs-td>
 
           <vs-td class="whitespace-no-wrap">
-            <div v-if="tr.call_id == null">
+            <div v-if="null != tr.call && tr.call.status != 'ended'">
               <feather-icon icon="CopyIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"
                             @click.stop="copyLink(tr)"/>
               <!--            <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
