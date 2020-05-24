@@ -39,6 +39,14 @@ import store from './store/store'
 // i18n
 import i18n from './i18n/i18n'
 
+import VueAnalytics from 'vue-analytics';
+
+
+// Configuration VueAnalytics
+Vue.use(VueAnalytics, {
+  id: 'UA-163379355-1',
+  router
+});
 
 // Vuejs - Vue wrapper for hammerjs
 import { VueHammer } from 'vue2-hammer'
