@@ -24,7 +24,7 @@
                       icon-no-border
                       icon="icon icon-user"
                       icon-pack="feather"
-                      label-placeholder="Username"
+                      label-placeholder="Username\Email"
                       v-model="username"
                       class="w-full"
                       v-on:keyup.enter="login" />
@@ -79,10 +79,11 @@ export default{
     const this_app = this;
 
     // if (null != this.$store.state.AppActiveUser.token)
-
+    if (null != this_app.$route.query.email) {
+      this_app.username = this_app.$route.query.email;
+    }
 
     axios.post("/guest/get_vendor", {"vendor_username": this.$route.params.id}).then((res) => {
-
       this_app.vendor = res.data.data.vendor
     }).catch((err) => {
 
