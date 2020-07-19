@@ -237,14 +237,29 @@ const router = new Router({
         {
           path: '/:id',
           name: 'page-vendor',
-          component: () => import('@/views/pages/Login.vue')
+          component: () => import('@/views/pages/Login.vue'),
         },
         {
           path: '/:id/login',
           name: 'page-login',
           component: () => import('@/views/pages/Login.vue')
         },
-
+        {
+          path: '/:id/forgot-password',
+          name: 'page-forgot-password',
+          component: () => import('@/views/pages/ForgotPassword.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
+          path: '/:id/reset-password/:token',
+          name: 'page-reset-password',
+          component: () => import('@/views/pages/ResetPassword.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
       ]
     },
     // Redirect to 404 page, if no match found

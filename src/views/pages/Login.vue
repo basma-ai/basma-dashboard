@@ -42,6 +42,7 @@
 
                   <div class="flex flex-wrap justify-between my-5">
                       <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
+                      <router-link :to="{path: '/'+ $route.params.id + '/forgot-password'}">Forgot Password?</router-link>
                   </div>
                   <vs-button style="visibility: hidden" type="border">Register</vs-button>
                   <vs-button class="float-right" @click="login">Login</vs-button>
@@ -104,7 +105,6 @@ export default{
       axios.post("/agent/request_token", payload).then((res) => {
         this.$vs.loading.close()
 
-
         if (!res.data.success){
           const error = res.data.data.errors[0];
 
@@ -127,13 +127,7 @@ export default{
           photo_url: res.data.data.vu_user.photo_url
         }
 
-
-
         this_app.$store.commit('UPDATE_USER_INFO', user_data);
-
-
-
-
 
         this.$router.push('/').catch(() => {})
       }).catch((err) => {
