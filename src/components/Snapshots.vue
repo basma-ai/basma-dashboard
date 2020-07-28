@@ -44,27 +44,26 @@
 
         var video = document.querySelector("#remote-media-div video")
 
-        var context = canvas.getContext('2d');
-        var w, h, ratio;
+        if (null != video) {
+          var context = canvas.getContext('2d');
+          var w, h, ratio;
 
-        ratio = video.videoWidth / video.videoHeight;
-        w = 500 - 100;
-        h = parseInt(w / ratio, 10);
-        canvas.width = w;
-        canvas.height = h;
-        context.fillRect(0, 0, w, h);
-        context.drawImage(video, 0, 0, w, h);
+          ratio = video.videoWidth / video.videoHeight;
+          w = 500 - 100;
+          h = parseInt(w / ratio, 10);
+          canvas.width = w;
+          canvas.height = h;
+          context.fillRect(0, 0, w, h);
+          context.drawImage(video, 0, 0, w, h);
 
-        var jpegUrl = canvas.toDataURL("image/jpeg");
+          var jpegUrl = canvas.toDataURL("image/jpeg");
 
-        this.snaps.push({
-          'url': jpegUrl,
-          'description': '',
-          'upload_status': 'not_started'
-        });
-
-
-
+          this.snaps.push({
+            'url': jpegUrl,
+            'description': '',
+            'upload_status': 'not_started'
+          });
+        }
 
       },
       uploadFile: function(snapshot) {
