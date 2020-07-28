@@ -84,7 +84,7 @@
 
       <vs-col v-bind:class="{ hide: call.status == 'ended' }" vs-justify="space-between" vs-sm="12" vs-md="8" vs-lg="8">
         <vs-card style="width:100%;">
-          <CallBox ref="call_box" :connection_token="call.connection_agent_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
+          <CallBox ref="call_box" :connection_token="call.participants[0].info.twilio_participant_token" :room_name="'call-'+call.id" style="width:100%;"></CallBox>
         </vs-card>
       </vs-col>
 
@@ -96,6 +96,7 @@
           </div>
           <vs-textarea placeholder="Your private notes goes here.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="2"/>
           <ChatBox ref="chatbox" :call_id="call_id" style="margin-bottom: 15px"></ChatBox>
+          <Snapshots ref="snapshots" :call_id="call_id"></Snapshots>
         </vs-card>
       </vs-col>
 
@@ -108,6 +109,7 @@
   import axios from '@/axios.js';
   import API from '@/api.js';
   import CallBox from '@/components/CallBox.vue';
+  import Snapshots from '@/components/Snapshots.vue';
   import ChatBox from '@/components/chat-box/ChatBox.vue'
   import CustomFields from '@/components/CustomFields.vue';
 
@@ -143,7 +145,8 @@
     components: {
       CallBox,
       ChatBox,
-      CustomFields
+      CustomFields,
+      Snapshots
     },
     watch: {
       screen_status: function(status){

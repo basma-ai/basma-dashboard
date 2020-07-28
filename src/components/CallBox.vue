@@ -12,6 +12,9 @@
         <div v-if="can_end_call" @click="confirm_end_call">
           <vs-button radius icon="close" size="large" type="filled" color="danger"></vs-button>
         </div>
+        <div v-if="cameras.length > 0" @click="toggle_flip_camera">
+          <vs-button radius icon="flip_camera_ios" size="large" type="filled" color="rgb(0, 0, 0, 0.4)"></vs-button>
+        </div>
         <div @click="toggle_mute_camera">
           <vs-button radius icon="videocam" size="large" type="filled" color="rgb(0, 0, 0, 0.4)" v-if="localCamIsEnabled"></vs-button>
           <vs-button radius icon="videocam_off" size="large" type="filled" color="danger" v-if="!localCamIsEnabled"></vs-button>
@@ -27,7 +30,7 @@
 
 <script>
   import Loading from '@/components/Loading.vue';
-  const {connect, createLocalTracks} = require('twilio-video');
+  const {connect, createLocalTracks, createLocalVideoTrack} = require('twilio-video');
 
   export default {
     props: ['connection_token', 'room_name', 'can_end_call'],
@@ -41,12 +44,74 @@
       localCamIsEnabled: true,
       localMicIsEnabled: true,
       isVideoLoaded: false,
-      timer: 0
+      timer: 0,
+      cameras: [],
+      currentStream: null,
+      facingMode: 'user'
     }),
     components: {
       Loading
     },
     methods: {
+      toggle_flip_camera: function () {
+        let this_app = this;
+
+        if (undefined != this.localTracks) {
+          if (typeof currentStream !== 'undefined') {
+            this_app.stopMediaTracks(currentStream);
+          }
+
+          const videoConstraints = {};
+
+          if (this_app.facingMode === 'environment') {
+            this_app.facingMode = 'user'
+          } else {
+            this_app.facingMode = 'environment'
+          }
+
+          videoConstraints.facingMode = this_app.facingMode;
+
+          const constraints = {
+            video: videoConstraints,
+            audio: false
+          };
+
+          navigator.mediaDevices
+            .getUserMedia(constraints)
+            .then(stream => {
+              this_app.currentStream = stream;
+              return navigator.mediaDevices.enumerateDevices();
+            })
+            .then(this_app.gotDevices)
+            .catch(error => {
+              console.error(error);
+            });
+
+          createLocalVideoTrack({
+            deviceId: {
+              exact: this_app.cameras[0].deviceId
+            }
+          }).then(localVideoTrack => {
+            const localParticipant = this_app.room.localParticipant;
+            const tracks = Array.from(localParticipant.videoTracks.values()).map(
+              function(trackPublication) {
+                return trackPublication.track;
+              }
+            );
+            localParticipant.unpublishTracks(tracks);
+            tracks.forEach(function(track) {
+              if (track) { track.stop(); }
+            });
+            console.log(localParticipant.identity + " removed track: " + tracks[0].kind);
+
+            localParticipant.publishTrack(localVideoTrack);
+            console.log(localParticipant.identity + " added track: " + localVideoTrack.kind);
+            const localMediaContainer = document.getElementById('local-media');
+            localMediaContainer.innerHTML = "";
+            localMediaContainer.prepend(localVideoTrack.attach());
+          })
+        }
+      },
       toggle_mute_camera: function () {
         let this_app = this;
 
@@ -156,18 +221,22 @@
           participant.tracks.forEach(publication => {
             if (publication.isSubscribed) {
               const track = publication.track;
-              this_app.attach_track(track, participant)
+              this_app.attach_tracks([track], participant)
               this_app.isVideoLoaded = true;
             }
           });
 
           participant.on('trackSubscribed', track => {
-            this_app.attach_track(track, participant)
+            this_app.attach_tracks([track], participant)
             this_app.isVideoLoaded = true;
           });
 
-        }
+          // When a Participant removes a Track, detach it from the DOM.
+          participant.on('trackUnsubscribed', track => {
+            this_app.detach_tracks([track]);
+          });
 
+        }
 
       },
       detach_participant(participant) {
@@ -176,32 +245,44 @@
           participant_element.remove()
         }
       },
-      attach_track(track, participant) {
-        let remoteDiv = document.getElementById(participant.sid)
-        let trackElement = track.attach()
-        trackElement.id = track.sid
-
-        remoteDiv.append(trackElement)
-      },
-    },
-    watch: {
-      isVideoLoaded() {
-        this.add_one_sec_to_timer();
-      }
-    },
-    created() {
-      let this_app = this;
-
-      createLocalTracks({
-        audio: true,
-        video: {width: 640}
-      }).then(localTracks => {
-        this_app.localTracks = localTracks;
-        return connect(this_app.connection_token, {
-          name: this_app.room_name,
-          tracks: localTracks
+      detach_tracks(tracks) {
+        tracks.forEach(function(track) {
+          if (track) {
+            track.detach().forEach(function(detachedElement) {
+              detachedElement.remove();
+            });
+          }
         });
-      }).then(room => {
+      },
+      attach_tracks(tracks, participant) {
+        let remoteDiv = document.getElementById(participant.sid)
+        tracks.forEach(function(track) {
+          if (track) {
+            let trackElement = track.attach()
+            trackElement.id = track.sid
+
+            remoteDiv.append(trackElement)
+          }
+        });
+      },
+      stopMediaTracks(stream) {
+        stream.getTracks().forEach(track => {
+          track.stop();
+        });
+      },
+      gotDevices(mediaDevices){
+        let this_app = this;
+        this_app.cameras = [];
+        let count = 1;
+        mediaDevices.forEach(mediaDevice => {
+          if (mediaDevice.kind === 'videoinput' && (mediaDevice.facingMode === this_app.facingMode || mediaDevice.label.toLowerCase().indexOf(this_app.cameraSide) >= 0 )) {
+            let camera = {deviceId: mediaDevice.deviceId, label: mediaDevice.label || `Camera ${count++}`};
+            this_app.cameras.push(camera);
+          }
+        });
+      },
+      configureTheRoomAfterJoining(room){
+        let this_app = this;
 
         // this_app.$log4js.debug(`Successfully joined a Room: ${room}`);
 
@@ -246,6 +327,42 @@
 
           this_app.detach_participant(participant);
         });
+
+      }
+    },
+    computed: {
+      cameraSide() {
+        if (this.facingMode === "user") {
+          return "front"
+        }else{
+          return "back"
+        }
+      }
+    },
+    watch: {
+      isVideoLoaded() {
+        this.add_one_sec_to_timer();
+      }
+    },
+    created() {
+      let this_app = this;
+
+      navigator.mediaDevices.enumerateDevices().then(this_app.gotDevices);
+
+      createLocalTracks({
+        audio: true,
+        video: {width: 640}
+      }).then(localTracks => {
+        console.log('localTracks ' + JSON.stringify(localTracks));
+        this_app.localTracks = localTracks;
+        return connect(this_app.connection_token, {
+          name: this_app.room_name,
+          tracks: localTracks
+        });
+      }).then(room => {
+
+        this_app.configureTheRoomAfterJoining(room);
+
       });
     }
   }
