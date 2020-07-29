@@ -95,7 +95,7 @@
             <custom-fields :is_agent_view="true" v-if="custom_fields != null" :custom_fields="custom_fields" :values="call.custom_fields_values"></custom-fields>
           </div>
           <vs-textarea placeholder="Your private notes goes here.." v-debounce:1s="updateNotes" v-model="agent_notes" type="textarea" rows="2"/>
-          <Snapshots ref="snapshots" :call_id="call_id" style="margin-bottom: 15px"></Snapshots>
+<!--          <Snapshots ref="snapshots" :call_id="call_id" style="margin-bottom: 15px"></Snapshots>-->
           <ChatBox ref="chatbox" :call_id="call_id"></ChatBox>
         </vs-card>
       </vs-col>
