@@ -2,16 +2,16 @@
   <div>
     <vs-button style="width:100%" @click="takeSnapshot" icon="add_a_photo" type="border" color="secondary">Take a snapshot</vs-button>
 
-    <div class="snapshots">
+    <div class="snapshots mt-2">
       <div v-for="snapshot in snaps" class="snapshot_box">
-        <img :src="snapshot.url" id="thumb" />
-        <textarea label="Description" :disabled="snapshot.upload_status != 'not_started'" v-model="snapshot.description" placeholder="Enter description here"></textarea>
-        <v-btn @click="uploadFile(snapshot)" :disabled="snapshot.upload_status != 'not_started'">Upload</v-btn>
+        <img class="snap-thumb" :src="snapshot.url" id="thumb" />
+        <vs-textarea class="snap-desc ml-2 mb-0" placeholder="Enter description here.." :disabled="snapshot.upload_status != 'not_started'" v-model="snapshot.description" type="textarea" rows="3"/>
+        <vs-button class="snap-btn ml-2" @click="uploadFile(snapshot)" :disabled="snapshot.upload_status != 'not_started'" type="border" color="secondary" icon="cloud_upload"></vs-button>
         <div v-if="snapshot.upload_status == 'uploading'">
-          <v-progress-circular indeterminate color="primary"></v-progress-circular> Uploading
+          Uploading..
         </div>
         <div v-if="snapshot.upload_status == 'success'" style="color:green">
-          <v-icon color="green">done</v-icon> Uploaded
+          Uploaded!
         </div>
         <div v-if="snapshot.upload_status == 'error'" style="color:red">
           Error
@@ -116,5 +116,22 @@
 </script>
 
 <style lang="scss">
+  .snapshots {
 
+  }
+  .snap-desc {
+    width: 239px;
+    height: 80px;
+    display: inline-block;
+  }
+ .snap-thumb {
+   height: 80px;
+   border-radius: 5px;
+   display: inline-block;
+   vertical-align: top;
+ }
+  .snap-btn {
+    display: inline-block;
+    vertical-align: top;
+  }
 </style>
