@@ -42,26 +42,16 @@
               <tr v-if="call.rating">
                 <td class="font-semibold emojis_rating">Rating</td>
                 <star-rating :rtl="$vs.rtl" :star-size="20" v-model="call.rating.rating" :show-rating="false" :read-only="true"></star-rating>
-
-<!--                <div class="emoji" v-if="call.rating.rating === 1">-->
-<!--                  😞-->
-<!--                </div>-->
-<!--                <div class="emoji" v-if="call.rating.rating === 2">-->
-<!--                  😟-->
-<!--                </div>-->
-<!--                <div class="emoji" v-if="call.rating.rating === 3">-->
-<!--                  😕-->
-<!--                </div>-->
-<!--                <div class="emoji" v-if="call.rating.rating === 4">-->
-<!--                  🙂-->
-<!--                </div>-->
-<!--                <div class="emoji" v-if="call.rating.rating === 5">-->
-<!--                  😁-->
-<!--                </div>-->
               </tr>
               <tr>
                 <td class="font-semibold">Feedback</td>
                 <td>{{ call.rating.feedback_text }}</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Snapshots</td>
+                <td>
+                    <ImageView v-for="snapshot in snapshots" :file_id="snapshot.id" />
+                </td>
               </tr>
             </table>
           </vx-card>
@@ -101,12 +91,14 @@
   import { videoPlayer }     from 'vue-video-player'
   import 'video.js/dist/video-js.css'
   import CustomFields from '@/components/CustomFields.vue';
+  import ImageView from '@/components/ImageView.vue';
 
   export default {
     data() {
       return {
         call_id: this.$route.params.callId,
         call: null,
+        snapshots: null,
         recording: null,
         playerOptions: {},
         popupActive: false,
@@ -115,7 +107,8 @@
     components: {
       StarRating,
       videoPlayer,
-      CustomFields
+      CustomFields,
+      ImageView
     },
     computed: {
       canSeeRecording() {
@@ -147,6 +140,7 @@
         axios.post(API.CALLS_GET, params).then((res) => {
 
           this_app.call = res.data.data.call;
+          this_app.snapshots = res.data.data.snapshots;
         }).catch((err) => {
 
         });
