@@ -2,6 +2,7 @@
   <div class="snap">
     <a target="_blank" :href="image.signed_url">
       <img :alt="image.description" class="snap-thumb" :src="image.signed_url" id="thumb" />
+      <span>{{ image.description }}</span>
     </a>
   </div>
 </template>
@@ -46,6 +47,11 @@
   .snap{
     float: left;
     margin-right: 10px;
+    margin-bottom: 10px;
+    span {
+      color: #444;
+      font-size: 12px;
+    }
   }
   .snap-thumb {
     height: 80px;
@@ -53,4 +59,5 @@
     display: inline-block;
     vertical-align: top;
   }
+
 </style>
