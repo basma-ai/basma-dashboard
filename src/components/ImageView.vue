@@ -1,7 +1,7 @@
 <template>
   <div class="snap">
     <a target="_blank" :href="image.signed_url">
-      <img class="snap-thumb" :src="image.signed_url" id="thumb" />
+      <img :alt="image.description" class="snap-thumb" :src="image.signed_url" id="thumb" />
     </a>
   </div>
 </template>
